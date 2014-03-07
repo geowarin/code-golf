@@ -15,4 +15,4 @@
 # Maven
 log/
 target/
-lib/
+#lib/

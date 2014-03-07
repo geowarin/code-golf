@@ -37,10 +37,7 @@ import java.awt.Window;
 import java.awt.event.InputEvent;
 import java.awt.event.KeyEvent;
 import java.awt.event.MouseEvent;
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 import javax.swing.JRootPane;
 import javax.swing.KeyStroke;
 import javax.swing.RootPaneContainer;
@@ -216,23 +213,21 @@ public final class ActionsRecorder implements  Disposable {
 
 
     public final boolean isTaskSolved() {
-        if (this.disposed) return 0;
-        List expected = PluginPackage.src.ActionsRecorder. - 162639752.
-        computeTrimmedLines(this.golfTask.getTargetCode());
-        List actual = PluginPackage.src.ActionsRecorder. - 162639752.
-        computeTrimmedLines(String.valueOf(this.document.getText()));
+        if (this.disposed) return false;
+        List expected = ActionsRecorderAccessor.computeTrimmedLines(this.golfTask.getTargetCode());
+        List actual = ActionsRecorderAccessor.computeTrimmedLines(String.valueOf(this.document.getText()));
         LOG.info("Expected:");
-        LOG.info(expected);
+        LOG.info(expected.toString());
         LOG.info("Actual:");
-        LOG.info(actual);
+        LOG.info(actual.toString());
         return Objects.equal(expected, actual);
     }
 
     public final boolean isInsideExpectedCodeViewer(MouseEvent e) {
         Preconditions.checkNotNull(e, "isInsideExpectedCodeViewer");
         Component component = e.getComponent();
-        if (component != null) 1;
-        if (0 != 0) return 0;
+        if (component == null)
+            return true;
         JRootPane rootPane;
         Window window = SwingUtilities.getWindowAncestor(component);
 
@@ -249,13 +244,14 @@ public final class ActionsRecorder implements  Disposable {
             this.actionInputEvents.remove(e);
             return;
         }
-        if (KotlinPackage.setOf(new Integer[]{KeyEvent.VK_CONTROL, KeyEvent.VK_ALT, KeyEvent.VK_META, KeyEvent.VK_SHIFT}).contains(Integer.valueOf(e.getKeyCode())))
+        List<Integer> keys = Arrays.asList(new Integer[]{KeyEvent.VK_CONTROL, KeyEvent.VK_ALT, KeyEvent.VK_META, KeyEvent.VK_SHIFT});
+        if (keys.contains(Integer.valueOf(e.getKeyCode())))
             return;
-        IdeEventQueue tmp90_87 = IdeEventQueue.getInstance();
-        if (tmp90_87 == null) throw new NullPointerException();
-        IdeKeyEventDispatcher tmp100_97 = tmp90_87.getKeyEventDispatcher();
-        if (tmp100_97 == null) throw new NullPointerException();
-        if (!tmp100_97.isReady()) {
+        IdeEventQueue eventQueue = IdeEventQueue.getInstance();
+        if (eventQueue == null) throw new NullPointerException();
+        IdeKeyEventDispatcher keyEventDispatcher = eventQueue.getKeyEventDispatcher();
+        if (keyEventDispatcher == null) throw new NullPointerException();
+        if (!keyEventDispatcher.isReady()) {
             return;
         }
 
@@ -272,8 +268,8 @@ public final class ActionsRecorder implements  Disposable {
             if (tmp270_267 == null) throw new NullPointerException();
             this.usedActions.add(tmp270_267);
 
-            Set movingKeys = KotlinPackage.setOf(new Integer[]{Integer.valueOf(KeyEvent.VK_UP), Integer.valueOf(KeyEvent.VK_DOWN), Integer.valueOf(KeyEvent.VK_LEFT), Integer.valueOf(KeyEvent.VK_RIGHT),
-                    Integer.valueOf(KeyEvent.VK_HOME), Integer.valueOf(KeyEvent.VK_END), Integer.valueOf(KeyEvent.VK_PAGE_DOWN), Integer.valueOf(KeyEvent.VK_PAGE_UP)});
+            Set movingKeys = Arrays.asList(KeyEvent.VK_UP, KeyEvent.VK_DOWN, KeyEvent.VK_LEFT, KeyEvent.VK_RIGHT,
+                                KeyEvent.VK_HOME, KeyEvent.VK_END, KeyEvent.VK_PAGE_DOWN, KeyEvent.VK_PAGE_UP)
 
             this.movingActionsCounter += 1;
 
@@ -364,7 +360,7 @@ public final class ActionsRecorder implements  Disposable {
     }
 
     public void dispose() {
-        this.disposed = 1;
+        this.disposed = true;
         this.password = "";
     }
 
@@ -393,18 +389,14 @@ public final class ActionsRecorder implements  Disposable {
         return this.password;
     }
 
-
-    public final void setPassword(String<set-?>) {
-        Preconditions.checkNotNull( < set - ?>,"<set-password>");
-        this.password =<set - ?>;
+    public void setPassword(String password) {
+        this.password = password;
     }
-
 
     public final Function0<Unit> getRestarter() {
         return this.restarter;
     }
 
-    @JetConstructor
     public ActionsRecorder(GolfTask golfTask, Project project, Document document, String username, String password, Function0<? extends Unit> restarter) {
         this.golfTask = golfTask;
         this.project = project;

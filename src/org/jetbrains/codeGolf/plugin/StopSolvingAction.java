@@ -12,8 +12,7 @@ import jet.runtime.typeinfo.JetMethod;
 import jet.runtime.typeinfo.JetValueParameter;
 
 
-public final class StopSolvingAction extends AnAction
-        implements JetObject {
+public final class StopSolvingAction extends AnAction {
     private final ActionsRecorder recorder;
 
 
@@ -26,7 +25,6 @@ public final class StopSolvingAction extends AnAction
         return this.recorder;
     }
 
-    @JetConstructor
     public StopSolvingAction(ActionsRecorder recorder) {
         // Byte code:
         //   0: aload_1
