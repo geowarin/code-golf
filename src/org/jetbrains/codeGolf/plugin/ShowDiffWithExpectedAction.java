@@ -1,5 +1,6 @@
 package org.jetbrains.codeGolf.plugin;
 
+import com.google.common.base.Preconditions;
 import com.intellij.openapi.actionSystem.AnAction;
 import com.intellij.openapi.actionSystem.AnActionEvent;
 import com.intellij.openapi.diff.DiffContent;
@@ -21,30 +22,26 @@ import jet.runtime.typeinfo.JetMethod;
 import jet.runtime.typeinfo.JetValueParameter;
 
 
-public final class ShowDiffWithExpectedAction extends AnAction
-        implements JetObject {
+public final class ShowDiffWithExpectedAction extends AnAction {
     private final String targetCode;
     private final Document document;
 
 
     public void actionPerformed(AnActionEvent e) {
-        AnActionEvent tmp1_0 = e;
-        if (tmp1_0 == null) throw new NullPointerException();
-        Project tmp11_8 = tmp1_0.getProject();
-        if (tmp11_8 == null) throw new NullPointerException();
-        Project project = tmp11_8;
+        if (e == null) throw new NullPointerException();
+        Project project = e.getProject();
+        if (project == null) throw new NullPointerException();
         SimpleDiffRequest diffData = new SimpleDiffRequest(project, "Difference");
-        diffData.setContents((DiffContent) new SimpleContent(this.targetCode), (DiffContent) new SimpleContent(this.document.getText()));
+        diffData.setContents(new SimpleContent(this.targetCode), new SimpleContent(this.document.getText()));
         diffData.setContentTitles("Expected Code", "Actual Code");
-        Object tmp79_76 = DiffTool.HINT_SHOW_FRAME;
-        Preconditions.checkNotNull(tmp79_76, "DiffTool", "HINT_SHOW_FRAME");
-        diffData.addHint(tmp79_76);
+        Preconditions.checkNotNull(DiffTool.HINT_SHOW_FRAME, "DiffTool", "HINT_SHOW_FRAME");
+        diffData.addHint(DiffTool.HINT_SHOW_FRAME);
         diffData.setGroupKey("#CodeGolfDiff");
-        DiffManager tmp99_96 = DiffManager.getInstance();
-        if (tmp99_96 == null) throw new NullPointerException();
-        DiffTool tmp109_106 = tmp99_96.getIdeaDiffTool();
-        if (tmp109_106 == null) throw new NullPointerException();
-        tmp109_106.show((DiffRequest) diffData);
+        DiffManager diffManager = DiffManager.getInstance();
+        if (diffManager == null) throw new NullPointerException();
+        DiffTool ideaDiffTool = diffManager.getIdeaDiffTool();
+        if (ideaDiffTool == null) throw new NullPointerException();
+        ideaDiffTool.show(diffData);
     }
 
 
@@ -57,7 +54,6 @@ public final class ShowDiffWithExpectedAction extends AnAction
         return this.document;
     }
 
-    @JetConstructor
     public ShowDiffWithExpectedAction(String targetCode, Document document) {
         // Byte code:
         //   0: aload_1

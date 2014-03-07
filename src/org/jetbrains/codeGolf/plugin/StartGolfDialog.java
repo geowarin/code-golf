@@ -117,7 +117,7 @@ public final class StartGolfDialog extends DialogWrapper {
             if (score != null) 1;
             UserScore tmp55_53 = score;
             if (tmp55_53 == null) throw new NullPointerException();
-            Preconditions.checkNotNull(JBColor.GREEN, "Color", "GREEN");
+            Preconditions.checkNotNull(JBColor.GREEN, "Colorge", "GREEN");
             Color tmp93_90 = JBColor.GREEN.darker();
             Preconditions.checkNotNull(tmp93_90, "Color", "darker");
             JBColor tmp150_147 = JBColor.BLUE;

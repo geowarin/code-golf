@@ -1,5 +1,6 @@
 package org.jetbrains.codeGolf.plugin;
 
+import com.google.common.base.Preconditions;
 import com.intellij.openapi.Disposable;
 import com.intellij.openapi.actionSystem.ActionGroup;
 import com.intellij.openapi.actionSystem.ActionManager;
@@ -57,8 +58,7 @@ import jet.runtime.typeinfo.JetValueParameter;
 import kotlin.KotlinPackage;
 
 
-public final class RecordingControlPanel extends JPanel
-        implements JetObject, Disposable {
+public final class RecordingControlPanel extends JPanel implements Disposable {
     private Editor myEditor;
     private final JLabel myText;
     private final JBPopup myHint;
@@ -75,11 +75,9 @@ public final class RecordingControlPanel extends JPanel
         return this.myEditor;
     }
 
-
-    private final void setMyEditor(Editor<set-?>) {
-        this.myEditor =<set - ?>;
+    public void setMyEditor(Editor myEditor) {
+        this.myEditor = myEditor;
     }
-
 
     private final JLabel getMyText() {
         return this.myText;
@@ -125,16 +123,16 @@ public final class RecordingControlPanel extends JPanel
 
     public final JComponent createControlComponent() {
         DefaultActionGroup group = new DefaultActionGroup(new AnAction[]{
-                (AnAction) new ShowDiffWithExpectedAction(this.targetCode, this.document),
-                (AnAction) new NavigateToEditorAction(this.document),
-                (AnAction) Separator.getInstance(),
-                (AnAction) new TryAgainAction(this.recorder),
-                (AnAction) new StopSolvingAction(this.recorder)});
-        ActionManager tmp96_93 = ActionManager.getInstance();
-        if (tmp96_93 == null) throw new NullPointerException();
-        ActionToolbar tmp114_111 = tmp96_93.createActionToolbar("CodeGolfToolbar", (ActionGroup) group, 1);
-        if (tmp114_111 == null) throw new NullPointerException();
-        JComponent tmp126_121 = tmp114_111.getComponent();
+                new ShowDiffWithExpectedAction(this.targetCode, this.document),
+                new NavigateToEditorAction(this.document),
+                Separator.getInstance(),
+                new TryAgainAction(this.recorder),
+                new StopSolvingAction(this.recorder)});
+        ActionManager actionManager = ActionManager.getInstance();
+        if (actionManager == null) throw new NullPointerException();
+        ActionToolbar actionToolbar = actionManager.createActionToolbar("CodeGolfToolbar", (ActionGroup) group, 1);
+        if (actionToolbar == null) throw new NullPointerException();
+        JComponent tmp126_121 = actionToolbar.getComponent();
         if (tmp126_121 == null) throw new NullPointerException();
         return tmp126_121;
     }
@@ -155,19 +153,16 @@ public final class RecordingControlPanel extends JPanel
         if (hint != null) 1;
         if (0 != 0)
             return;
-        WindowManager tmp19_16 = WindowManager.getInstance();
-        if (tmp19_16 == null) throw new NullPointerException();
-        IdeFrame tmp33_30 = tmp19_16.getIdeFrame(this.project);
-        if (tmp33_30 == null) throw new NullPointerException();
-        JComponent tmp45_40 = tmp33_30.getComponent();
-        if (tmp45_40 == null) throw new NullPointerException();
-        JComponent frame = tmp45_40;
-        Rectangle tmp57_54 = frame.getVisibleRect();
-        Preconditions.checkNotNull(tmp57_54, "JComponent", "getVisibleRect");
-        Rectangle visibleRect = tmp57_54;
-        Dimension tmp70_67 = getPreferredSize();
-        if (tmp70_67 == null) throw new NullPointerException();
-        Dimension contentSize = tmp70_67;
+        WindowManager windowManager = WindowManager.getInstance();
+        if (windowManager == null) throw new NullPointerException();
+        IdeFrame ideFrame = windowManager.getIdeFrame(this.project);
+        if (ideFrame == null) throw new NullPointerException();
+        JComponent frame = ideFrame.getComponent();
+        if (frame == null) throw new NullPointerException();
+        Rectangle visibleRect = frame.getVisibleRect();
+        Preconditions.checkNotNull(visibleRect, "JComponent", "getVisibleRect");
+        Dimension contentSize = getPreferredSize();
+        if (contentSize == null) throw new NullPointerException();
         JBPopup tmp85_84 = hint;
         if (tmp85_84 == null)
             throw new TypeCastException("com.intellij.openapi.ui.popup.JBPopup? cannot be cast to com.intellij.ui.popup.AbstractPopup");
@@ -177,11 +172,11 @@ public final class RecordingControlPanel extends JPanel
         int newPopupHeight = Math.max(Math.min(popupHeight, visibleRect.height / 2), 150);
         if (newPopupHeight != popupHeight) {
             popupHeight = newPopupHeight;
-            ((AbstractPopup) hint).setSize(new Dimension(contentSize.width, popupHeight));
+            hint.setSize(new Dimension(contentSize.width, popupHeight));
         }
 
         Point point = new Point(visibleRect.x + 5, visibleRect.y + visibleRect.height - newPopupHeight - 20);
-        ((AbstractPopup) hint).show(new RelativePoint((Component) frame, point));
+        hint.show(new RelativePoint(frame, point));
     }
 
     public final Editor createViewer(String code) {
@@ -201,16 +196,16 @@ public final class RecordingControlPanel extends JPanel
         EditorSettings settings = tmp63_58;
         settings.setAdditionalLinesCount(0);
         settings.setAdditionalColumnsCount(1);
-        settings.setRightMarginShown(0);
-        settings.setFoldingOutlineShown(0);
-        settings.setLineNumbersShown(0);
-        settings.setLineMarkerAreaShown(0);
-        settings.setIndentGuidesShown(0);
-        settings.setVirtualSpace(0);
-        settings.setWheelFontChangeEnabled(0);
+        settings.setRightMarginShown(false);
+        settings.setFoldingOutlineShown(false);
+        settings.setLineNumbersShown(false);
+        settings.setLineMarkerAreaShown(false);
+        settings.setIndentGuidesShown(false);
+        settings.setVirtualSpace(false);
+        settings.setWheelFontChangeEnabled(false);
         settings.setLineCursorWidth(1);
-        Editor tmp170_169 = editor;
-        if (tmp170_169 == null)
+        Editor editor1 = editor;
+        if (editor1 == null)
             throw new TypeCastException("com.intellij.openapi.editor.Editor cannot be cast to com.intellij.openapi.editor.ex.EditorEx");
         EditorHighlighterFactory tmp191_188 = EditorHighlighterFactory.getInstance();
         if (tmp191_188 == null) throw new NullPointerException();
@@ -218,8 +213,8 @@ public final class RecordingControlPanel extends JPanel
         Preconditions.checkNotNull(tmp205_202, "StdFileTypes", "JAVA");
         EditorHighlighter tmp221_218 = tmp191_188.createEditorHighlighter(this.project, (FileType) tmp205_202);
         if (tmp221_218 == null) throw new NullPointerException();
-        ((EditorEx) tmp170_169).setHighlighter(tmp221_218);
-        ((EditorEx) editor).getSelectionModel().addSelectionListener((SelectionListener) new JetObject() {
+        ((EditorEx) editor1).setHighlighter(tmp221_218);
+        editor.getSelectionModel().addSelectionListener((SelectionListener) new JetObject() {
 
             public void selectionChanged(SelectionEvent event) {
                 SelectionModel tmp9_4 = this.$editor.getSelectionModel();
@@ -250,47 +245,44 @@ public final class RecordingControlPanel extends JPanel
         return this.recorder;
     }
 
-    @JetConstructor
     public RecordingControlPanel(Project project, Document document, String targetCode, ActionsRecorder recorder) {
         this.project = project;
         this.document = document;
         this.targetCode = targetCode;
         this.recorder = recorder;
         this.MAX_WIDTH = 500;
-        this.MAX_HEIGHT =
-                300;
-        this.MIN_HEIGHT =
-                45;
+        this.MAX_HEIGHT = 300;
+        this.MIN_HEIGHT = 45;
 
-        Disposer.register((Disposable) this.recorder, this);
-        setLayout((LayoutManager) new BorderLayout());
+        Disposer.register(this.recorder, this);
+        setLayout(new BorderLayout());
         this.myEditor = createViewer(this.targetCode);
         Editor tmp115_112 = this.myEditor;
         if (tmp115_112 == null) throw new NullPointerException();
         JComponent tmp127_122 = tmp115_112.getComponent();
         Preconditions.checkNotNull(tmp127_122, "Editor", "getComponent");
         JComponent component = tmp127_122;
-        component.setEnabled(0);
+        component.setEnabled(false);
 
         this.myText = new JLabel("Actions: WWW Moving actions: WWW Chars: WWW", SwingConstants.LEFT);
-        JPanel topPanel = new JPanel((LayoutManager) new BorderLayout());
+        JPanel topPanel = new JPanel(new BorderLayout());
         String tmp195_192 = BorderLayout.EAST;
         Preconditions.checkNotNull(tmp195_192, "BorderLayout", "EAST");
-        topPanel.add((Component) createControlComponent(), tmp195_192);
+        topPanel.add(createControlComponent(), tmp195_192);
         String tmp220_217 = BorderLayout.WEST;
         Preconditions.checkNotNull(tmp220_217, "BorderLayout", "WEST");
-        topPanel.add((Component) this.myText, tmp220_217);
+        topPanel.add(this.myText, tmp220_217);
         JPanel separator = new JPanel();
         separator.setMinimumSize(new Dimension(20, 5));
         String tmp267_264 = BorderLayout.CENTER;
         Preconditions.checkNotNull(tmp267_264, "BorderLayout", "CENTER");
-        topPanel.add((Component) separator, tmp267_264);
+        topPanel.add(separator, tmp267_264);
         String tmp289_286 = BorderLayout.NORTH;
         Preconditions.checkNotNull(tmp289_286, "BorderLayout", "NORTH");
-        add((Component) topPanel, tmp289_286);
+        add(topPanel, tmp289_286);
         String tmp311_308 = BorderLayout.CENTER;
         Preconditions.checkNotNull(tmp311_308, "BorderLayout", "CENTER");
-        add((Component) component, tmp311_308);
+        add(component, tmp311_308);
         Border tmp332_329 = BorderFactory.createEmptyBorder(0, 3, 3, 3);
         Preconditions.checkNotNull(tmp332_329, "BorderFactory", "createEmptyBorder");
         setBorder(tmp332_329);

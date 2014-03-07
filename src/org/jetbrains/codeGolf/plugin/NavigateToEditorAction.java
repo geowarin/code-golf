@@ -16,10 +16,8 @@ import jet.runtime.typeinfo.JetMethod;
 import jet.runtime.typeinfo.JetValueParameter;
 
 
-public final class NavigateToEditorAction extends AnAction
-        implements JetObject {
+public final class NavigateToEditorAction extends AnAction {
     private final Document document;
-
 
     public void actionPerformed(AnActionEvent e) {
         VirtualFile file;
@@ -32,7 +30,6 @@ public final class NavigateToEditorAction extends AnAction
         return this.document;
     }
 
-    @JetConstructor
     public NavigateToEditorAction(Document document) {
         // Byte code:
         //   0: aload_1
