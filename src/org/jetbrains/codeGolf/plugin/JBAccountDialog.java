@@ -18,7 +18,7 @@ import javax.swing.JPasswordField;
 import javax.swing.JTextField;
 
 import jet.JetObject;
-import jet.runtime.Intrinsics;
+
 import jet.runtime.typeinfo.JetClass;
 import jet.runtime.typeinfo.JetConstructor;
 import jet.runtime.typeinfo.JetMethod;

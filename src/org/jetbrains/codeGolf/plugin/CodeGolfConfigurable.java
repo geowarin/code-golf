@@ -7,7 +7,6 @@ import com.intellij.openapi.options.Configurable;
 import com.intellij.openapi.ui.VerticalFlowLayout;
 import com.intellij.util.ui.FormBuilder;
 import jet.JetObject;
-import jet.runtime.Intrinsics;
 import jet.runtime.typeinfo.JetClass;
 import jet.runtime.typeinfo.JetConstructor;
 import jet.runtime.typeinfo.JetMethod;
@@ -19,8 +18,7 @@ import javax.swing.*;
 import java.awt.*;
 
 
-public final class CodeGolfConfigurable
-        implements JetObject, Configurable {
+public final class CodeGolfConfigurable implements Configurable {
     private final JPanel mainPanel;
     private final JTextField urlField = new JTextField();
     private final JTextField userNameField = new JTextField();
@@ -41,7 +39,6 @@ public final class CodeGolfConfigurable
     }
 
     @Nullable
-
     public JComponent createComponent() {
         return (JComponent) this.mainPanel;
     }
@@ -84,20 +81,17 @@ public final class CodeGolfConfigurable
     }
 
     @Nls
-
     public String getDisplayName() {
         return "Code Golf";
     }
 
     @Nullable
     @NonNls
-
     public String getHelpTopic() {
         return (String) null;
     }
 
 
-    @JetConstructor
     public CodeGolfConfigurable() {
         FormBuilder tmp29_26 = FormBuilder.createFormBuilder();
         if (tmp29_26 == null) throw new NullPointerException();

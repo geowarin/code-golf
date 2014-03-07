@@ -14,7 +14,7 @@ import com.intellij.openapi.project.Project;
 import javax.swing.Icon;
 
 import jet.JetObject;
-import jet.runtime.Intrinsics;
+
 import jet.runtime.typeinfo.JetClass;
 import jet.runtime.typeinfo.JetConstructor;
 import jet.runtime.typeinfo.JetMethod;

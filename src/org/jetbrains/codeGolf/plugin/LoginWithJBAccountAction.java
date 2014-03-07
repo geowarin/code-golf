@@ -4,15 +4,14 @@ import com.intellij.openapi.actionSystem.AnAction;
 import com.intellij.openapi.actionSystem.AnActionEvent;
 import com.intellij.openapi.project.Project;
 import jet.JetObject;
-import jet.runtime.Intrinsics;
+
 import jet.runtime.typeinfo.JetClass;
 import jet.runtime.typeinfo.JetConstructor;
 import jet.runtime.typeinfo.JetMethod;
 import jet.runtime.typeinfo.JetValueParameter;
 
 
-public final class LoginWithJBAccountAction extends AnAction
-        implements JetObject {
+public final class LoginWithJBAccountAction extends AnAction {
 
     public void actionPerformed(AnActionEvent e) {
         AnActionEvent tmp1_0 = e;

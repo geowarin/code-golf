@@ -26,7 +26,7 @@ import jet.FunctionImpl2;
 import jet.JetObject;
 import jet.TypeCastException;
 import jet.Unit;
-import jet.runtime.Intrinsics;
+
 import jet.runtime.typeinfo.JetClass;
 import jet.runtime.typeinfo.JetConstructor;
 import jet.runtime.typeinfo.JetMethod;

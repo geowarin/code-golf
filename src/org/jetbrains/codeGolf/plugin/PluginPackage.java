@@ -4,6 +4,7 @@ import com.intellij.openapi.project.Project;
 
 import java.util.List;
 
+import com.intellij.openapi.util.Pair;
 import jet.runtime.typeinfo.JetMethod;
 import jet.runtime.typeinfo.JetPackageClass;
 import jet.runtime.typeinfo.JetValueParameter;

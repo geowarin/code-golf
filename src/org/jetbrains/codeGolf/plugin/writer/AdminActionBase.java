@@ -7,7 +7,7 @@ import com.intellij.openapi.actionSystem.Presentation;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.ui.Messages;
 import com.intellij.openapi.util.Pair;
-import jet.runtime.Intrinsics;
+
 import org.jetbrains.codeGolf.auth.AuthPackage;
 import org.jetbrains.codeGolf.plugin.GolfTask;
 import org.jetbrains.codeGolf.plugin.PluginPackage.src.CodeGolfConfigurable.*;

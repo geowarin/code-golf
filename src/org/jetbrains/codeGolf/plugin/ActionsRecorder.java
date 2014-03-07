@@ -52,7 +52,7 @@ import jet.Function1;
 import jet.FunctionImpl0;
 import jet.JetObject;
 import jet.Unit;
-import jet.runtime.Intrinsics;
+
 import jet.runtime.typeinfo.JetClass;
 import jet.runtime.typeinfo.JetConstructor;
 import jet.runtime.typeinfo.JetMethod;

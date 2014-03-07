@@ -49,7 +49,7 @@ import jet.ExtensionFunction0;
 import jet.ExtensionFunctionImpl0;
 import jet.JetObject;
 import jet.TypeCastException;
-import jet.runtime.Intrinsics;
+
 import jet.runtime.typeinfo.JetClass;
 import jet.runtime.typeinfo.JetConstructor;
 import jet.runtime.typeinfo.JetMethod;

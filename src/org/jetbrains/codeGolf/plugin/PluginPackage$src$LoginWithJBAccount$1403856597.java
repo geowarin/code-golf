@@ -1,8 +1,10 @@
 package org.jetbrains.codeGolf.plugin;
 
+import com.google.common.base.Preconditions;
 import com.intellij.openapi.project.Project;
+import com.intellij.openapi.util.Pair;
 import com.intellij.openapi.util.text.StringUtil;
-import jet.runtime.Intrinsics;
+
 import jet.runtime.typeinfo.JetMethod;
 import jet.runtime.typeinfo.JetValueParameter;
 import kotlin.Pair;

@@ -7,7 +7,7 @@ import java.util.Collection;
 import java.util.List;
 
 import jet.Function1;
-import jet.runtime.Intrinsics;
+
 import jet.runtime.typeinfo.JetMethod;
 import jet.runtime.typeinfo.JetValueParameter;
 import kotlin.KotlinPackage;

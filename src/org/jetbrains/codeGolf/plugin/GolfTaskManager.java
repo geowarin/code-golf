@@ -9,7 +9,7 @@ import jet.Function1;
 import jet.FunctionImpl1;
 import jet.JetObject;
 import jet.Unit;
-import jet.runtime.Intrinsics;
+
 import jet.runtime.typeinfo.JetClass;
 import jet.runtime.typeinfo.JetClassObject;
 import jet.runtime.typeinfo.JetConstructor;

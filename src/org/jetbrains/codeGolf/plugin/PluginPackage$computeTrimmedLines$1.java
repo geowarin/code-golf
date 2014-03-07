@@ -1,7 +1,7 @@
 package org.jetbrains.codeGolf.plugin;
 
 import jet.FunctionImpl1;
-import jet.runtime.Intrinsics;
+
 import kotlin.KotlinPackage;
 
 final class PluginPackage$computeTrimmedLines$1 extends FunctionImpl1<? super String, ? extends String> {
