@@ -3,15 +3,6 @@ package org.jetbrains.codeGolf.plugin;
 import com.intellij.openapi.actionSystem.AnAction;
 import com.intellij.openapi.actionSystem.AnActionEvent;
 
-import javax.swing.Icon;
-
-import jet.Function0;
-import jet.JetObject;
-import jet.runtime.typeinfo.JetClass;
-import jet.runtime.typeinfo.JetConstructor;
-import jet.runtime.typeinfo.JetMethod;
-import jet.runtime.typeinfo.JetValueParameter;
-
 
 public final class TryAgainAction extends AnAction {
     private final ActionsRecorder recorder;
@@ -28,6 +19,7 @@ public final class TryAgainAction extends AnAction {
     }
 
     public TryAgainAction(ActionsRecorder recorder) {
+        this.recorder = recorder;
         // Byte code:
         //   0: aload_1
         //   1: ldc 55

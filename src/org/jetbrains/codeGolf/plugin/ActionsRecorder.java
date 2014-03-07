@@ -1,16 +1,14 @@
 package org.jetbrains.codeGolf.plugin;
 
+import com.google.common.base.Joiner;
 import com.google.common.base.Objects;
 import com.google.common.base.Preconditions;
 import com.google.common.collect.Sets;
-import com.intellij.ide.FrameStateListener;
 import com.intellij.ide.IdeEventQueue;
-import com.intellij.ide.IdeEventQueue.EventDispatcher;
 import com.intellij.notification.Notification;
 import com.intellij.notification.NotificationListener;
 import com.intellij.notification.NotificationType;
 import com.intellij.notification.Notifications;
-import com.intellij.notification.Notifications.Bus;
 import com.intellij.openapi.Disposable;
 import com.intellij.openapi.actionSystem.ActionManager;
 import com.intellij.openapi.actionSystem.AnAction;
@@ -27,42 +25,22 @@ import com.intellij.openapi.keymap.KeymapUtil;
 import com.intellij.openapi.keymap.impl.IdeKeyEventDispatcher;
 import com.intellij.openapi.progress.ProgressIndicator;
 import com.intellij.openapi.progress.Task;
-import com.intellij.openapi.progress.Task.Backgroundable;
 import com.intellij.openapi.project.Project;
-import com.intellij.openapi.ui.popup.JBPopup;
 import com.intellij.openapi.util.Disposer;
 import com.intellij.util.ui.UIUtil;
+import org.jetbrains.codeGolf.plugin.rest.RestClientUtil;
 
-import java.awt.AWTEvent;
-import java.awt.Component;
-import java.awt.Window;
+import javax.swing.*;
+import javax.swing.event.HyperlinkEvent;
+import javax.swing.event.HyperlinkEvent.EventType;
+import java.awt.*;
 import java.awt.event.InputEvent;
 import java.awt.event.KeyEvent;
 import java.awt.event.MouseEvent;
 import java.util.*;
-import javax.swing.JRootPane;
-import javax.swing.KeyStroke;
-import javax.swing.RootPaneContainer;
-import javax.swing.SwingUtilities;
-import javax.swing.event.HyperlinkEvent;
-import javax.swing.event.HyperlinkEvent.EventType;
+import java.util.List;
 
-import jet.Function0;
-import jet.Function1;
-import jet.FunctionImpl0;
-import jet.JetObject;
-import jet.Unit;
-
-import jet.runtime.typeinfo.JetClass;
-import jet.runtime.typeinfo.JetConstructor;
-import jet.runtime.typeinfo.JetMethod;
-import jet.runtime.typeinfo.JetValueParameter;
-import kotlin.KotlinPackage;
-import org.jetbrains.codeGolf.plugin.log.LogPackage.src.log.767818362;
-import org.jetbrains.codeGolf.plugin.rest.RestClientUtil;
-
-
-public final class ActionsRecorder implements  Disposable {
+public final class ActionsRecorder implements Disposable {
     private RecordingControlPanel controlPanel;
     private int movingActionsCounter = 0;
     private int actionsCounter = 0;
@@ -78,7 +56,7 @@ public final class ActionsRecorder implements  Disposable {
     private final Document document;
     private final String username;
     private String password;
-    private final Function0 restarter;
+    private final Restarter restarter;
 
     private static final Logger LOG = Logger.getInstance(ActionsRecorder.class.getName());
 
@@ -149,66 +127,49 @@ public final class ActionsRecorder implements  Disposable {
 
     public final void startRecording() {
         LOG.info("recording started");
-        this.document.addDocumentListener((DocumentListener) new JetObject() {
+
+        final ActionsRecorder recorder = this;
+        this.document.addDocumentListener(new DocumentListener() {
 
             public void beforeDocumentChange(DocumentEvent event) {
             }
 
             public void documentChanged(DocumentEvent event) {
-                if (this.this$0.isTaskSolved()) {
-                    Application tmp13_10 = ApplicationManager.getApplication();
-                    if (tmp13_10 == null) throw new NullPointerException();
-                    tmp13_10.invokeLater((Runnable) new Runnable() {
+                if (recorder.isTaskSolved()) {
+                    Application application = ApplicationManager.getApplication();
+                    application.invokeLater(new Runnable() {
                         public final void run() {
-                            if (this.this$0.this$0.isTaskSolved())
+                            if (recorder.isTaskSolved())
                                 try {
-                                    this.this$0.this$0.sendSolutionToServer();
-
-                                    this.this$0.this$0.stopRecording();
+                                    recorder.sendSolutionToServer();
                                 } finally {
-                                    this.this$0.this$0.stopRecording();
+                                    recorder.stopRecording();
                                 }
 
                         }
                     });
                 }
             }
-        }
-                , this);
-        ActionManager tmp29_26 = ActionManager.getInstance();
-        if (tmp29_26 != null) tmp29_26
-                .addAnActionListener((AnActionListener) new JetObject() {
+        }, this);
+        ActionManager actionManager = ActionManager.getInstance();
+        if (actionManager != null) actionManager.addAnActionListener(new AnActionListener() {
 
-                    public void beforeActionPerformed(AnAction action, Function1<? super String, ? extends Object> dataContext, AnActionEvent event) {
-                    }
-
-
-                    public void afterActionPerformed(AnAction action, Function1<? super String, ? extends Object> dataContext, AnActionEvent event) {
-                    }
-
-
-                    public void beforeEditorTyping(char c, Function1<? super String, ? extends Object> dataContext) {
-                    }
-
-
-                    public void beforeActionPerformed(AnAction action, DataContext dataContext, AnActionEvent event) {
-                        String actionId;
-                        ActionManager actionManager = ActionManager.getInstance();
-                        if (actionManager != null) {
-                            if (action == null) throw new NullPointerException();
-                            tmpTernaryOp = actionManager.getId(action);
-                        }
-                    }
-
-
-                    public void afterActionPerformed(AnAction action, DataContext dataContext, AnActionEvent event) {
-                    }
-
-
-                    public void beforeEditorTyping(char c, DataContext dataContext) {
-                    }
+            public void beforeActionPerformed(AnAction action, DataContext dataContext, AnActionEvent event) {
+                String actionId;
+                ActionManager actionManager = ActionManager.getInstance();
+                if (actionManager != null) {
+                    if (action == null) throw new NullPointerException();
+                    final String id = actionManager.getId(action);
+                    // TODO ??
                 }
-                        , this);
+            }
+
+            public void afterActionPerformed(AnAction action, DataContext dataContext, AnActionEvent event) {
+            }
+
+            public void beforeEditorTyping(char c, DataContext dataContext) {
+            }
+        }, this);
     }
 
 
@@ -228,13 +189,15 @@ public final class ActionsRecorder implements  Disposable {
         Component component = e.getComponent();
         if (component == null)
             return true;
-        JRootPane rootPane;
         Window window = SwingUtilities.getWindowAncestor(component);
 
-        return (window instanceof RootPaneContainer) ?
-                ((RootPaneContainer) window).getRootPane() : (component instanceof RootPaneContainer) ?
-                ((RootPaneContainer) component).getRootPane() :
-                0;
+        return (window instanceof RootPaneContainer && ((RootPaneContainer) window).getRootPane() != null)
+                || (component instanceof RootPaneContainer && ((RootPaneContainer) component).getRootPane() != null);
+
+//        return (window instanceof RootPaneContainer) ?
+//                ((RootPaneContainer) window).getRootPane() : (component instanceof RootPaneContainer) ?
+//                ((RootPaneContainer) component).getRootPane() :
+//                false;
     }
 
 
@@ -244,7 +207,7 @@ public final class ActionsRecorder implements  Disposable {
             this.actionInputEvents.remove(e);
             return;
         }
-        List<Integer> keys = Arrays.asList(new Integer[]{KeyEvent.VK_CONTROL, KeyEvent.VK_ALT, KeyEvent.VK_META, KeyEvent.VK_SHIFT});
+        List<Integer> keys = Arrays.asList(KeyEvent.VK_CONTROL, KeyEvent.VK_ALT, KeyEvent.VK_META, KeyEvent.VK_SHIFT);
         if (keys.contains(Integer.valueOf(e.getKeyCode())))
             return;
         IdeEventQueue eventQueue = IdeEventQueue.getInstance();
@@ -255,27 +218,27 @@ public final class ActionsRecorder implements  Disposable {
             return;
         }
 
-        boolean isChar = (e.getKeyChar() == KeyEvent.CHAR_UNDEFINED ? 0 : 1) != 0 && UIUtil.isReallyTypedEvent(e);
-        boolean hasActionModifiers = !e.isAltDown() ? e.isControlDown() : 1 || e.isMetaDown();
-        boolean plainType = isChar ? hasActionModifiers ? 0 : true : false;
+        boolean isChar = e.getKeyChar() != KeyEvent.CHAR_UNDEFINED && UIUtil.isReallyTypedEvent(e);
+        boolean hasActionModifiers = e.isAltDown() || e.isControlDown();
+        boolean plainType = isChar && !hasActionModifiers;
         boolean isEnter = e.getKeyCode() == KeyEvent.VK_ENTER;
 
         if ((plainType ? isEnter ? 0 : 1 : 0) != 0) {
             this.usedActions.add(String.valueOf(e.getKeyChar()));
             this.typingCounter += 1;
         } else {
-            String tmp270_267 = KeymapUtil.getKeystrokeText(KeyStroke.getKeyStrokeForEvent(e));
-            if (tmp270_267 == null) throw new NullPointerException();
-            this.usedActions.add(tmp270_267);
+            String keystrokeText = KeymapUtil.getKeystrokeText(KeyStroke.getKeyStrokeForEvent(e));
+            if (keystrokeText == null) throw new NullPointerException();
+            this.usedActions.add(keystrokeText);
 
-            Set movingKeys = Arrays.asList(KeyEvent.VK_UP, KeyEvent.VK_DOWN, KeyEvent.VK_LEFT, KeyEvent.VK_RIGHT,
-                                KeyEvent.VK_HOME, KeyEvent.VK_END, KeyEvent.VK_PAGE_DOWN, KeyEvent.VK_PAGE_UP)
+            Set movingKeys = Sets.newHashSet(KeyEvent.VK_UP, KeyEvent.VK_DOWN, KeyEvent.VK_LEFT, KeyEvent.VK_RIGHT,
+                    KeyEvent.VK_HOME, KeyEvent.VK_END, KeyEvent.VK_PAGE_DOWN, KeyEvent.VK_PAGE_UP);
 
             this.movingActionsCounter += 1;
 
-            this.actionsCounter = (((hasActionModifiers ? 0 : 1) != 0 ? movingKeys.contains(Integer.valueOf(e.getKeyCode())) : 0) ?
-                    this.movingActionsCounter :
-                    this.actionsCounter + 1);
+            this.actionsCounter =
+                    !hasActionModifiers && movingKeys.contains(Integer.valueOf(e.getKeyCode())) ?
+                            this.movingActionsCounter : this.actionsCounter + 1;
         }
 
         notifyUser();
@@ -289,26 +252,31 @@ public final class ActionsRecorder implements  Disposable {
 
 
     public final void sendSolutionToServer() {
-        GolfSolution solution = new GolfSolution(this.golfTask.getTaskId(), this.username, this.movingActionsCounter, this.typingCounter,
-                this.actionsCounter, KotlinPackage.makeString$default((Iterable) this.usedActions, "|", null, null, 0, null, 30));
-        String passwordToSend = this.password;
-        new Task.Backgroundable(solution, passwordToSend) {
+        final GolfSolution solution =
+                new GolfSolution(this.golfTask.getTaskId(), this.username, this.movingActionsCounter, this.typingCounter,
+                        this.actionsCounter,
+                        Joiner.on('|').join(this.usedActions));
+//                        KotlinPackage.makeString$default((Iterable) this.usedActions, "|", null, null, 0, null, 30));
+        final String passwordToSend = this.password;
+
+        final ActionsRecorder recorder = this;
+        new Task.Backgroundable(project, passwordToSend) {
 
             public void run(ProgressIndicator indicator) {
                 Preconditions.checkNotNull(indicator, "run");
                 try {
-                    GolfResult tmp18_15 = RestClientUtil.sendSolution(this.$solution, this.$passwordToSend);
-                    if (tmp18_15 == null) throw new NullPointerException();
-                    GolfResult result = tmp18_15;
-                    this.showCongratulations(result);
+                    GolfResult golfResult = RestClientUtil.sendSolution(solution, passwordToSend);
+                    if (golfResult == null) throw new NullPointerException();
+                    GolfResult result = golfResult;
+                    recorder.showCongratulations(result);
+
                 } catch (Exception localException) {
                     localException.printStackTrace();
                     Notification notification = new Notification("Code Golf Error", "Cannot upload solution", "Cannot upload solution: " + localException.getMessage(), NotificationType.ERROR);
                     Notifications.Bus.notify(notification, this.getProject());
                 }
             }
-        }
-                .queue();
+        }.queue();
     }
 
 
@@ -322,20 +290,20 @@ public final class ActionsRecorder implements  Disposable {
     }
 
     public final NotificationListener createNotificationListener() {
-        return (NotificationListener) new JetObject() {
 
-            public void hyperlinkUpdate(Notification p0, HyperlinkEvent p1) {
-                Preconditions.checkNotNull(p0, "hyperlinkUpdate");
-                Preconditions.checkNotNull(p1, "hyperlinkUpdate");
-                EventType tmp19_16 = EventType.ACTIVATED;
-                Preconditions.checkNotNull(tmp19_16, "EventType", "ACTIVATED");
-                if ((Objects.equal(p1.getEventType(), tmp19_16) ? Objects.equal(p1.getDescription(), "restart") : 0)) {
-                    p0.expire();
-                    this.this$0.getRestarter().invoke();
+        final ActionsRecorder recorder = this;
+        return new NotificationListener() {
+            public void hyperlinkUpdate(Notification notification, HyperlinkEvent event) {
+                Preconditions.checkNotNull(notification, "hyperlinkUpdate");
+                Preconditions.checkNotNull(event, "hyperlinkUpdate");
+                if ((Objects.equal(event.getEventType(), EventType.ACTIVATED)
+                        && Objects.equal(event.getDescription(), "restart"))) {
+                    notification.expire();
+                    recorder.getRestarter().invoke();
                 } else {
                     NotificationListener tmp72_69 = NotificationListener.URL_OPENING_LISTENER;
                     Preconditions.checkNotNull(tmp72_69, "NotificationListener", "URL_OPENING_LISTENER");
-                    tmp72_69.hyperlinkUpdate(p0, p1);
+                    tmp72_69.hyperlinkUpdate(notification, event);
                 }
             }
         };
@@ -345,11 +313,8 @@ public final class ActionsRecorder implements  Disposable {
     public final void showCongratulations(GolfResult result) {
         Preconditions.checkNotNull(result, "showCongratulations");
         Integer totalCount = result.getResult();
-        Notification notification;
-        if (totalCount != null) 1;
-        if (0 != 0) {
-            new Notification(tmp25_22, "Gode Golf Error", "", NotificationType.ERROR);
-            "Failed to submit solution";
+        if (totalCount == null) {
+            new Notification("Failed to submit solution", "Gode Golf Error", "", NotificationType.ERROR);
         }
     }
 
@@ -393,23 +358,27 @@ public final class ActionsRecorder implements  Disposable {
         this.password = password;
     }
 
-    public final Function0<Unit> getRestarter() {
+    public final Restarter getRestarter() {
         return this.restarter;
     }
 
-    public ActionsRecorder(GolfTask golfTask, Project project, Document document, String username, String password, Function0<? extends Unit> restarter) {
+    public ActionsRecorder(GolfTask golfTask, Project project, Document document, String username, String password, Restarter restarter) {
         this.golfTask = golfTask;
         this.project = project;
         this.document = document;
         this.username = username;
         this.password = password;
         this.restarter = restarter;
-        this.usedActions = new ArrayList();
-        this.actionInputEvents = new HashSet();
+        this.usedActions = new ArrayList<String>();
+        this.actionInputEvents = new HashSet<InputEvent>();
         this.movingActions = Sets.newHashSet("EditorLeft", "EditorRight", "EditorDown", "EditorUp", "EditorLineStart", "EditorLineEnd", "EditorPageUp", "EditorPageDown",
-                        "EditorPreviousWord", "EditorNextWord", "EditorScrollUp", "EditorScrollDown", "EditorTextStart", "EditorTextEnd", "EditorDownWithSelection", "EditorUpWithSelection",
-                        "EditorRightWithSelection", "EditorLeftWithSelection", "EditorLineStartWithSelection", "EditorLineEndWithSelection", "EditorPageDownWithSelection", "EditorPageUpWithSelection");
+                "EditorPreviousWord", "EditorNextWord", "EditorScrollUp", "EditorScrollDown", "EditorTextStart", "EditorTextEnd", "EditorDownWithSelection", "EditorUpWithSelection",
+                "EditorRightWithSelection", "EditorLeftWithSelection", "EditorLineStartWithSelection", "EditorLineEndWithSelection", "EditorPageDownWithSelection", "EditorPageUpWithSelection");
         this.forbiddenActions = Sets.newHashSet("$Paste", "EditorPaste", "PasteMultiple", "EditorPasteSimple", "PlaybackLastMacro", "PlaySavedMacrosAction");
         this.typingActions = Sets.newHashSet("EditorBackSpace");
+    }
+
+    public interface Restarter {
+        public void invoke();
     }
 }
