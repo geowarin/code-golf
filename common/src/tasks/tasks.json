@@ -1,0 +1,245 @@
+{"tasks": [
+    {
+        "authorLogin": "nik",
+        "taskId": "0-0",
+        "taskName": "Remove unreachable code",
+        "initialCode": "public class RemoveUnreachableCode {\n    public boolean isValid(String s) {\n        if (s.length() >= 0) {\n            return s.startsWith(\"x\");\n        }\n        else {\n            throw new IllegalStateException();\n        }\n    }\n}",
+        "initialOffset": 119,
+        "targetCode": "public class RemoveUnreachableCode {\n    public boolean isValid(String s) {\n        return s.startsWith(\"x\");\n    }\n}",
+        "hint": ""
+    },
+    {
+        "authorLogin": "nik",
+        "taskId": "0-1",
+        "taskName": "Make fields 'final'",
+        "initialCode": "public class BeanClass {\n    private String property1;\n    private String property2;\n    private int intProperty;\n\n    public BeanClass(String property1, String property2, int intProperty) {\n        this.property1 = property1;\n        this.property2 = property2;\n        this.intProperty = intProperty;\n    }\n\n    public String getProperty1() {\n        return property1;\n    }\n\n    public String getProperty2() {\n        return property2;\n    }\n\n    public int getIntProperty() {\n        return intProperty;\n    }\n}",
+        "initialOffset": 37,
+        "targetCode": "public class BeanClass {\n    private final String property1;\n    private final String property2;\n    private final int intProperty;\n\n    public BeanClass(String property1, String property2, int intProperty) {\n        this.property1 = property1;\n        this.property2 = property2;\n        this.intProperty = intProperty;\n    }\n\n    public String getProperty1() {\n        return property1;\n    }\n\n    public String getProperty2() {\n        return property2;\n    }\n\n    public int getIntProperty() {\n        return intProperty;\n    }\n}",
+        "hint": ""
+    },
+    {
+        "authorLogin": "nik",
+        "taskId": "0-2",
+        "taskName": "Create lists",
+        "initialCode": "import java.util.List;\n\npublic class CreateLists {\n    public static List<String> create(int i) {\n        if (i == 0) {\n            return null;\n        }\n        else if (i == 1) {\n            return null;\n        }\n        else if (i == 2) {\n            return null;\n        }\n        else {\n            return null;\n        }\n    }\n}",
+        "initialOffset": 132,
+        "targetCode": "import java.util.ArrayList;\nimport java.util.Arrays;\nimport java.util.Collections;\nimport java.util.List;\n\npublic class CreateLists {\n    public static List<String> create(int i) {\n        if (i == 0) {\n            return Collections.emptyList();\n        }\n        else if (i == 1) {\n            return Collections.singletonList(\"o\");\n        }\n        else if (i == 2) {\n            return Arrays.asList(\"1\", \"2\");\n        }\n        else {\n            return new ArrayList<String>();\n        }\n    }\n}",
+        "hint": ""
+    },
+    {
+        "authorLogin": "nik",
+        "taskId": "0-3",
+        "taskName": "Delete unused method",
+        "initialCode": "public class DeleteMethod {\n    private void unusedMethod() {\n        //this method is not used any more\n    }\n}",
+        "initialOffset": 45,
+        "targetCode": "public class DeleteMethod {\n}",
+        "hint": ""
+    },
+    {
+        "authorLogin": "nik",
+        "taskId": "0-4",
+        "taskName": "HelloWorld",
+        "initialCode": "public class HelloWorld {\n\n}",
+        "initialOffset": 26,
+        "targetCode": "public class HelloWorld {\n    public static void main(String[] args) {\n        System.out.println(\"Hello, world!\");\n    }\n}",
+        "hint": ""
+    },
+    {
+        "authorLogin": "svtk",
+        "taskId": "0-5",
+        "taskName": "Countdown",
+        "initialCode": "public class Countdown {\n\n}",
+        "initialOffset": 25,
+        "targetCode": "import java.util.ArrayList;\nimport java.util.List;\n\npublic class Countdown {\n    public static void main(String[] args) {\n        try {\n            List<String> countdown = new ArrayList<String>();\n            countdown.add(\"five\");\n            countdown.add(\"four\");\n            countdown.add(\"three\");\n            countdown.add(\"two\");\n            countdown.add(\"one\");\n\n            for (String n : countdown) {\n                System.out.println(n);\n                Thread.sleep(1000);\n            }\n            System.out.println(\"Boom!\");\n        } catch (InterruptedException e) {\n            System.out.println(\"Interrupted!\");\n        }\n    }\n}",
+        "hint": ""
+    },
+    {
+        "authorLogin": "svtk",
+        "taskId": "0-6",
+        "taskName": "Person",
+        "initialCode": "public class Main {\n    \n}",
+        "initialOffset": 24,
+        "targetCode": "public class Main {\n    private static class Person {\n        private final String name;\n        private final int age;\n\n        public Person(String name, int age) {\n            this.name = name;\n            this.age = age;\n        }\n\n        private String getName() {\n            return name;\n        }\n\n        private int getAge() {\n            return age;\n        }\n    }\n\n    public static void main(String[] args) {\n        Person jesus = new Person(\"Jesus\", 33);\n        System.out.println(jesus.getName() + \" \" + jesus.getAge());\n    }\n}",
+        "hint": ""
+    },
+    {
+        "authorLogin": "svtk",
+        "taskId": "0-7",
+        "taskName": "Negation",
+        "initialCode": "import java.util.List;\n\npublic class Negation {\n    public void foo(List<String> list) {\n        if ()\n    }\n}",
+        "initialOffset": 101,
+        "targetCode": "import java.util.List;\n\npublic class Negation {\n    public void foo(List<String> list) {\n        if (!list.isEmpty()) {\n            \n        }\n    }\n}",
+        "hint": ""
+    },
+    {
+        "authorLogin": "nik",
+        "taskId": "0-8",
+        "taskName": "NavigateDown",
+        "initialCode": "public class NavigateDown {\n/*\nTo be, or not to be: that is the question:\nWhether 'tis nobler in the mind to suffer\nThe slings and arrows of outrageous fortune,\nOr to take arms against a sea of troubles,\nAnd by opposing end them? To die: to sleep;\nNo more; and by a sleep to say we end\nThe heart-ache and the thousand natural shocks\nThat flesh is heir to, 'tis a consummation\nDevoutly to be wish'd. To die, to sleep;\nTo sleep: perchance to dream: ay, there's the rub;\nFor in that sleep of death what dreams may come\nWhen we have shuffled off this mortal coil,\nMust give us pause: there's the respect\nThat makes calamity of so long life;\nFor who would bear the whips and scorns of time,\nThe oppressor's wrong, the proud man's contumely,\nThe pangs of despised love, the law's delay,\nThe insolence of office and the spurns\nThat patient merit of the unworthy takes,\nWhen he himself might his quietus make\nWith a bare bodkin? who would fardels bear,\nTo grunt and sweat under a weary life,\nBut that the dread of something after death,\nThe undiscover'd country from whose bourn\nNo traveller returns, puzzles the will\nAnd makes us rather bear those ills we have\nThan fly to others that we know not of?\nThus conscience does make cowards of us all;\nAnd thus the native hue of resolution\nIs sicklied o'er with the pale cast of thought,\nAnd enterprises of great pith and moment\nWith this regard their current turn awry,\nAnd lose the name of action. - Soft you now!\nThe fair Ophelia! Nymph, in thy orisons\nBe all my sins remember'd.\n*/\n}\n",
+        "initialOffset": 0,
+        "targetCode": "public class NavigateDown {\n/*\nTo be, or not to be: that is the question:\nWhether 'tis nobler in the mind to suffer\nThe slings and arrows of outrageous fortune,\nOr to take arms against a sea of troubles,\nAnd by opposing end them? To die: to sleep;\nNo more; and by a sleep to say we end\nThe heart-ache and the thousand natural shocks\nThat flesh is heir to, 'tis a consummation\nDevoutly to be wish'd. To die, to sleep;\nTo sleep: perchance to dream: ay, there's the rub;\nFor in that sleep of death what dreams may come\nWhen we have shuffled off this mortal coil,\nMust give us pause: there's the respect\nThat makes calamity of so long life;\nFor who would bear the whips and scorns of time,\nThe oppressor's wrong, the proud man's contumely,\nThe pangs of despised love, the law's delay,\nThe insolence of office and the spurns\nThat patient merit of the unworthy takes,\nWhen he himself might his quietus make\nWith a bare bodkin? who would fardels bear,\nTo grunt and sweat under a weary life,\nBut that the dread of something after death,\nThe undiscover'd country from whose bourn\nNo traveller returns, puzzles the will\nAnd makes us rather bear those ills we have\nThan fly to others that we know not of?\nThus conscience does make cowards of us all;\nAnd thus the native hue of resolution\nIs sicklied o'er with the pale cast of thought,\nAnd enterprises of great pith and moment\nWith this regard their currents turn awry,\nAnd lose the name of action. - Soft you now!\nThe fair Ophelia! Nymph, in thy orisons\nBe all my sins remember'd.\n*/\n}\n",
+        "hint": ""
+    },
+    {
+        "authorLogin": "svtk",
+        "taskId": "0-9",
+        "taskName": "Head",
+        "initialCode": "import java.util.List;\n\npublic class Head {\n    public void foo(List<String> list) {\n        if (!list.isEmpty()) {\n            \n        }\n    }\n}",
+        "initialOffset": 128,
+        "targetCode": "import java.util.List;\n\npublic class Head {\n    public String foo(List<String> list) {\n        if (!list.isEmpty()) {\n            String head = list.get(0);\n            System.out.println(\"head = \" + head);\n            return head;\n        }\n        return null;\n    }\n}",
+        "hint": ""
+    },
+    {
+        "authorLogin": "svtk",
+        "taskId": "0-10",
+        "taskName": "Songs",
+        "initialCode": "public class Songs {\n    public void playSong(String artist, String title, String album) {}\n\n    public void composePlayList() {\n        playSong(\"Poets of the Fall\", \"Carnival of Rust\", \"Carnival of Rust\");\n        playSong(\"Blonde Redhead\", \"Elephant Woman\", \"Misery is a Butterfly\");\n        playSong(\"The Divine Comedy\", \"Generation Sex\", \"Fin de SiÃƒÂ¨cle\");\n    }\n}",
+        "initialOffset": 37,
+        "targetCode": "public class Songs {\n    public void playSong(String artist, String title) {}\n\n    public void composePlayList() {\n        playSong(\"Poets of the Fall\", \"Carnival of Rust\");\n        playSong(\"Blonde Redhead\", \"Elephant Woman\");\n        playSong(\"The Divine Comedy\", \"Generation Sex\");\n    }\n}",
+        "hint": ""
+    },
+    {
+        "authorLogin": "nik",
+        "taskId": "0-11",
+        "taskName": "Operas",
+        "initialCode": "public class Operas {\n    public static void showRepertoire() {\n        showOpera(\"Giuseppe Verdi\", \"Rigoletto\");\n        showOpera(\"Giacomo Puccini\", \"Tosca\");\n        showOpera(\"Wolfgang Amadeus Mozart\", \"The Marriage of Figaro\");\n    }\n\n    public static void showOpera(String titleOfTheOpera, String authorOfTheOpera) {\n        System.out.println(\"Opera \\\"\" + titleOfTheOpera + \"\\\" by \" + authorOfTheOpera);\n    }\n\n    public static void main(String[] args) {\n        showRepertoire();\n    }\n}\n",
+        "initialOffset": 45,
+        "targetCode": "public class Operas {\n    public static void showRepertoire() {\n        showOpera(\"Giuseppe Verdi\", \"Rigoletto\");\n        showOpera(\"Giacomo Puccini\", \"Tosca\");\n        showOpera(\"Wolfgang Amadeus Mozart\", \"The Marriage of Figaro\");\n    }\n\n    public static void showOpera(String authorOfTheOpera, String titleOfTheOpera) {\n        System.out.println(\"Opera \\\"\" + titleOfTheOpera + \"\\\" by \" + authorOfTheOpera);\n    }\n\n    public static void main(String[] args) {\n        showRepertoire();\n    }\n}\n",
+        "hint": ""
+    },
+    {
+        "authorLogin": "svtk",
+        "taskId": "0-12",
+        "taskName": "Books",
+        "initialCode": "public class Books {\n    public void readBook(String title, String author, int year) {\n        System.out.println(\"author = \" + author);\n        System.out.println(\"title = \" + title);\n        System.out.println(\"year = \" + year);\n    }\n\n    public void composeBookList() {\n        readBook(\"All the King's Men\", \"Robert Penn Warren\", 1946);\n        readBook(\"1984\", \"George Orwell\", 1949);\n        readBook(\"Atlas Shrugged\", \"Ayn Rand\", 1957);\n        readBook(\"Cat's Cradle\", \"Kurt Vonnegut\", 1963);\n    }\n}",
+        "initialOffset": 37,
+        "targetCode": "public class Books {\n    public void readBook(String title, String author) {\n        System.out.println(\"author = \" + author);\n        System.out.println(\"title = \" + title);\n    }\n\n    public void composeBookList() {\n        readBook(\"All the King's Men\", \"Robert Penn Warren\");\n        readBook(\"1984\", \"George Orwell\");\n        readBook(\"Atlas Shrugged\", \"Ayn Rand\");\n        readBook(\"Cat's Cradle\", \"Kurt Vonnegut\");\n    }\n}",
+        "hint": ""
+    },
+    {
+        "authorLogin": "svtk",
+        "taskId": "0-13",
+        "taskName": "StrangeList",
+        "initialCode": "import java.util.Collections;\nimport java.util.List;\n\npublic class StrangeList {\n    public List<String> createStrangeList() {\n        return Collections.emptyList();\n    }\n}\n",
+        "initialOffset": 154,
+        "targetCode": "import java.util.Collections;\nimport java.util.List;\n\npublic class StrangeList {\n    public List<String> createStrangeList() {\n        return Collections.singletonList(\"AAA!!!\");\n    }\n}\n",
+        "hint": ""
+    },
+    {
+        "authorLogin": "nik",
+        "taskId": "0-14",
+        "taskName": "ElementsMustDie",
+        "initialCode": "import java.util.Arrays;\nimport java.util.Collections;\nimport java.util.List;\n\npublic class ElementsMustDie {\n    public List<String> getNames() {\n        return Arrays.asList(\"Alice\", \"Bob\");\n    }\n}\n",
+        "initialOffset": 190,
+        "targetCode": "import java.util.Arrays;\nimport java.util.Collections;\nimport java.util.List;\n\npublic class ElementsMustDie {\n    public List<String> getNames() {\n        return Collections.emptyList();\n    }\n}\n",
+        "hint": ""
+    },
+    {
+        "authorLogin": "maxim_manuylov",
+        "taskId": "0-15",
+        "taskName": "CheckArguments",
+        "initialCode": "public class CheckArguments {\n\n\n    private static class ArgumentsHolder {\n        private final String[] args;\n\n        private ArgumentsHolder(String[] args) {\n            this.args = args;\n        }\n\n        public boolean hasArguments() {\n            return args.length != 0;\n        }\n    }\n}\n\n",
+        "initialOffset": 30,
+        "targetCode": "public class CheckArguments {\n    public static void main(String[] args) {\n        ArgumentsHolder holder = new ArgumentsHolder(args);\n        if (!holder.hasArguments()) {\n            printError(\"No Arguments!\");\n        }\n    }\n\n    private static void printError(String message) {\n        System.out.println(message);\n    }\n\n    private static class ArgumentsHolder {\n        private final String[] args;\n\n        private ArgumentsHolder(String[] args) {\n            this.args = args;\n        }\n\n        public boolean hasArguments() {\n            return args.length != 0;\n        }\n    }\n}\n",
+        "hint": ""
+    },
+    {
+        "authorLogin": "maxim_manuylov",
+        "taskId": "0-16",
+        "taskName": "TooManyParameters",
+        "initialCode": "public class TooManyParameters {\n    public static void main(String[] args) {\n        foo(\"this\", \"method\", \"has\", \"too\", \"many\", \"parameters\");\n    }\n\n    public static void foo(String _this,\n                           String method,\n                           String has,\n                           String too,\n                           String many,\n                           String parameters) {\n        System.out.println(_this);\n        System.out.println(method);\n        System.out.println(has);\n        System.out.println(too);\n        System.out.println(many);\n        System.out.println(parameters);\n    }\n}",
+        "initialOffset": 301,
+        "targetCode": "public class TooManyParameters {\n    public static void main(String[] args) {\n        foo(\"this\", \"method\", \"has\", \"many\", \"parameters\");\n    }\n\n    public static void foo(String _this,\n                           String method,\n                           String has,\n                           String many,\n                           String parameters) {\n        System.out.println(_this);\n        System.out.println(method);\n        System.out.println(has);\n        System.out.println(many);\n        System.out.println(parameters);\n    }\n}",
+        "hint": ""
+    },
+    {
+        "authorLogin": "maxim_manuylov",
+        "taskId": "0-17",
+        "taskName": "Letters",
+        "initialCode": "public class Letters {\n    \n}\n",
+        "initialOffset": 27,
+        "targetCode": "public class Letters {\n    public static void main(String[] args) {\n        System.out.println(\"a\");\n        System.out.println(\"b\");\n        System.out.println(\"c\");\n        System.out.println(\"d\");\n        System.out.println(\"dd\");\n        System.out.println(\"dddd\");\n        System.out.println(\"dddddddd\");\n        System.out.println(\"dddddddddddddddd\");\n        System.out.println(\"dd\");\n        System.out.println(\"dddd\");\n        System.out.println(\"dddddddd\");\n        System.out.println(\"dddddddddddddddd\");\n    }\n}\n",
+        "hint": ""
+    },
+    {
+        "authorLogin": "maxim_manuylov",
+        "taskId": "0-18",
+        "taskName": "Permutation",
+        "initialCode": "public class Permutation {\n    public static void main(String[] args) {\n        System.out.println(\"Hi!\");\n        if (args.length == 0) {\n            bye();\n        }\n    }\n\n    private static void bye() {\n        System.out.println(\"Bye!\");\n    }\n}",
+        "initialOffset": 80,
+        "targetCode": "public class Permutation {\n    private static void bye() {\n        System.out.println(\"Bye!\");\n    }\n\n    public static void main(String[] args) {\n        if (args.length == 0) {\n            bye();\n            return;\n        }\n        System.out.println(\"Hi!\");\n    }\n}",
+        "hint": ""
+    },
+    {
+        "authorLogin": "maxim_manuylov",
+        "taskId": "0-19",
+        "taskName": "RedundantCatch",
+        "initialCode": "public class RedundantCatch {\n    public static void main(String[] args) {\n        int sum;\n\n        try {\n            sum = 2 + 2;\n        }\n        catch (Throwable e) {\n            e.printStackTrace();\n            return;\n        }\n\n        System.out.println(\n                \"sum\" +\n                \" = \" +\n                sum\n        );\n    }\n}",
+        "initialOffset": 119,
+        "targetCode": "public class RedundantCatch {\n    public static void main(String[] args) {\n        int sum = 2 + 2;\n        System.out.println(\"sum = \" + sum);\n    }\n}",
+        "hint": ""
+    },
+    {
+        "authorLogin": "maxim_manuylov",
+        "taskId": "0-20",
+        "taskName": "Shapes",
+        "initialCode": "public class Shapes {\n    \n\n    private static interface Shape {\n        void draw();\n    }\n\n    private static class Circle implements Shape {\n        public void draw() {\n            System.out.println(\"Drawing circle...\");\n        }\n    }\n\n    private static class Square implements Shape {\n        public void draw() {\n            System.out.println(\"Drawing square...\");\n        }\n    }\n}\n",
+        "initialOffset": 26,
+        "targetCode": "public class Shapes {\n    public static void main(String[] args) {\n        Shape circle = new Circle();\n        circle.draw();\n        Shape square = new Square();\n        square.draw();\n    }\n\n    private static interface Shape {\n        void draw();\n    }\n\n    private static class Circle implements Shape {\n        public void draw() {\n            System.out.println(\"Drawing circle...\");\n        }\n    }\n\n    private static class Square implements Shape {\n        public void draw() {\n            System.out.println(\"Drawing square...\");\n        }\n    }\n}\n",
+        "hint": ""
+    },
+    {
+        "authorLogin": "maxim_manuylov",
+        "taskId": "0-21",
+        "taskName": "ShapesReversed",
+        "initialCode": "public class ShapesReversed {\n    public static void main(String[] args) {\n        Shape circle = new Circle();\n        circle.draw();\n        Shape square = new Square();\n        square.draw();\n    }\n}\n",
+        "initialOffset": 83,
+        "targetCode": "public class ShapesReversed {\n    public static void main(String[] args) {\n        Shape circle = new Circle();\n        circle.draw();\n        Shape square = new Square();\n        square.draw();\n    }\n\n    private static interface Shape {\n        void draw();\n    }\n\n    private static class Circle implements Shape {\n        public void draw() {\n            System.out.println(\"Drawing circle...\");\n        }\n    }\n\n    private static class Square implements Shape {\n        public void draw() {\n            System.out.println(\"Drawing square...\");\n        }\n    }\n}\n",
+        "hint": ""
+    },
+    {
+        "authorLogin": "maxim_manuylov",
+        "taskId": "0-22",
+        "taskName": "ExtractMethod",
+        "initialCode": "public class ExtractMethod {\n    public static void main(String[] args) {\n        if (args.length == 0) return;\n        String name = args[0];\n\n        // Check Name Is Correct\n        if (name == null) return;\n        name = name.trim();\n        if (name.length() == 0 || !Character.isUpperCase(name.charAt(0))) {\n            return;\n        }\n\n        System.out.println(\"Hi, \" + name + \"!\");\n    }\n}",
+        "initialOffset": 239,
+        "targetCode": "public class ExtractMethod {\n    public static void main(String[] args) {\n        if (args.length == 0) return;\n        String name = args[0];\n\n        // Check Name Is Correct\n        if (name == null) return;\n        name = name.trim();\n        if (!nameIsCorrect(name)) return;\n\n        System.out.println(\"Hi, \" + name + \"!\");\n    }\n\n    private static boolean nameIsCorrect(String name) {\n        return name.length() != 0 && Character.isUpperCase(name.charAt(0));\n    }\n}",
+        "hint": ""
+    },
+    {
+        "authorLogin": "nik",
+        "taskId": "0-23",
+        "taskName": "Ultimate Question",
+        "initialCode": "public class DeepThought {\n    private static final String Answer_to_the_Ultimate_Question_of_Life_the_Universe_and_Everything = \"42\";\n\n    public static void main(String[] args) {\n        System.out.println(Answer_to_the_Ultimate_Question_of_Life_the_Universe_and_Everything);\n    }\n}\n",
+        "initialOffset": 208,
+        "targetCode": "public class DeepThought {\n    private static final String Answer_to_the_ULTIMATE_Question_of_Life_the_Universe_and_Everything = \"42\";\n\n    public static void main(String[] args) {\n        System.out.println(Answer_to_the_ULTIMATE_Question_of_Life_the_Universe_and_Everything);\n    }\n}\n",
+        "hint": ""
+    },
+    {
+        "authorLogin": "nik",
+        "taskId": "0-24",
+        "taskName": "Idleness",
+        "initialCode": "public abstract class Idleness {\n    public void doIt() {\n        doItNow();\n    }\n\n    protected abstract void doItNow();\n}\n",
+        "initialOffset": 66,
+        "targetCode": "import javax.swing.*;\n\npublic abstract class Idleness {\n    public void doIt() {\n        SwingUtilities.invokeLater(new Runnable() {\n            public void run() {\n                doItNow();\n            }\n        });\n    }\n\n    protected abstract void doItNow();\n}\n",
+        "hint": ""
+    },
+    {
+        "authorLogin": "nik",
+        "taskId": "0-25",
+        "taskName": "99 Bottles",
+        "initialCode": "public class Bottles {\n    public static void main(String[] args) {\n        for (int i = 99; i >= 1; i--) {\n            String s = i > 1 ? \"s\" : \"\";\n            System.out.println(i + \" bottle\" + s + \" of beer on the wall, \" + i + \" bottle\" + s + \" of beer.\");\n            int j = i - 1;\n            String next = j > 1 ? j + \" bottles\" : j == 1 ? \"1 bottle\" : \"no more bottles\";\n            System.out.println(\"Take one down and pass it around, \" + next + \" of beer on the wall.\");\n            System.out.println();\n        }\n        System.out.print(\"No more bottles of beer on the wall, \");\n        System.out.println(\"no more bottles of beer.\");\n        System.out.println(\"Go to the store and buy some more, 99 bottles of beer on the wall.\");\n    }\n}\n",
+        "initialOffset": 76,
+        "targetCode": "public class Bottles {\n    public static void main(String[] args) {\n        printSong(\"juice\");\n    }\n\n    private static void printSong(final String drink) {\n        for (int i = 99; i >= 1; i--) {\n            String s = i > 1 ? \"s\" : \"\";\n            System.out.println(i + \" bottle\" + s + \" of \" + drink + \" on the wall, \" + i + \" bottle\" + s + \" of \" + drink + \".\");\n            int j = i - 1;\n            String next = j > 1 ? j + \" bottles\" : j == 1 ? \"1 bottle\" : \"no more bottles\";\n            System.out.println(\"Take one down and pass it around, \" + next + \" of \" + drink + \" on the wall.\");\n            System.out.println();\n        }\n        System.out.print(\"No more bottles of \" + drink + \" on the wall, \");\n        System.out.println(\"no more bottles of \" + drink + \".\");\n        System.out.println(\"Go to the store and buy some more, 99 bottles of \" + drink + \" on the wall.\");\n    }\n}\n",
+        "hint": ""
+    },
+    {
+        "authorLogin": "nik",
+        "taskId": "0-26",
+        "taskName": "Bonding",
+        "initialCode": "//inspired by http://xkcd.com/1188/\n\npublic class Ball extends Throwable {}\n\nclass P {\n    public static void main(String[] args) {\n        P parent = new P(null);\n        P child = new P(parent);\n        parent.target = child;\n        parent.aim(new Ball());\n    }\n}\n",
+        "initialOffset": 140,
+        "targetCode": "//inspired by http://xkcd.com/1188/\n\npublic class Ball extends Throwable {}\n\nclass P {\n    private P target;\n\n    P(P target) {\n        this.target = target;\n    }\n\n    public static void main(String[] args) {\n        P parent = new P(null);\n        P child = new P(parent);\n        parent.target = child;\n        parent.aim(new Ball());\n    }\n\n    private void aim(Ball ball) {\n        try {\n            throw ball;\n        } catch (Ball b) {\n            target.aim(b);\n        }\n    }\n}\n",
+        "hint": ""
+    }
+]}
