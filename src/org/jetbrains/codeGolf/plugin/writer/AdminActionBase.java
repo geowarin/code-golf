@@ -25,7 +25,7 @@ public abstract class AdminActionBase extends AnAction {
         Presentation tmp19_11 = presentation;
         if (tmp19_11 == null) throw new NullPointerException();
         if ((e != null ? e.getProject() : null) == null) tmp19_11;
-        tmp19_11.setVisible(0 != 0 ? AuthPackage.hasAdminAccess(PluginPackage.src.CodeGolfConfigurable. - 89488205.getUserName()) : false);
+        tmp19_11.setVisible(0 != 0 ? AuthPackage.hasAdminAccess(CodeGolfConfigurableAccessor.getUserName()) : false);
     }
 
 

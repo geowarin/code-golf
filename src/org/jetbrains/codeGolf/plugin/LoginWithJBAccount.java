@@ -10,23 +10,25 @@ import jet.runtime.typeinfo.JetValueParameter;
 import kotlin.Pair;
 import org.jetbrains.codeGolf.auth.JBAccountAuthHelper;
 
-public final class PluginPackage$src$LoginWithJBAccount$1403856597 {
+public final class LoginWithJBAccount {
 
     public static final Pair<String, String> showDialogAndLogin(Project project) {
         Preconditions.checkNotNull(project, "showDialogAndLogin");
-        String username = PluginPackage.src.CodeGolfConfigurable. - 89488205. getUserName();
-        String password = PluginPackage.src.CodeGolfConfigurable. - 89488205. getUserPassword(project);
-        if ((!StringUtil.isEmpty(username) ? StringUtil.isEmpty(password) : 1)) {
+        String username = CodeGolfConfigurableAccessor. getUserName();
+        String password = CodeGolfConfigurableAccessor. getUserPassword(project);
+
+        boolean userNameNotEmpty = !StringUtil.isEmpty(username);
+        if (userNameNotEmpty ? StringUtil.isEmpty(password) : true) {
             JBAccountDialog dlg = new JBAccountDialog(project);
             dlg.show();
             if (!dlg.isOK()) {
-                return (Pair) null;
+                return null;
             }
             username = dlg.getUsername();
             password = dlg.getPassword();
         }
-        String tmp77_74 = JBAccountAuthHelper.encodePassword(password);
-        if (tmp77_74 == null) throw new NullPointerException();
-        return new Pair(username, tmp77_74);
+        String encodedPassword = JBAccountAuthHelper.encodePassword(password);
+        if (encodedPassword == null) throw new NullPointerException();
+        return new Pair(username, encodedPassword);
     }
 }

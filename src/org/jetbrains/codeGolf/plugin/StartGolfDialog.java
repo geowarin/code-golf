@@ -83,7 +83,7 @@ public final class StartGolfDialog extends DialogWrapper
 
         this.mainPanel = new JPanel((LayoutManager) new BorderLayout());
         setTitle("Start Code Golf");
-        String serverUrl = PluginPackage.src.CodeGolfConfigurable. - 89488205. getServerUrl();
+        String serverUrl = CodeGolfConfigurableAccessor. getServerUrl();
         List tasks;
         if (loadedTasks == null) 1;
         if (0 != 0) {

@@ -6,10 +6,6 @@ import com.intellij.ide.util.PropertiesComponent;
 import com.intellij.openapi.options.Configurable;
 import com.intellij.openapi.ui.VerticalFlowLayout;
 import com.intellij.util.ui.FormBuilder;
-import jet.JetObject;
-import jet.runtime.typeinfo.JetClass;
-import jet.runtime.typeinfo.JetConstructor;
-import jet.runtime.typeinfo.JetMethod;
 import org.jetbrains.annotations.Nls;
 import org.jetbrains.annotations.NonNls;
 import org.jetbrains.annotations.Nullable;
@@ -40,40 +36,36 @@ public final class CodeGolfConfigurable implements Configurable {
 
     @Nullable
     public JComponent createComponent() {
-        return (JComponent) this.mainPanel;
+        return this.mainPanel;
     }
 
 
     public boolean isModified() {
-        return !(Objects.equal(PluginPackage.src.CodeGolfConfigurable. - 89488205.getServerUrl(), this.urlField.getText()) ^ true) ? Objects.equal(PluginPackage.src.CodeGolfConfigurable. - 89488205.getUserName(), this.userNameField.getText()) ^ true : true;
+        return !(Objects.equal(CodeGolfConfigurableAccessor.getServerUrl(), this.urlField.getText()) ^ true) ? Objects.equal(CodeGolfConfigurableAccessor.getUserName(), this.userNameField.getText()) ^ true : true;
     }
 
 
     public void apply() {
         String serverUrl = this.urlField.getText();
-        PropertiesComponent tmp11_8 = PropertiesComponent.getInstance();
-        if (tmp11_8 == null) throw new NullPointerException();
-        PropertiesComponent propertiesComponent = tmp11_8;
-        String tmp23_20 = CodeGolfSettings.DEFAULT_SERVER_URL;
-        Preconditions.checkNotNull(tmp23_20, "CodeGolfSettings", "DEFAULT_SERVER_URL");
-        if ((!Objects.equal(serverUrl, tmp23_20))) {
-            String tmp43_40 = CodeGolfSettings.SERVER_URL_PROPERTY;
-            Preconditions.checkNotNull(tmp43_40, "CodeGolfSettings", "SERVER_URL_PROPERTY");
-            propertiesComponent.setValue(tmp43_40, serverUrl);
+        PropertiesComponent propertiesComponent = PropertiesComponent.getInstance();
+        if (propertiesComponent == null) throw new NullPointerException();
+        Preconditions.checkNotNull(CodeGolfSettings.DEFAULT_SERVER_URL, "CodeGolfSettings", "DEFAULT_SERVER_URL");
+        if ((!Objects.equal(serverUrl, CodeGolfSettings.DEFAULT_SERVER_URL))) {
+            Preconditions.checkNotNull(CodeGolfSettings.SERVER_URL_PROPERTY, "CodeGolfSettings", "SERVER_URL_PROPERTY");
+            propertiesComponent.setValue(CodeGolfSettings.SERVER_URL_PROPERTY, serverUrl);
         } else {
-            String tmp62_59 = CodeGolfSettings.SERVER_URL_PROPERTY;
-            Preconditions.checkNotNull(tmp62_59, "CodeGolfSettings", "SERVER_URL_PROPERTY");
-            propertiesComponent.unsetValue(tmp62_59);
+            Preconditions.checkNotNull(CodeGolfSettings.SERVER_URL_PROPERTY, "CodeGolfSettings", "SERVER_URL_PROPERTY");
+            propertiesComponent.unsetValue(CodeGolfSettings.SERVER_URL_PROPERTY);
         }
-        String tmp80_77 = this.userNameField.getText();
-        if (tmp80_77 == null) throw new NullPointerException();
-        PluginPackage.src.CodeGolfConfigurable. - 89488205. setUserName(tmp80_77);
+        String userNameFieldText = this.userNameField.getText();
+        if (userNameFieldText == null) throw new NullPointerException();
+        CodeGolfConfigurableAccessor.setUserName(userNameFieldText);
     }
 
 
     public void reset() {
-        this.urlField.setText(PluginPackage.src.CodeGolfConfigurable. - 89488205.getServerUrl());
-        this.userNameField.setText(PluginPackage.src.CodeGolfConfigurable. - 89488205.getUserName());
+        this.urlField.setText(CodeGolfConfigurableAccessor.getServerUrl());
+        this.userNameField.setText(CodeGolfConfigurableAccessor.getUserName());
     }
 
 
@@ -93,19 +85,11 @@ public final class CodeGolfConfigurable implements Configurable {
 
 
     public CodeGolfConfigurable() {
-        FormBuilder tmp29_26 = FormBuilder.createFormBuilder();
-        if (tmp29_26 == null) throw new NullPointerException();
-        FormBuilder tmp48_45 = tmp29_26
-                .addLabeledComponent("Server URL:", (JComponent) this.urlField);
-        if (tmp48_45 == null) throw new NullPointerException();
-        FormBuilder tmp67_64 = tmp48_45
-                .addLabeledComponent("User name:", (JComponent) this.userNameField);
-        if (tmp67_64 == null) throw new NullPointerException();
-        JPanel tmp77_74 = tmp67_64.getPanel();
-        if (tmp77_74 == null) throw new NullPointerException();
-        JPanel topPanel = tmp77_74;
-
-        this.mainPanel = new JPanel((LayoutManager) new VerticalFlowLayout());
-        this.mainPanel.add((Component) topPanel);
+        FormBuilder formBuilder = FormBuilder.createFormBuilder()
+                .addLabeledComponent("Server URL:", this.urlField)
+                .addLabeledComponent("User name:", this.userNameField);
+        JPanel topPanel = formBuilder.getPanel();
+        this.mainPanel = new JPanel(new VerticalFlowLayout());
+        this.mainPanel.add(topPanel);
     }
 }

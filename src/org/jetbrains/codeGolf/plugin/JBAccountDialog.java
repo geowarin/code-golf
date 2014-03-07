@@ -115,11 +115,11 @@ public final class JBAccountDialog extends DialogWrapper
                 return;
             }
 
-            PluginPackage.src.CodeGolfConfigurable. - 89488205. setUserName(this.username);
+            CodeGolfConfigurableAccessor. setUserName(this.username);
             if (this.savePasswordCheckbox.isSelected()) {
                 PasswordSafe tmp110_107 = PasswordSafe.getInstance();
                 if (tmp110_107 == null) throw new NullPointerException();
-                tmp110_107.storePassword(this.project, LoginWithJBAccountAction.class, PluginPackage.src.CodeGolfConfigurable. - 89488205.getJB_ACCOUNT_FOR_CODE_GOLF_KEY(), this.password);
+                tmp110_107.storePassword(this.project, LoginWithJBAccountAction.class, CodeGolfConfigurableAccessor.getJB_ACCOUNT_FOR_CODE_GOLF_KEY(), this.password);
             }
         }
         doSuperOkAction();
