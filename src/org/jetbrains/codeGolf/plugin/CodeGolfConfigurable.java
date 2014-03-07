@@ -1,5 +1,7 @@
 package org.jetbrains.codeGolf.plugin;
 
+import com.google.common.base.Objects;
+import com.google.common.base.Preconditions;
 import com.intellij.ide.util.PropertiesComponent;
 import com.intellij.openapi.options.Configurable;
 import com.intellij.openapi.ui.VerticalFlowLayout;
@@ -46,7 +48,7 @@ public final class CodeGolfConfigurable
 
 
     public boolean isModified() {
-        return !(Intrinsics.areEqual(PluginPackage.src.CodeGolfConfigurable. - 89488205.getServerUrl(), this.urlField.getText()) ^ true) ? Intrinsics.areEqual(PluginPackage.src.CodeGolfConfigurable. - 89488205.getUserName(), this.userNameField.getText()) ^ true : true;
+        return !(Objects.equal(PluginPackage.src.CodeGolfConfigurable. - 89488205.getServerUrl(), this.urlField.getText()) ^ true) ? Objects.equal(PluginPackage.src.CodeGolfConfigurable. - 89488205.getUserName(), this.userNameField.getText()) ^ true : true;
     }
 
 
@@ -56,14 +58,14 @@ public final class CodeGolfConfigurable
         if (tmp11_8 == null) throw new NullPointerException();
         PropertiesComponent propertiesComponent = tmp11_8;
         String tmp23_20 = CodeGolfSettings.DEFAULT_SERVER_URL;
-        Intrinsics.checkFieldIsNotNull(tmp23_20, "CodeGolfSettings", "DEFAULT_SERVER_URL");
-        if ((!Intrinsics.areEqual(serverUrl, tmp23_20))) {
+        Preconditions.checkNotNull(tmp23_20, "CodeGolfSettings", "DEFAULT_SERVER_URL");
+        if ((!Objects.equal(serverUrl, tmp23_20))) {
             String tmp43_40 = CodeGolfSettings.SERVER_URL_PROPERTY;
-            Intrinsics.checkFieldIsNotNull(tmp43_40, "CodeGolfSettings", "SERVER_URL_PROPERTY");
+            Preconditions.checkNotNull(tmp43_40, "CodeGolfSettings", "SERVER_URL_PROPERTY");
             propertiesComponent.setValue(tmp43_40, serverUrl);
         } else {
             String tmp62_59 = CodeGolfSettings.SERVER_URL_PROPERTY;
-            Intrinsics.checkFieldIsNotNull(tmp62_59, "CodeGolfSettings", "SERVER_URL_PROPERTY");
+            Preconditions.checkNotNull(tmp62_59, "CodeGolfSettings", "SERVER_URL_PROPERTY");
             propertiesComponent.unsetValue(tmp62_59);
         }
         String tmp80_77 = this.userNameField.getText();

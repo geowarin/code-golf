@@ -20,29 +20,29 @@ public static final String getJB_ACCOUNT_FOR_CODE_GOLF_KEY()
 
 public static final String getServerUrl()
         {
-        String tmp3_0=CodeGolfSettings.DEFAULT_SERVER_URL;Intrinsics.checkFieldIsNotNull(tmp3_0,"CodeGolfSettings","DEFAULT_SERVER_URL");String defaultServerUrl=tmp3_0;
+        String tmp3_0=CodeGolfSettings.DEFAULT_SERVER_URL;Preconditions.checkNotNull(tmp3_0,"CodeGolfSettings","DEFAULT_SERVER_URL");String defaultServerUrl=tmp3_0;
 PropertiesComponent tmp15_12=PropertiesComponent.getInstance();if(tmp15_12==null)throw new NullPointerException();
-String tmp25_22=CodeGolfSettings.SERVER_URL_PROPERTY;Intrinsics.checkFieldIsNotNull(tmp25_22,"CodeGolfSettings","SERVER_URL_PROPERTY");
-String tmp37_34=tmp15_12.getValue(tmp25_22,defaultServerUrl);Intrinsics.checkReturnedValueIsNotNull(tmp37_34,"PropertiesComponent","getValue");return tmp37_34;
+String tmp25_22=CodeGolfSettings.SERVER_URL_PROPERTY;Preconditions.checkNotNull(tmp25_22,"CodeGolfSettings","SERVER_URL_PROPERTY");
+String tmp37_34=tmp15_12.getValue(tmp25_22,defaultServerUrl);Preconditions.checkNotNull(tmp37_34,"PropertiesComponent","getValue");return tmp37_34;
 }
 
 
 public static final String getUserName()
         {
         PropertiesComponent tmp3_0=PropertiesComponent.getInstance();if(tmp3_0==null)throw new NullPointerException();
-String tmp13_10=CodeGolfSettings.USER_NAME_PROPERTY;Intrinsics.checkFieldIsNotNull(tmp13_10,"CodeGolfSettings","USER_NAME_PROPERTY");
-String tmp26_23=tmp3_0.getValue(tmp13_10,"");Intrinsics.checkReturnedValueIsNotNull(tmp26_23,"PropertiesComponent","getValue");return tmp26_23;
+String tmp13_10=CodeGolfSettings.USER_NAME_PROPERTY;Preconditions.checkNotNull(tmp13_10,"CodeGolfSettings","USER_NAME_PROPERTY");
+String tmp26_23=tmp3_0.getValue(tmp13_10,"");Preconditions.checkNotNull(tmp26_23,"PropertiesComponent","getValue");return tmp26_23;
 }
 
 public static final void setUserName(String username){
-        Intrinsics.checkParameterIsNotNull(username,"setUserName");
+        Preconditions.checkNotNull(username,"setUserName");
 PropertiesComponent tmp9_6=PropertiesComponent.getInstance();if(tmp9_6==null)throw new NullPointerException();
-String tmp19_16=CodeGolfSettings.USER_NAME_PROPERTY;Intrinsics.checkFieldIsNotNull(tmp19_16,"CodeGolfSettings","USER_NAME_PROPERTY");tmp9_6.setValue(tmp19_16,username);
+String tmp19_16=CodeGolfSettings.USER_NAME_PROPERTY;Preconditions.checkNotNull(tmp19_16,"CodeGolfSettings","USER_NAME_PROPERTY");tmp9_6.setValue(tmp19_16,username);
 }
 
 
 public static final String getUserPassword(Project project){
-        Intrinsics.checkParameterIsNotNull(project,"getUserPassword");
+        Preconditions.checkNotNull(project,"getUserPassword");
 PasswordSafe tmp9_6=PasswordSafe.getInstance();if(tmp9_6==null)throw new NullPointerException();
 String tmp25_22=tmp9_6.getPassword(project,LoginWithJBAccountAction.class,JB_ACCOUNT_FOR_CODE_GOLF_KEY);if(tmp25_22!=null)tmpTernaryOp=tmp25_22;
 }

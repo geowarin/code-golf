@@ -144,7 +144,7 @@ public final class RecordingControlPanel extends JPanel
     }
 
     public final void notifyUser(String message) {
-        Intrinsics.checkParameterIsNotNull(message, "notifyUser");
+        Preconditions.checkNotNull(message, "notifyUser");
         this.myText.setText(message);
         this.myText.revalidate();
         this.myText.repaint();
@@ -163,7 +163,7 @@ public final class RecordingControlPanel extends JPanel
         if (tmp45_40 == null) throw new NullPointerException();
         JComponent frame = tmp45_40;
         Rectangle tmp57_54 = frame.getVisibleRect();
-        Intrinsics.checkReturnedValueIsNotNull(tmp57_54, "JComponent", "getVisibleRect");
+        Preconditions.checkNotNull(tmp57_54, "JComponent", "getVisibleRect");
         Rectangle visibleRect = tmp57_54;
         Dimension tmp70_67 = getPreferredSize();
         if (tmp70_67 == null) throw new NullPointerException();
@@ -172,7 +172,7 @@ public final class RecordingControlPanel extends JPanel
         if (tmp85_84 == null)
             throw new TypeCastException("com.intellij.openapi.ui.popup.JBPopup? cannot be cast to com.intellij.ui.popup.AbstractPopup");
         Dimension tmp105_102 = ((AbstractPopup) tmp85_84).getHeaderPreferredSize();
-        Intrinsics.checkReturnedValueIsNotNull(tmp105_102, "AbstractPopup", "getHeaderPreferredSize");
+        Preconditions.checkNotNull(tmp105_102, "AbstractPopup", "getHeaderPreferredSize");
         int popupHeight = contentSize.height + tmp105_102.height;
         int newPopupHeight = Math.max(Math.min(popupHeight, visibleRect.height / 2), 150);
         if (newPopupHeight != popupHeight) {
@@ -185,11 +185,11 @@ public final class RecordingControlPanel extends JPanel
     }
 
     public final Editor createViewer(String code) {
-        Intrinsics.checkParameterIsNotNull(code, "createViewer");
+        Preconditions.checkNotNull(code, "createViewer");
         EditorFactory tmp10_7 = EditorFactory.getInstance();
         if (tmp10_7 == null) throw new NullPointerException();
         Document tmp24_21 = tmp10_7.createDocument((CharSequence) code);
-        Intrinsics.checkReturnedValueIsNotNull(tmp24_21, "EditorFactory", "createDocument");
+        Preconditions.checkNotNull(tmp24_21, "EditorFactory", "createDocument");
         Document document = tmp24_21;
         EditorFactory tmp38_35 = EditorFactory.getInstance();
         if (tmp38_35 == null) throw new NullPointerException();
@@ -197,7 +197,7 @@ public final class RecordingControlPanel extends JPanel
         if (tmp49_46 == null) throw new NullPointerException();
         Editor editor = tmp49_46;
         EditorSettings tmp63_58 = editor.getSettings();
-        Intrinsics.checkReturnedValueIsNotNull(tmp63_58, "Editor", "getSettings");
+        Preconditions.checkNotNull(tmp63_58, "Editor", "getSettings");
         EditorSettings settings = tmp63_58;
         settings.setAdditionalLinesCount(0);
         settings.setAdditionalColumnsCount(1);
@@ -215,7 +215,7 @@ public final class RecordingControlPanel extends JPanel
         EditorHighlighterFactory tmp191_188 = EditorHighlighterFactory.getInstance();
         if (tmp191_188 == null) throw new NullPointerException();
         LanguageFileType tmp205_202 = StdFileTypes.JAVA;
-        Intrinsics.checkFieldIsNotNull(tmp205_202, "StdFileTypes", "JAVA");
+        Preconditions.checkNotNull(tmp205_202, "StdFileTypes", "JAVA");
         EditorHighlighter tmp221_218 = tmp191_188.createEditorHighlighter(this.project, (FileType) tmp205_202);
         if (tmp221_218 == null) throw new NullPointerException();
         ((EditorEx) tmp170_169).setHighlighter(tmp221_218);
@@ -223,7 +223,7 @@ public final class RecordingControlPanel extends JPanel
 
             public void selectionChanged(SelectionEvent event) {
                 SelectionModel tmp9_4 = this.$editor.getSelectionModel();
-                Intrinsics.checkReturnedValueIsNotNull(tmp9_4, "Editor", "getSelectionModel");
+                Preconditions.checkNotNull(tmp9_4, "Editor", "getSelectionModel");
                 tmp9_4.removeSelection();
             }
         });
@@ -268,68 +268,68 @@ public final class RecordingControlPanel extends JPanel
         Editor tmp115_112 = this.myEditor;
         if (tmp115_112 == null) throw new NullPointerException();
         JComponent tmp127_122 = tmp115_112.getComponent();
-        Intrinsics.checkReturnedValueIsNotNull(tmp127_122, "Editor", "getComponent");
+        Preconditions.checkNotNull(tmp127_122, "Editor", "getComponent");
         JComponent component = tmp127_122;
         component.setEnabled(0);
 
         this.myText = new JLabel("Actions: WWW Moving actions: WWW Chars: WWW", SwingConstants.LEFT);
         JPanel topPanel = new JPanel((LayoutManager) new BorderLayout());
         String tmp195_192 = BorderLayout.EAST;
-        Intrinsics.checkFieldIsNotNull(tmp195_192, "BorderLayout", "EAST");
+        Preconditions.checkNotNull(tmp195_192, "BorderLayout", "EAST");
         topPanel.add((Component) createControlComponent(), tmp195_192);
         String tmp220_217 = BorderLayout.WEST;
-        Intrinsics.checkFieldIsNotNull(tmp220_217, "BorderLayout", "WEST");
+        Preconditions.checkNotNull(tmp220_217, "BorderLayout", "WEST");
         topPanel.add((Component) this.myText, tmp220_217);
         JPanel separator = new JPanel();
         separator.setMinimumSize(new Dimension(20, 5));
         String tmp267_264 = BorderLayout.CENTER;
-        Intrinsics.checkFieldIsNotNull(tmp267_264, "BorderLayout", "CENTER");
+        Preconditions.checkNotNull(tmp267_264, "BorderLayout", "CENTER");
         topPanel.add((Component) separator, tmp267_264);
         String tmp289_286 = BorderLayout.NORTH;
-        Intrinsics.checkFieldIsNotNull(tmp289_286, "BorderLayout", "NORTH");
+        Preconditions.checkNotNull(tmp289_286, "BorderLayout", "NORTH");
         add((Component) topPanel, tmp289_286);
         String tmp311_308 = BorderLayout.CENTER;
-        Intrinsics.checkFieldIsNotNull(tmp311_308, "BorderLayout", "CENTER");
+        Preconditions.checkNotNull(tmp311_308, "BorderLayout", "CENTER");
         add((Component) component, tmp311_308);
         Border tmp332_329 = BorderFactory.createEmptyBorder(0, 3, 3, 3);
-        Intrinsics.checkReturnedValueIsNotNull(tmp332_329, "BorderFactory", "createEmptyBorder");
+        Preconditions.checkNotNull(tmp332_329, "BorderFactory", "createEmptyBorder");
         setBorder(tmp332_329);
         JBPopupFactory tmp349_346 = JBPopupFactory.getInstance();
         if (tmp349_346 == null) throw new NullPointerException();
         ComponentPopupBuilder tmp361_358 = tmp349_346.createComponentPopupBuilder(this, this);
-        Intrinsics.checkReturnedValueIsNotNull(tmp361_358, "JBPopupFactory", "createComponentPopupBuilder");
+        Preconditions.checkNotNull(tmp361_358, "JBPopupFactory", "createComponentPopupBuilder");
         this.myHint = ((JBPopup) KotlinPackage.with(tmp361_358, (ExtensionFunction0) new ExtensionFunctionImpl0() {
             public final JBPopup invoke(ComponentPopupBuilder $receiver) {
                 ComponentPopupBuilder tmp19_14 = $receiver.setRequestFocusCondition(this.this$0.getProject(), (Condition) NotLookupOrSearchCondition.INSTANCE);
-                Intrinsics.checkReturnedValueIsNotNull(tmp19_14, "ComponentPopupBuilder", "setRequestFocusCondition");
+                Preconditions.checkNotNull(tmp19_14, "ComponentPopupBuilder", "setRequestFocusCondition");
                 ComponentPopupBuilder tmp39_34 = tmp19_14.setProject(this.this$0.getProject());
-                Intrinsics.checkReturnedValueIsNotNull(tmp39_34, "ComponentPopupBuilder", "setProject");
+                Preconditions.checkNotNull(tmp39_34, "ComponentPopupBuilder", "setProject");
                 tmp39_34;
                 ComponentPopupBuilder tmp56_51 = $receiver.setResizable(1);
-                Intrinsics.checkReturnedValueIsNotNull(tmp56_51, "ComponentPopupBuilder", "setResizable");
+                Preconditions.checkNotNull(tmp56_51, "ComponentPopupBuilder", "setResizable");
                 ComponentPopupBuilder tmp71_66 = tmp56_51.setMovable(1);
-                Intrinsics.checkReturnedValueIsNotNull(tmp71_66, "ComponentPopupBuilder", "setMovable");
+                Preconditions.checkNotNull(tmp71_66, "ComponentPopupBuilder", "setMovable");
                 tmp71_66;
                 ComponentPopupBuilder tmp88_83 = $receiver.setCancelKeyEnabled(0);
-                Intrinsics.checkReturnedValueIsNotNull(tmp88_83, "ComponentPopupBuilder", "setCancelKeyEnabled");
+                Preconditions.checkNotNull(tmp88_83, "ComponentPopupBuilder", "setCancelKeyEnabled");
                 tmp88_83;
                 ComponentPopupBuilder tmp105_100 = $receiver.setRequestFocus(0);
-                Intrinsics.checkReturnedValueIsNotNull(tmp105_100, "ComponentPopupBuilder", "setRequestFocus");
+                Preconditions.checkNotNull(tmp105_100, "ComponentPopupBuilder", "setRequestFocus");
                 ComponentPopupBuilder tmp120_115 = tmp105_100.setCancelOnClickOutside(0);
-                Intrinsics.checkReturnedValueIsNotNull(tmp120_115, "ComponentPopupBuilder", "setCancelOnClickOutside");
+                Preconditions.checkNotNull(tmp120_115, "ComponentPopupBuilder", "setCancelOnClickOutside");
                 tmp120_115;
                 $receiver.setCancelOnWindowDeactivation(0);
                 ComponentPopupBuilder tmp146_141 = $receiver.setTitle("Type Following Code in Editor");
-                Intrinsics.checkReturnedValueIsNotNull(tmp146_141, "ComponentPopupBuilder", "setTitle");
+                Preconditions.checkNotNull(tmp146_141, "ComponentPopupBuilder", "setTitle");
                 tmp146_141;
                 ComponentPopupBuilder tmp163_158 = $receiver.setModalContext(0);
-                Intrinsics.checkReturnedValueIsNotNull(tmp163_158, "ComponentPopupBuilder", "setModalContext");
+                Preconditions.checkNotNull(tmp163_158, "ComponentPopupBuilder", "setModalContext");
                 tmp163_158;
                 ComponentPopupBuilder tmp182_177 = $receiver.addUserData(this.this$0);
-                Intrinsics.checkReturnedValueIsNotNull(tmp182_177, "ComponentPopupBuilder", "addUserData");
+                Preconditions.checkNotNull(tmp182_177, "ComponentPopupBuilder", "addUserData");
                 tmp182_177;
                 JBPopup tmp197_192 = $receiver.createPopup();
-                Intrinsics.checkReturnedValueIsNotNull(tmp197_192, "ComponentPopupBuilder", "createPopup");
+                Preconditions.checkNotNull(tmp197_192, "ComponentPopupBuilder", "createPopup");
                 return tmp197_192;
             }
         }));

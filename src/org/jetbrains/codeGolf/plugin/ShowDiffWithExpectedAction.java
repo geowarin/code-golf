@@ -37,7 +37,7 @@ public final class ShowDiffWithExpectedAction extends AnAction
         diffData.setContents((DiffContent) new SimpleContent(this.targetCode), (DiffContent) new SimpleContent(this.document.getText()));
         diffData.setContentTitles("Expected Code", "Actual Code");
         Object tmp79_76 = DiffTool.HINT_SHOW_FRAME;
-        Intrinsics.checkFieldIsNotNull(tmp79_76, "DiffTool", "HINT_SHOW_FRAME");
+        Preconditions.checkNotNull(tmp79_76, "DiffTool", "HINT_SHOW_FRAME");
         diffData.addHint(tmp79_76);
         diffData.setGroupKey("#CodeGolfDiff");
         DiffManager tmp99_96 = DiffManager.getInstance();

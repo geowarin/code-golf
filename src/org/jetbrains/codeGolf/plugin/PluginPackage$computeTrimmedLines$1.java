@@ -8,7 +8,7 @@ final class PluginPackage$computeTrimmedLines$1 extends FunctionImpl1<? super St
     static final 1instance$=tmp3_0;
 
     public final String invoke(String it) {
-        Intrinsics.checkParameterIsNotNull(it, "<anonymous>");
+        Preconditions.checkNotNull(it, "<anonymous>");
         return KotlinPackage.trim(it);
     }
 }

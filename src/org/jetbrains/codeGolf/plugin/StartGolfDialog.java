@@ -91,10 +91,10 @@ public final class StartGolfDialog extends DialogWrapper
         } else {
             JLabel errorLabel = new JLabel("Cannot load tasks from " + serverUrl + ", only predefined tasks are available");
             Color tmp103_100 = Color.RED;
-            Intrinsics.checkFieldIsNotNull(tmp103_100, "Color", "RED");
+            Preconditions.checkNotNull(tmp103_100, "Color", "RED");
             errorLabel.setForeground(tmp103_100);
             String tmp121_118 = BorderLayout.SOUTH;
-            Intrinsics.checkFieldIsNotNull(tmp121_118, "BorderLayout", "SOUTH");
+            Preconditions.checkNotNull(tmp121_118, "BorderLayout", "SOUTH");
             this.mainPanel.add(tmp121_118, (Component) errorLabel);
             tasks = GolfTaskManager.object$.getInstance().getPredefinedTasks();
         }
@@ -119,11 +119,11 @@ public final class StartGolfDialog extends DialogWrapper
             UserScore tmp55_53 = score;
             if (tmp55_53 == null) throw new NullPointerException();
             Color tmp82_79 = Color.GREEN;
-            Intrinsics.checkFieldIsNotNull(tmp82_79, "Color", "GREEN");
+            Preconditions.checkNotNull(tmp82_79, "Color", "GREEN");
             Color tmp93_90 = tmp82_79.darker();
-            Intrinsics.checkReturnedValueIsNotNull(tmp93_90, "Color", "darker");
+            Preconditions.checkNotNull(tmp93_90, "Color", "darker");
             JBColor tmp150_147 = JBColor.BLUE;
-            Intrinsics.checkFieldIsNotNull(tmp150_147, "JBColor", "BLUE");
+            Preconditions.checkNotNull(tmp150_147, "JBColor", "BLUE");
 
             Pair localPair =
                     tmp55_53.getUserSolution() == score.getBestSolution() ?

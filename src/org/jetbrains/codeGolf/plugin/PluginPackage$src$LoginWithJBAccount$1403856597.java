@@ -11,7 +11,7 @@ import org.jetbrains.codeGolf.auth.JBAccountAuthHelper;
 public final class PluginPackage$src$LoginWithJBAccount$1403856597 {
 
     public static final Pair<String, String> showDialogAndLogin(Project project) {
-        Intrinsics.checkParameterIsNotNull(project, "showDialogAndLogin");
+        Preconditions.checkNotNull(project, "showDialogAndLogin");
         String username = PluginPackage.src.CodeGolfConfigurable. - 89488205. getUserName();
         String password = PluginPackage.src.CodeGolfConfigurable. - 89488205. getUserPassword(project);
         if ((!StringUtil.isEmpty(username) ? StringUtil.isEmpty(password) : 1)) {

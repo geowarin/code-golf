@@ -1,11 +1,14 @@
 package org.jetbrains.codeGolf.plugin;
 
+import com.google.common.base.Objects;
+import com.google.common.base.Preconditions;
 import com.intellij.ide.FrameStateListener;
 import com.intellij.ide.IdeEventQueue;
 import com.intellij.ide.IdeEventQueue.EventDispatcher;
 import com.intellij.notification.Notification;
 import com.intellij.notification.NotificationListener;
 import com.intellij.notification.NotificationType;
+import com.intellij.notification.Notifications;
 import com.intellij.notification.Notifications.Bus;
 import com.intellij.openapi.Disposable;
 import com.intellij.openapi.actionSystem.ActionManager;
@@ -59,8 +62,7 @@ import org.jetbrains.codeGolf.plugin.log.LogPackage.src.log.767818362;
 import org.jetbrains.codeGolf.plugin.rest.RestClientUtil;
 
 
-public final class ActionsRecorder
-        implements JetObject, Disposable {
+public final class ActionsRecorder implements  Disposable {
     private RecordingControlPanel controlPanel;
     private int movingActionsCounter = 0;
     private int actionsCounter = 0;
@@ -236,11 +238,11 @@ public final class ActionsRecorder
         LogPackage.src.log .767818362.log(expected);
         LogPackage.src.log .767818362.log("Actual:");
         LogPackage.src.log .767818362.log(actual);
-        return Intrinsics.areEqual(expected, actual);
+        return Objects.equal(expected, actual);
     }
 
     public final boolean isInsideExpectedCodeViewer(MouseEvent e) {
-        Intrinsics.checkParameterIsNotNull(e, "isInsideExpectedCodeViewer");
+        Preconditions.checkNotNull(e, "isInsideExpectedCodeViewer");
         Component component = e.getComponent();
         if (component != null) 1;
         if (0 != 0) return 0;
@@ -255,7 +257,7 @@ public final class ActionsRecorder
 
 
     public final void processKeyPressedEvent(KeyEvent e) {
-        Intrinsics.checkParameterIsNotNull(e, "processKeyPressedEvent");
+        Preconditions.checkNotNull(e, "processKeyPressedEvent");
         if (this.actionInputEvents.contains(e)) {
             this.actionInputEvents.remove(e);
             return;
@@ -310,7 +312,7 @@ public final class ActionsRecorder
         new Task.Backgroundable(solution, passwordToSend) {
 
             public void run(ProgressIndicator indicator) {
-                Intrinsics.checkParameterIsNotNull(indicator, "run");
+                Preconditions.checkNotNull(indicator, "run");
                 try {
                     GolfResult tmp18_15 = RestClientUtil.sendSolution(this.$solution, this.$passwordToSend);
                     if (tmp18_15 == null) throw new NullPointerException();
@@ -328,7 +330,7 @@ public final class ActionsRecorder
 
 
     public final void discardSolution(String reason) {
-        Intrinsics.checkParameterIsNotNull(reason, "discardSolution");
+        Preconditions.checkNotNull(reason, "discardSolution");
         stopRecording();
 
         Notification notification = new Notification("Code Golf Info", "Solution discarded", reason + "<br/><a href=" + "\"" + "restart" + "\"" + ">Try again</a>",
@@ -340,16 +342,16 @@ public final class ActionsRecorder
         return (NotificationListener) new JetObject() {
 
             public void hyperlinkUpdate(Notification p0, HyperlinkEvent p1) {
-                Intrinsics.checkParameterIsNotNull(p0, "hyperlinkUpdate");
-                Intrinsics.checkParameterIsNotNull(p1, "hyperlinkUpdate");
+                Preconditions.checkNotNull(p0, "hyperlinkUpdate");
+                Preconditions.checkNotNull(p1, "hyperlinkUpdate");
                 EventType tmp19_16 = EventType.ACTIVATED;
-                Intrinsics.checkFieldIsNotNull(tmp19_16, "EventType", "ACTIVATED");
-                if ((Intrinsics.areEqual(p1.getEventType(), tmp19_16) ? Intrinsics.areEqual(p1.getDescription(), "restart") : 0)) {
+                Preconditions.checkNotNull(tmp19_16, "EventType", "ACTIVATED");
+                if ((Objects.equal(p1.getEventType(), tmp19_16) ? Objects.equal(p1.getDescription(), "restart") : 0)) {
                     p0.expire();
                     this.this$0.getRestarter().invoke();
                 } else {
                     NotificationListener tmp72_69 = NotificationListener.URL_OPENING_LISTENER;
-                    Intrinsics.checkFieldIsNotNull(tmp72_69, "NotificationListener", "URL_OPENING_LISTENER");
+                    Preconditions.checkNotNull(tmp72_69, "NotificationListener", "URL_OPENING_LISTENER");
                     tmp72_69.hyperlinkUpdate(p0, p1);
                 }
             }
@@ -358,7 +360,7 @@ public final class ActionsRecorder
 
 
     public final void showCongratulations(GolfResult result) {
-        Intrinsics.checkParameterIsNotNull(result, "showCongratulations");
+        Preconditions.checkNotNull(result, "showCongratulations");
         Integer totalCount = result.getResult();
         Notification notification;
         if (totalCount != null) 1;
@@ -406,7 +408,7 @@ public final class ActionsRecorder
 
 
     public final void setPassword(String<set-?>) {
-        Intrinsics.checkParameterIsNotNull( < set - ?>,"<set-password>");
+        Preconditions.checkNotNull( < set - ?>,"<set-password>");
         this.password =<set - ?>;
     }
 

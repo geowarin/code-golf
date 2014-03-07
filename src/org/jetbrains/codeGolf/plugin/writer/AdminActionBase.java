@@ -1,5 +1,6 @@
 package org.jetbrains.codeGolf.plugin.writer;
 
+import com.google.common.base.Preconditions;
 import com.intellij.openapi.actionSystem.AnAction;
 import com.intellij.openapi.actionSystem.AnActionEvent;
 import com.intellij.openapi.actionSystem.Presentation;
@@ -20,7 +21,7 @@ public abstract class AdminActionBase extends AnAction {
     public void update(AnActionEvent e) {
         if (e == null) throw new NullPointerException();
         Presentation presentation = e.getPresentation();
-        Intrinsics.checkReturnedValueIsNotNull(presentation, "AnActionEvent", "getPresentation");
+        Preconditions.checkNotNull(presentation, "AnActionEvent", "getPresentation");
         Presentation tmp19_11 = presentation;
         if (tmp19_11 == null) throw new NullPointerException();
         if ((e != null ? e.getProject() : null) == null) tmp19_11;
@@ -56,9 +57,9 @@ public abstract class AdminActionBase extends AnAction {
 
     public static final class object {
         public final void sendTaskToServer(Project project, GolfTask task, String password) {
-            Intrinsics.checkParameterIsNotNull(project, "sendTaskToServer");
-            Intrinsics.checkParameterIsNotNull(task, "sendTaskToServer");
-            Intrinsics.checkParameterIsNotNull(password, "sendTaskToServer");
+            Preconditions.checkNotNull(project, "sendTaskToServer");
+            Preconditions.checkNotNull(task, "sendTaskToServer");
+            Preconditions.checkNotNull(password, "sendTaskToServer");
             new Task.Backgroundable(project, password) { // ERROR //
 
                 public void run(com.intellij.openapi.progress.ProgressIndicator indicator) { // Byte code:

@@ -67,7 +67,7 @@ public final class JBAccountDialog extends DialogWrapper
 
 
     public final void setUsername(String<set-?>) {
-        Intrinsics.checkParameterIsNotNull( < set - ?>,"<set-username>");
+        Preconditions.checkNotNull( < set - ?>,"<set-username>");
         this.username =<set - ?>;
     }
 
@@ -78,7 +78,7 @@ public final class JBAccountDialog extends DialogWrapper
 
 
     public final void setPassword(String<set-?>) {
-        Intrinsics.checkParameterIsNotNull( < set - ?>,"<set-password>");
+        Preconditions.checkNotNull( < set - ?>,"<set-password>");
         this.password =<set - ?>;
     }
 
@@ -170,7 +170,7 @@ public final class JBAccountDialog extends DialogWrapper
             implements JetObject {
 
         public void actionPerformed(ActionEvent e) {
-            Intrinsics.checkParameterIsNotNull(e, "actionPerformed");
+            Preconditions.checkNotNull(e, "actionPerformed");
             JBAccountDialog.this.setUsername("");
             JBAccountDialog.this.doSuperOkAction();
         }

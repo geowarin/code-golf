@@ -58,7 +58,7 @@ public final class StartGolfAction extends AnAction
         AnActionEvent tmp1_0 = e;
         if (tmp1_0 != null) {
             Presentation tmp8_5 = tmp1_0.getPresentation();
-            Intrinsics.checkReturnedValueIsNotNull(tmp8_5, "AnActionEvent", "getPresentation");
+            Preconditions.checkNotNull(tmp8_5, "AnActionEvent", "getPresentation");
             tmpTernaryOp = tmp8_5;
         }
     }
@@ -94,11 +94,11 @@ public final class StartGolfAction extends AnAction
             PsiFileFactory tmp34_31 = PsiFileFactory.getInstance(project);
             if (tmp34_31 != null) {
                 LanguageFileType tmp44_41 = StdFileTypes.JAVA;
-                Intrinsics.checkFieldIsNotNull(tmp44_41, "StdFileTypes", "JAVA");
+                Preconditions.checkNotNull(tmp44_41, "StdFileTypes", "JAVA");
                 String tmp58_57 = text;
                 if (tmp58_57 == null) throw new NullPointerException();
                 PsiFile tmp71_68 = tmp34_31.createFileFromText("A.java", (FileType) tmp44_41, (CharSequence) tmp58_57);
-                Intrinsics.checkReturnedValueIsNotNull(tmp71_68, "PsiFileFactory", "createFileFromText");
+                Preconditions.checkNotNull(tmp71_68, "PsiFileFactory", "createFileFromText");
                 tmpTernaryOp = tmp71_68;
             }
         }

@@ -31,12 +31,12 @@ public final class GolfTaskManager
 
 
     public final List<GolfTask> loadTasks(String serverUrl) {
-        Intrinsics.checkParameterIsNotNull(serverUrl, "loadTasks");
+        Preconditions.checkNotNull(serverUrl, "loadTasks");
         ArrayList result = new ArrayList();
         List tmp18_15 = RestClientUtil.loadTasks(serverUrl);
         if (tmp18_15 != null) KotlinPackage.forEach((Iterable) tmp18_15, (Function1) new FunctionImpl1() {
             public final void invoke(GolfTask it) {
-                Intrinsics.checkParameterIsNotNull(it, "<anonymous>");
+                Preconditions.checkNotNull(it, "<anonymous>");
                 this.$result.add(it);
             }
         });
@@ -44,13 +44,13 @@ public final class GolfTaskManager
 
 
     public final List<UserScore> loadScores(String serverUrl, String username) {
-        Intrinsics.checkParameterIsNotNull(serverUrl, "loadScores");
-        Intrinsics.checkParameterIsNotNull(username, "loadScores");
+        Preconditions.checkNotNull(serverUrl, "loadScores");
+        Preconditions.checkNotNull(username, "loadScores");
         ArrayList result = new ArrayList();
         List tmp25_22 = RestClientUtil.loadScores(serverUrl, username);
         if (tmp25_22 != null) KotlinPackage.forEach((Iterable) tmp25_22, (Function1) new FunctionImpl1() {
             public final void invoke(UserScore it) {
-                Intrinsics.checkParameterIsNotNull(it, "<anonymous>");
+                Preconditions.checkNotNull(it, "<anonymous>");
                 this.$result.add(it);
             }
         });
@@ -62,7 +62,7 @@ public final class GolfTaskManager
     }
 
     public final void addTask(GolfTask task) {
-        Intrinsics.checkParameterIsNotNull(task, "addTask");
+        Preconditions.checkNotNull(task, "addTask");
         this.tasks.add(task);
     }
 
