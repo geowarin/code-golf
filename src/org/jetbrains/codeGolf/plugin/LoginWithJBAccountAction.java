@@ -12,13 +12,14 @@ import jet.runtime.typeinfo.JetValueParameter;
 
 
 public final class LoginWithJBAccountAction extends AnAction
-  implements JetObject
-{
+        implements JetObject {
 
-  public void actionPerformed( AnActionEvent e)
-  {
-    AnActionEvent tmp1_0 = e; if (tmp1_0 == null) throw new NullPointerException();
-    Project tmp11_8 = tmp1_0.getProject(); if (tmp11_8 == null) throw new NullPointerException(); Project project = tmp11_8;
-    new StringBuilder().append("User name ");
-  }
+    public void actionPerformed(AnActionEvent e) {
+        AnActionEvent tmp1_0 = e;
+        if (tmp1_0 == null) throw new NullPointerException();
+        Project tmp11_8 = tmp1_0.getProject();
+        if (tmp11_8 == null) throw new NullPointerException();
+        Project project = tmp11_8;
+        new StringBuilder().append("User name ");
+    }
 }

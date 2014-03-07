@@ -23,8 +23,10 @@ import com.intellij.openapi.vfs.VfsUtilCore;
 import com.intellij.openapi.vfs.VirtualFile;
 import com.intellij.psi.PsiFile;
 import com.intellij.psi.PsiFileFactory;
+
 import java.io.File;
 import java.util.List;
+
 import jet.FunctionImpl0;
 import jet.JetObject;
 import jet.Unit;
@@ -38,72 +40,72 @@ import kotlin.Pair;
 
 
 public final class StartGolfAction extends AnAction
-  implements JetObject
-{
-  private boolean isRecording = false;
+        implements JetObject {
+    private boolean isRecording = false;
 
 
-  public final boolean getIsRecording()
-  {
-    return this.isRecording;
-  }
-
-
-  public final void setIsRecording( boolean <set-?>)
-  {
-    this.isRecording = <set-?>;
-  }
-
-
-  public void update( AnActionEvent e)
-  {
-    AnActionEvent tmp1_0 = e; if (tmp1_0 != null)
-    {
-      Presentation tmp8_5 = tmp1_0.getPresentation(); Intrinsics.checkReturnedValueIsNotNull(tmp8_5, "AnActionEvent", "getPresentation"); tmpTernaryOp = tmp8_5;
+    public final boolean getIsRecording() {
+        return this.isRecording;
     }
-  }
 
 
-  public void actionPerformed( AnActionEvent anActionEvent)
-  {
-    if (!this.isRecording)
-    {
-      Project project;
-      AnActionEvent tmp8_7 = anActionEvent; if (tmp8_7 != null) tmpTernaryOp = tmp8_7.getProject();
+    public final void setIsRecording(boolean<set-?>) {
+        this.isRecording =<set - ?>;
     }
-  }
 
 
-  private final void startTask( GolfTask task,  Project project,  String username,  String password)
-  {
-    VirtualFile file2 = createFile(project, task.getTaskName(), task.getInitialCode());
-    if (file2 != null) 1; if (0 != 0) return;
-    VirtualFile file = file2;
-
-    OpenFileDescriptor descriptor = new OpenFileDescriptor(project, file, task.getInitialOffset());
-    Editor editor;
-    FileEditorManager tmp51_48 = FileEditorManager.getInstance(project); if (tmp51_48 != null) tmpTernaryOp = tmp51_48.openTextEditor(descriptor, 1);
-  }
-
-
-  private final VirtualFile createFile( Project project,  String taskName,  String text)
-  {
-    String className;
-    if (text == null) 1; if ((0 != 0 ? KotlinPackage.length(text) <= 0 ? 0 : 1 : 0) != 0)
-    {
-      PsiFile tempFile;
-      PsiFileFactory tmp34_31 = PsiFileFactory.getInstance(project); if (tmp34_31 != null)
-      {
-        LanguageFileType tmp44_41 = StdFileTypes.JAVA; Intrinsics.checkFieldIsNotNull(tmp44_41, "StdFileTypes", "JAVA");
-        String tmp58_57 = text; if (tmp58_57 == null) throw new NullPointerException();
-        PsiFile tmp71_68 = tmp34_31.createFileFromText("A.java", (FileType)tmp44_41, (CharSequence)tmp58_57); Intrinsics.checkReturnedValueIsNotNull(tmp71_68, "PsiFileFactory", "createFileFromText"); tmpTernaryOp = tmp71_68;
-      }
+    public void update(AnActionEvent e) {
+        AnActionEvent tmp1_0 = e;
+        if (tmp1_0 != null) {
+            Presentation tmp8_5 = tmp1_0.getPresentation();
+            Intrinsics.checkReturnedValueIsNotNull(tmp8_5, "AnActionEvent", "getPresentation");
+            tmpTernaryOp = tmp8_5;
+        }
     }
-  }
 
-  @JetConstructor
-  public StartGolfAction()
-  {
-    super("Start Code Golf...");
-  }
+
+    public void actionPerformed(AnActionEvent anActionEvent) {
+        if (!this.isRecording) {
+            Project project;
+            AnActionEvent tmp8_7 = anActionEvent;
+            if (tmp8_7 != null) tmpTernaryOp = tmp8_7.getProject();
+        }
+    }
+
+
+    private final void startTask(GolfTask task, Project project, String username, String password) {
+        VirtualFile file2 = createFile(project, task.getTaskName(), task.getInitialCode());
+        if (file2 != null) 1;
+        if (0 != 0) return;
+        VirtualFile file = file2;
+
+        OpenFileDescriptor descriptor = new OpenFileDescriptor(project, file, task.getInitialOffset());
+        Editor editor;
+        FileEditorManager tmp51_48 = FileEditorManager.getInstance(project);
+        if (tmp51_48 != null) tmpTernaryOp = tmp51_48.openTextEditor(descriptor, 1);
+    }
+
+
+    private final VirtualFile createFile(Project project, String taskName, String text) {
+        String className;
+        if (text == null) 1;
+        if ((0 != 0 ? KotlinPackage.length(text) <= 0 ? 0 : 1 : 0) != 0) {
+            PsiFile tempFile;
+            PsiFileFactory tmp34_31 = PsiFileFactory.getInstance(project);
+            if (tmp34_31 != null) {
+                LanguageFileType tmp44_41 = StdFileTypes.JAVA;
+                Intrinsics.checkFieldIsNotNull(tmp44_41, "StdFileTypes", "JAVA");
+                String tmp58_57 = text;
+                if (tmp58_57 == null) throw new NullPointerException();
+                PsiFile tmp71_68 = tmp34_31.createFileFromText("A.java", (FileType) tmp44_41, (CharSequence) tmp58_57);
+                Intrinsics.checkReturnedValueIsNotNull(tmp71_68, "PsiFileFactory", "createFileFromText");
+                tmpTernaryOp = tmp71_68;
+            }
+        }
+    }
+
+    @JetConstructor
+    public StartGolfAction() {
+        super("Start Code Golf...");
+    }
 }
