@@ -26,17 +26,17 @@ public class RestClientUtil {
         try {
             WebResource webResource = client.resource(getActualServerUrl(serverUrl, client) + "/task/list.json");
 
-            ClientResponse response = (ClientResponse) webResource.type(MediaType.APPLICATION_JSON_TYPE).get(ClientResponse.class);
+            ClientResponse response = webResource.type(MediaType.APPLICATION_JSON_TYPE).get(ClientResponse.class);
             String output;
             try {
                 LOG.info("Loading tasks from server...");
-                output = (String) response.getEntity(String.class);
+                output = response.getEntity(String.class);
             } finally {
             }
             LOG.info("Loaded from server:");
             LOG.info(output);
             List tasks = JsonSerializer.deserializeTasks(output);
-            LOG.info(new StringBuilder().append(tasks.size()).append(" tasks loaded").toString());
+            LOG.info(String.valueOf(tasks.size()) + " tasks loaded");
             return tasks;
         } catch (Exception e) {
             throw new RuntimeException(e);
@@ -50,17 +50,17 @@ public class RestClientUtil {
         try {
             WebResource webResource = client.resource(getActualServerUrl(serverUrl, client) + "/results.json/" + username);
 
-            ClientResponse response = (ClientResponse) webResource.type(MediaType.APPLICATION_JSON_TYPE).get(ClientResponse.class);
+            ClientResponse response = webResource.type(MediaType.APPLICATION_JSON_TYPE).get(ClientResponse.class);
             String output;
             try {
                 LOG.info("Loading scores from server...");
-                output = (String) response.getEntity(String.class);
+                output = response.getEntity(String.class);
             } finally {
             }
             LOG.info("Loaded from server:");
             LOG.info(output);
             List scores = JsonSerializer.deserializeScores(output);
-            LOG.info(new StringBuilder().append(scores.size()).append(" scores loaded").toString());
+            LOG.info(String.valueOf(scores.size()) + " scores loaded");
             return scores;
         } catch (Exception e) {
             throw new RuntimeException(e);
@@ -149,8 +149,8 @@ public class RestClientUtil {
     public static void loadJsonToFile(String serverUrl, String path, File target) {
         Client client = Client.create();
         try {
-            WebResource webResource = client.resource(new StringBuilder().append(getActualServerUrl(serverUrl, client)).append(path).toString());
-            ClientResponse response = (ClientResponse) webResource.type(MediaType.APPLICATION_JSON_TYPE).get(ClientResponse.class);
+            WebResource webResource = client.resource(getActualServerUrl(serverUrl, client) + path);
+            ClientResponse response = webResource.type(MediaType.APPLICATION_JSON_TYPE).get(ClientResponse.class);
             FileOutputStream output;
             try {
                 InputStream input = response.getEntityInputStream();

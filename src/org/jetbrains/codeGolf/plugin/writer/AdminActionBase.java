@@ -4,14 +4,14 @@ import com.google.common.base.Preconditions;
 import com.intellij.openapi.actionSystem.AnAction;
 import com.intellij.openapi.actionSystem.AnActionEvent;
 import com.intellij.openapi.actionSystem.Presentation;
+import com.intellij.openapi.progress.Task;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.ui.Messages;
 import com.intellij.openapi.util.Pair;
-
 import org.jetbrains.codeGolf.auth.AuthPackage;
+import org.jetbrains.codeGolf.plugin.CodeGolfConfigurableAccessor;
 import org.jetbrains.codeGolf.plugin.GolfTask;
-import org.jetbrains.codeGolf.plugin.PluginPackage.src.CodeGolfConfigurable.*;
-import org.jetbrains.codeGolf.plugin.PluginPackage.src.LoginWithJBAccount;
+import org.jetbrains.codeGolf.plugin.LoginWithJBAccount;
 
 
 public abstract class AdminActionBase extends AnAction {
@@ -22,34 +22,27 @@ public abstract class AdminActionBase extends AnAction {
         if (e == null) throw new NullPointerException();
         Presentation presentation = e.getPresentation();
         Preconditions.checkNotNull(presentation, "AnActionEvent", "getPresentation");
-        Presentation tmp19_11 = presentation;
-        if (tmp19_11 == null) throw new NullPointerException();
-        if ((e != null ? e.getProject() : null) == null) tmp19_11;
-        tmp19_11.setVisible(0 != 0 ? AuthPackage.hasAdminAccess(CodeGolfConfigurableAccessor.getUserName()) : false);
+        Preconditions.checkNotNull(e.getProject(), "AnActionEvent", "getPresentation");
+        presentation.setVisible(AuthPackage.hasAdminAccess(CodeGolfConfigurableAccessor.getUserName()));
     }
 
 
     public void actionPerformed(AnActionEvent e) {
-        AnActionEvent tmp1_0 = e;
-        if (tmp1_0 == null) throw new NullPointerException();
-        Project tmp11_8 = tmp1_0.getProject();
-        if (tmp11_8 == null) throw new NullPointerException();
-        Project project = tmp11_8;
-        Pair usernameAndPassword = PluginPackage.src.LoginWithJBAccount .1403856597.showDialogAndLogin(project);
-        if (usernameAndPassword != null) 1;
-        if (0 != 0) return;
+        if (e == null) throw new NullPointerException();
+        Project project = e.getProject();
+        Preconditions.checkNotNull(project);
 
-        Pair localPair1 = usernameAndPassword;
-        String username = (String) localPair1.component1();
-        String password = (String) localPair1.component2();
-        localPair1 = null;
+        Pair usernameAndPassword = LoginWithJBAccount.showDialogAndLogin(project);
+        if (usernameAndPassword != null)
+            return;
+
+        String username = (String) usernameAndPassword.getFirst();
+        String password = (String) usernameAndPassword.getSecond();
         if (!AuthPackage.hasAdminAccess(username)) {
             Messages.showErrorDialog(project, "This action can be performed by admins only", "Code Golf Error");
             return;
         }
-        AnActionEvent tmp81_80 = e;
-        if (tmp81_80 == null) throw new NullPointerException();
-        doAdminAction(project, tmp81_80, username, password);
+        doAdminAction(project, e, username, password);
     }
 
     protected abstract void doAdminAction(Project paramProject, AnActionEvent paramAnActionEvent, String paramString1, String paramString2);

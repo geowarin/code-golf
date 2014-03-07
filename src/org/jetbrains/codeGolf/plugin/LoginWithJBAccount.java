@@ -4,21 +4,17 @@ import com.google.common.base.Preconditions;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.util.Pair;
 import com.intellij.openapi.util.text.StringUtil;
-
-import jet.runtime.typeinfo.JetMethod;
-import jet.runtime.typeinfo.JetValueParameter;
-import kotlin.Pair;
 import org.jetbrains.codeGolf.auth.JBAccountAuthHelper;
 
 public final class LoginWithJBAccount {
 
     public static final Pair<String, String> showDialogAndLogin(Project project) {
         Preconditions.checkNotNull(project, "showDialogAndLogin");
-        String username = CodeGolfConfigurableAccessor. getUserName();
-        String password = CodeGolfConfigurableAccessor. getUserPassword(project);
+        String username = CodeGolfConfigurableAccessor.getUserName();
+        String password = CodeGolfConfigurableAccessor.getUserPassword(project);
 
-        boolean userNameNotEmpty = !StringUtil.isEmpty(username);
-        if (userNameNotEmpty ? StringUtil.isEmpty(password) : true) {
+        boolean userNameIsEmpty = StringUtil.isEmpty(username);
+        if (userNameIsEmpty || (!userNameIsEmpty && StringUtil.isEmpty(password))) {
             JBAccountDialog dlg = new JBAccountDialog(project);
             dlg.show();
             if (!dlg.isOK()) {

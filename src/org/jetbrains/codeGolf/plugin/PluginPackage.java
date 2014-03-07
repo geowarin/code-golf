@@ -34,7 +34,7 @@ public final class PluginPackage {
     }
 
     public static final Pair<String, String> showDialogAndLogin(Project project) {
-        return PluginPackage.src.LoginWithJBAccount .1403856597.showDialogAndLogin(project);
+        return LoginWithJBAccount.showDialogAndLogin(project);
     }
 
     public static final List<String> computeTrimmedLines(String $receiver) {

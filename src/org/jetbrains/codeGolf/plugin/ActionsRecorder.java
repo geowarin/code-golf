@@ -18,6 +18,7 @@ import com.intellij.openapi.actionSystem.DataContext;
 import com.intellij.openapi.actionSystem.ex.AnActionListener;
 import com.intellij.openapi.application.Application;
 import com.intellij.openapi.application.ApplicationManager;
+import com.intellij.openapi.diagnostic.Logger;
 import com.intellij.openapi.editor.Document;
 import com.intellij.openapi.editor.event.DocumentEvent;
 import com.intellij.openapi.editor.event.DocumentListener;
@@ -80,56 +81,44 @@ public final class ActionsRecorder implements  Disposable {
     private String password;
     private final Function0 restarter;
 
+    private static final Logger LOG = Logger.getInstance(ActionsRecorder.class.getName());
 
-    private final RecordingControlPanel getControlPanel() {
-        return this.controlPanel;
+    public void setControlPanel(RecordingControlPanel controlPanel) {
+        this.controlPanel = controlPanel;
     }
-
-
-    private final void setControlPanel(RecordingControlPanel<set-?>) {
-        this.controlPanel =<set - ?>;
-    }
-
 
     private final int getMovingActionsCounter() {
         return this.movingActionsCounter;
     }
 
 
-    private final void setMovingActionsCounter(int<set-?>) {
-        this.movingActionsCounter =<set - ?>;
+    public void setMovingActionsCounter(int movingActionsCounter) {
+        this.movingActionsCounter = movingActionsCounter;
     }
 
-
-    private final int getActionsCounter() {
-        return this.actionsCounter;
+    public int getActionsCounter() {
+        return actionsCounter;
     }
 
-
-    private final void setActionsCounter(int<set-?>) {
-        this.actionsCounter =<set - ?>;
+    public void setActionsCounter(int actionsCounter) {
+        this.actionsCounter = actionsCounter;
     }
 
-
-    private final int getTypingCounter() {
-        return this.typingCounter;
+    public int getTypingCounter() {
+        return typingCounter;
     }
 
-
-    private final void setTypingCounter(int<set-?>) {
-        this.typingCounter =<set - ?>;
+    public void setTypingCounter(int typingCounter) {
+        this.typingCounter = typingCounter;
     }
-
 
     private final ArrayList<String> getUsedActions() {
         return this.usedActions;
     }
 
-
-    private final void setUsedActions(ArrayList<String><set-?>) {
-        this.usedActions =<set - ?>;
+    public void setUsedActions(ArrayList usedActions) {
+        this.usedActions = usedActions;
     }
-
 
     private final HashSet<InputEvent> getActionInputEvents() {
         return this.actionInputEvents;
@@ -155,14 +144,12 @@ public final class ActionsRecorder implements  Disposable {
         return this.disposed;
     }
 
-
-    private final void setDisposed(boolean<set-?>) {
-        this.disposed =<set - ?>;
+    public void setDisposed(boolean disposed) {
+        this.disposed = disposed;
     }
 
-
     public final void startRecording() {
-        LogPackage.src.log .767818362.log("recording started");
+        LOG.info("recording started");
         this.document
                 .addDocumentListener((DocumentListener) new JetObject() {
 
@@ -234,10 +221,10 @@ public final class ActionsRecorder implements  Disposable {
         computeTrimmedLines(this.golfTask.getTargetCode());
         List actual = PluginPackage.src.ActionsRecorder. - 162639752.
         computeTrimmedLines(String.valueOf(this.document.getText()));
-        LogPackage.src.log .767818362.log("Expected:");
-        LogPackage.src.log .767818362.log(expected);
-        LogPackage.src.log .767818362.log("Actual:");
-        LogPackage.src.log .767818362.log(actual);
+        LOG.info("Expected:");
+        LOG.info(expected);
+        LOG.info("Actual:");
+        LOG.info(actual);
         return Objects.equal(expected, actual);
     }
 
@@ -262,7 +249,7 @@ public final class ActionsRecorder implements  Disposable {
             this.actionInputEvents.remove(e);
             return;
         }
-        if (KotlinPackage.setOf(new Integer[]{Integer.valueOf(KeyEvent.VK_CONTROL), Integer.valueOf(KeyEvent.VK_ALT), Integer.valueOf(KeyEvent.VK_META), Integer.valueOf(KeyEvent.VK_SHIFT)}).contains(Integer.valueOf(e.getKeyCode())))
+        if (KotlinPackage.setOf(new Integer[]{KeyEvent.VK_CONTROL, KeyEvent.VK_ALT, KeyEvent.VK_META, KeyEvent.VK_SHIFT}).contains(Integer.valueOf(e.getKeyCode())))
             return;
         IdeEventQueue tmp90_87 = IdeEventQueue.getInstance();
         if (tmp90_87 == null) throw new NullPointerException();
@@ -272,8 +259,8 @@ public final class ActionsRecorder implements  Disposable {
             return;
         }
 
-        boolean isChar = (e.getKeyChar() == KeyEvent.CHAR_UNDEFINED ? 0 : 1) != 0 ? UIUtil.isReallyTypedEvent(e) : false;
-        boolean hasActionModifiers = !(!e.isAltDown() ? e.isControlDown() : 1) ? e.isMetaDown() : true;
+        boolean isChar = (e.getKeyChar() == KeyEvent.CHAR_UNDEFINED ? 0 : 1) != 0 && UIUtil.isReallyTypedEvent(e);
+        boolean hasActionModifiers = !e.isAltDown() ? e.isControlDown() : 1 || e.isMetaDown();
         boolean plainType = isChar ? hasActionModifiers ? 0 : true : false;
         boolean isEnter = e.getKeyCode() == KeyEvent.VK_ENTER;
 
@@ -372,7 +359,7 @@ public final class ActionsRecorder implements  Disposable {
 
 
     public final void stopRecording() {
-        LogPackage.src.log .767818362.log("Recording stopped");
+        LOG.info("Recording stopped");
         Disposer.dispose(this);
     }
 

@@ -1,7 +1,9 @@
 package org.jetbrains.codeGolf.plugin;
 
+import com.google.common.base.Preconditions;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.ui.DialogWrapper;
+import com.intellij.openapi.util.Pair;
 import com.intellij.ui.ColoredListCellRendererWrapper;
 import com.intellij.ui.JBColor;
 import com.intellij.ui.SimpleTextAttributes;
@@ -36,8 +38,7 @@ import kotlin.Pair;
 import org.jetbrains.annotations.Nullable;
 
 
-public final class StartGolfDialog extends DialogWrapper
-        implements JetObject {
+public final class StartGolfDialog extends DialogWrapper {
     private final JPanel mainPanel;
     private final JList list;
     private final Project project;
@@ -54,21 +55,23 @@ public final class StartGolfDialog extends DialogWrapper
 
 
     protected JComponent createCenterPanel() {
-        return (JComponent) this.mainPanel;
+        return this.mainPanel;
     }
 
     @Nullable
 
     public JComponent getPreferredFocusedComponent() {
-        return (JComponent) this.list;
+        return this.list;
     }
 
 
     public final GolfTask getSelectedTask() {
-        Object tmp7_4 = this.list.getSelectedValue();
-        if (tmp7_4 == null)
-            throw new TypeCastException("jet.Any? cannot be cast to org.jetbrains.codeGolf.plugin.GolfTask");
-        return (GolfTask) tmp7_4;
+        Object selectedValue = this.list.getSelectedValue();
+        if (selectedValue instanceof GolfTask) {
+            return (GolfTask) selectedValue;
+        } else {
+            throw new RuntimeException("jet.Any? cannot be cast to org.jetbrains.codeGolf.plugin.GolfTask");
+        }
     }
 
 
@@ -76,12 +79,11 @@ public final class StartGolfDialog extends DialogWrapper
         return this.project;
     }
 
-    @JetConstructor
     public StartGolfDialog(Project project, List<? extends GolfTask> loadedTasks, List<? extends UserScore> scores) {
         super(project);
         this.project = project;
 
-        this.mainPanel = new JPanel((LayoutManager) new BorderLayout());
+        this.mainPanel = new JPanel(new BorderLayout());
         setTitle("Start Code Golf");
         String serverUrl = CodeGolfConfigurableAccessor. getServerUrl();
         List tasks;
@@ -96,7 +98,7 @@ public final class StartGolfDialog extends DialogWrapper
             String tmp121_118 = BorderLayout.SOUTH;
             Preconditions.checkNotNull(tmp121_118, "BorderLayout", "SOUTH");
             this.mainPanel.add(tmp121_118, (Component) errorLabel);
-            tasks = GolfTaskManager.object$.getInstance().getPredefinedTasks();
+            tasks = GolfTaskManager.getInstance().getPredefinedTasks();
         }
         Map scoresMap;
         List tmp150_149 = scores;
@@ -111,8 +113,7 @@ public final class StartGolfDialog extends DialogWrapper
 
 
         protected void doCustomize(JList list, GolfTask value, int index, boolean selected, boolean hasFocus) {
-            if (value != null) 1;
-            if (0 != 0) return;
+
             UserScore score = (UserScore) this.scoresMap.get(value.getTaskId());
 
             if (score != null) 1;
@@ -131,8 +132,8 @@ public final class StartGolfDialog extends DialogWrapper
                             new Pair("your solution requires " + score.getUserSolution() + " keystrokes, the best requires " + score.getBestSolution(),
                                     tmp150_147);
 
-            String tooltip = (String) localPair.component1();
-            Color color = (Color) localPair.component2();
+            String tooltip = (String) localPair.getFirst();
+            Color color = (Color) localPair.getSecond();
             localPair = null;
 
             append(value.getTaskName(), new SimpleTextAttributes(SimpleTextAttributes.STYLE_PLAIN, color));
@@ -144,7 +145,6 @@ public final class StartGolfDialog extends DialogWrapper
             return this.scoresMap;
         }
 
-        @JetConstructor
         public GolfTaskRenderer(Map<String, ? extends UserScore> scoresMap) {
             this.scoresMap = scoresMap;
         }

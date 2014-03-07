@@ -1,5 +1,6 @@
 package org.jetbrains.codeGolf.plugin;
 
+import com.google.common.base.Preconditions;
 import com.intellij.ide.passwordSafe.PasswordSafe;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.ui.DialogWrapper;
@@ -29,8 +30,7 @@ import org.jetbrains.codeGolf.auth.AuthResult;
 import org.jetbrains.codeGolf.auth.JBAccountAuthHelper;
 
 
-public final class JBAccountDialog extends DialogWrapper
-        implements JetObject {
+public final class JBAccountDialog extends DialogWrapper {
     private final JTextField usernameField;
     private final JPasswordField passwordField;
     private final JCheckBox savePasswordCheckbox;
@@ -65,23 +65,17 @@ public final class JBAccountDialog extends DialogWrapper
         return this.username;
     }
 
-
-    public final void setUsername(String<set-?>) {
-        Preconditions.checkNotNull( < set - ?>,"<set-username>");
-        this.username =<set - ?>;
+    public void setUsername(String username) {
+        this.username = username;
     }
 
+    public void setPassword(String password) {
+        this.password = password;
+    }
 
     public final String getPassword() {
         return this.password;
     }
-
-
-    public final void setPassword(String<set-?>) {
-        Preconditions.checkNotNull( < set - ?>,"<set-password>");
-        this.password =<set - ?>;
-    }
-
 
     public final Action getLoginAsGuestAction() {
         return this.loginAsGuestAction;
@@ -89,13 +83,13 @@ public final class JBAccountDialog extends DialogWrapper
 
 
     protected Action[] createActions() {
-        return (Action[]) new Action[]{getOKAction(), this.loginAsGuestAction, getCancelAction()};
+        return new Action[]{getOKAction(), this.loginAsGuestAction, getCancelAction()};
     }
 
     @Nullable
 
     public JComponent getPreferredFocusedComponent() {
-        return (JComponent) this.usernameField;
+        return this.usernameField;
     }
 
 
@@ -130,9 +124,8 @@ public final class JBAccountDialog extends DialogWrapper
     }
 
     @Nullable
-
     protected JComponent createCenterPanel() {
-        return (JComponent) this.mainPanel;
+        return this.mainPanel;
     }
 
 
@@ -140,7 +133,6 @@ public final class JBAccountDialog extends DialogWrapper
         return this.project;
     }
 
-    @JetConstructor
     public JBAccountDialog(Project project) {
         super(project);
         this.project = project;
@@ -162,12 +154,11 @@ public final class JBAccountDialog extends DialogWrapper
         FormBuilder tmp88_85 = FormBuilder.createFormBuilder();
         if (tmp88_85 != null)
             tmpTernaryOp = tmp88_85
-                    .addLabeledComponent("User Name:", (JComponent) this.usernameField);
+                    .addLabeledComponent("User Name:", this.usernameField);
     }
 
 
-    public final class LoginAsGuestAction extends AbstractAction
-            implements JetObject {
+    public final class LoginAsGuestAction extends AbstractAction {
 
         public void actionPerformed(ActionEvent e) {
             Preconditions.checkNotNull(e, "actionPerformed");
@@ -175,7 +166,6 @@ public final class JBAccountDialog extends DialogWrapper
             JBAccountDialog.this.doSuperOkAction();
         }
 
-        @JetConstructor
         public LoginAsGuestAction() {
             super();
         }
