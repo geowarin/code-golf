@@ -67,8 +67,8 @@ public final class ActionsRecorder implements  Disposable {
     private int movingActionsCounter = 0;
     private int actionsCounter = 0;
     private int typingCounter = 0;
-    private ArrayList usedActions;
-    private final HashSet actionInputEvents;
+    private List<String> usedActions;
+    private final Set<InputEvent> actionInputEvents;
     private final Set<String> movingActions;
     private final Set<String> forbiddenActions;
     private final Set<String> typingActions;
@@ -86,7 +86,7 @@ public final class ActionsRecorder implements  Disposable {
         this.controlPanel = controlPanel;
     }
 
-    private final int getMovingActionsCounter() {
+    private int getMovingActionsCounter() {
         return this.movingActionsCounter;
     }
 
@@ -111,35 +111,35 @@ public final class ActionsRecorder implements  Disposable {
         this.typingCounter = typingCounter;
     }
 
-    private final ArrayList<String> getUsedActions() {
+    private List<String> getUsedActions() {
         return this.usedActions;
     }
 
-    public void setUsedActions(ArrayList usedActions) {
+    public void setUsedActions(List<String> usedActions) {
         this.usedActions = usedActions;
     }
 
-    private final HashSet<InputEvent> getActionInputEvents() {
+    private Set<InputEvent> getActionInputEvents() {
         return this.actionInputEvents;
     }
 
 
-    private final Set<String> getMovingActions() {
+    private Set<String> getMovingActions() {
         return this.movingActions;
     }
 
 
-    private final Set<String> getForbiddenActions() {
+    private Set<String> getForbiddenActions() {
         return this.forbiddenActions;
     }
 
 
-    private final Set<String> getTypingActions() {
+    private Set<String> getTypingActions() {
         return this.typingActions;
     }
 
 
-    private final boolean getDisposed() {
+    private boolean getDisposed() {
         return this.disposed;
     }
 
@@ -149,33 +149,32 @@ public final class ActionsRecorder implements  Disposable {
 
     public final void startRecording() {
         LOG.info("recording started");
-        this.document
-                .addDocumentListener((DocumentListener) new JetObject() {
+        this.document.addDocumentListener((DocumentListener) new JetObject() {
 
-                    public void beforeDocumentChange(DocumentEvent event) {
-                    }
+            public void beforeDocumentChange(DocumentEvent event) {
+            }
 
-                    public void documentChanged(DocumentEvent event) {
-                        if (this.this$0.isTaskSolved()) {
-                            Application tmp13_10 = ApplicationManager.getApplication();
-                            if (tmp13_10 == null) throw new NullPointerException();
-                            tmp13_10.invokeLater((Runnable) new Runnable() {
-                                public final void run() {
-                                    if (this.this$0.this$0.isTaskSolved())
-                                        try {
-                                            this.this$0.this$0.sendSolutionToServer();
+            public void documentChanged(DocumentEvent event) {
+                if (this.this$0.isTaskSolved()) {
+                    Application tmp13_10 = ApplicationManager.getApplication();
+                    if (tmp13_10 == null) throw new NullPointerException();
+                    tmp13_10.invokeLater((Runnable) new Runnable() {
+                        public final void run() {
+                            if (this.this$0.this$0.isTaskSolved())
+                                try {
+                                    this.this$0.this$0.sendSolutionToServer();
 
-                                            this.this$0.this$0.stopRecording();
-                                        } finally {
-                                            this.this$0.this$0.stopRecording();
-                                        }
-
+                                    this.this$0.this$0.stopRecording();
+                                } finally {
+                                    this.this$0.this$0.stopRecording();
                                 }
-                            });
+
                         }
-                    }
+                    });
                 }
-                        , this);
+            }
+        }
+                , this);
         ActionManager tmp29_26 = ActionManager.getInstance();
         if (tmp29_26 != null) tmp29_26
                 .addAnActionListener((AnActionListener) new JetObject() {

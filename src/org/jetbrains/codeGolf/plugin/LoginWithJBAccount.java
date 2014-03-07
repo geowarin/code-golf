@@ -8,13 +8,13 @@ import org.jetbrains.codeGolf.auth.JBAccountAuthHelper;
 
 public final class LoginWithJBAccount {
 
-    public static final Pair<String, String> showDialogAndLogin(Project project) {
+    public static Pair<String, String> showDialogAndLogin(Project project) {
         Preconditions.checkNotNull(project, "showDialogAndLogin");
         String username = CodeGolfConfigurableAccessor.getUserName();
         String password = CodeGolfConfigurableAccessor.getUserPassword(project);
 
         boolean userNameIsEmpty = StringUtil.isEmpty(username);
-        if (userNameIsEmpty || (!userNameIsEmpty && StringUtil.isEmpty(password))) {
+        if (userNameIsEmpty || StringUtil.isEmpty(password)) {
             JBAccountDialog dlg = new JBAccountDialog(project);
             dlg.show();
             if (!dlg.isOK()) {
@@ -25,6 +25,6 @@ public final class LoginWithJBAccount {
         }
         String encodedPassword = JBAccountAuthHelper.encodePassword(password);
         if (encodedPassword == null) throw new NullPointerException();
-        return new Pair(username, encodedPassword);
+        return new Pair<String, String>(username, encodedPassword);
     }
 }

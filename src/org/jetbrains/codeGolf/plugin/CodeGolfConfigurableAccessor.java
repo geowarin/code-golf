@@ -10,12 +10,12 @@ public final class CodeGolfConfigurableAccessor {
     static final String JB_ACCOUNT_FOR_CODE_GOLF_KEY = "JBAccountForCodeGolf";
 
 
-    public static final String getJB_ACCOUNT_FOR_CODE_GOLF_KEY() {
+    public static String getJB_ACCOUNT_FOR_CODE_GOLF_KEY() {
         return JB_ACCOUNT_FOR_CODE_GOLF_KEY;
     }
 
 
-    public static final String getServerUrl() {
+    public static String getServerUrl() {
         Preconditions.checkNotNull(CodeGolfSettings.DEFAULT_SERVER_URL, "CodeGolfSettings", "DEFAULT_SERVER_URL");
         String defaultServerUrl = CodeGolfSettings.DEFAULT_SERVER_URL;
         PropertiesComponent propertiesComponent = PropertiesComponent.getInstance();
@@ -27,7 +27,7 @@ public final class CodeGolfConfigurableAccessor {
     }
 
 
-    public static final String getUserName() {
+    public static String getUserName() {
         PropertiesComponent propertiesComponent = PropertiesComponent.getInstance();
         if (propertiesComponent == null) throw new NullPointerException();
         Preconditions.checkNotNull(CodeGolfSettings.USER_NAME_PROPERTY, "CodeGolfSettings", "USER_NAME_PROPERTY");
@@ -35,7 +35,7 @@ public final class CodeGolfConfigurableAccessor {
         return propertiesComponent.getValue(CodeGolfSettings.USER_NAME_PROPERTY, "");
     }
 
-    public static final void setUserName(String username) {
+    public static void setUserName(String username) {
         Preconditions.checkNotNull(username, "setUserName");
         PropertiesComponent propertiesComponent = PropertiesComponent.getInstance();
         if (propertiesComponent == null) throw new NullPointerException();
@@ -44,14 +44,12 @@ public final class CodeGolfConfigurableAccessor {
     }
 
 
-    public static final String getUserPassword(Project project) {
+    public static String getUserPassword(Project project) {
         Preconditions.checkNotNull(project, "getUserPassword");
         PasswordSafe passwordSafe = PasswordSafe.getInstance();
         if (passwordSafe == null) throw new NullPointerException();
-        String userPassword = null;
         try {
-            userPassword = passwordSafe.getPassword(project, LoginWithJBAccountAction.class, JB_ACCOUNT_FOR_CODE_GOLF_KEY);
-            return userPassword;
+            return passwordSafe.getPassword(project, LoginWithJBAccountAction.class, JB_ACCOUNT_FOR_CODE_GOLF_KEY);
         } catch (PasswordSafeException e) {
             throw new RuntimeException(e);
         }

@@ -19,7 +19,7 @@ import java.util.List;
 
 public class RestClientUtil {
 
-    private static final Logger LOG = Logger.getInstance(RestClientUtil.class.getName());
+    private static final Logger LOG = Logger.getInstance("#org.jetbrains.codeGolf");
 
     public static List<GolfTask> loadTasks(String serverUrl) {
         Client client = Client.create();
@@ -27,12 +27,8 @@ public class RestClientUtil {
             WebResource webResource = client.resource(getActualServerUrl(serverUrl, client) + "/task/list.json");
 
             ClientResponse response = webResource.type(MediaType.APPLICATION_JSON_TYPE).get(ClientResponse.class);
-            String output;
-            try {
-                LOG.info("Loading tasks from server...");
-                output = response.getEntity(String.class);
-            } finally {
-            }
+            LOG.info("Loading tasks from server...");
+            String output = response.getEntity(String.class);
             LOG.info("Loaded from server:");
             LOG.info(output);
             List tasks = JsonSerializer.deserializeTasks(output);
@@ -49,14 +45,9 @@ public class RestClientUtil {
         Client client = Client.create();
         try {
             WebResource webResource = client.resource(getActualServerUrl(serverUrl, client) + "/results.json/" + username);
-
             ClientResponse response = webResource.type(MediaType.APPLICATION_JSON_TYPE).get(ClientResponse.class);
-            String output;
-            try {
-                LOG.info("Loading scores from server...");
-                output = response.getEntity(String.class);
-            } finally {
-            }
+            LOG.info("Loading scores from server...");
+            String output = response.getEntity(String.class);
             LOG.info("Loaded from server:");
             LOG.info(output);
             List scores = JsonSerializer.deserializeScores(output);

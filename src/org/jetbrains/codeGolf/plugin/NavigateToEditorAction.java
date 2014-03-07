@@ -20,9 +20,10 @@ public final class NavigateToEditorAction extends AnAction {
     private final Document document;
 
     public void actionPerformed(AnActionEvent e) {
-        VirtualFile file;
-        FileDocumentManager tmp3_0 = FileDocumentManager.getInstance();
-        if (tmp3_0 != null) tmpTernaryOp = tmp3_0.getFile(this.document);
+        // TODO
+//        VirtualFile file;
+//        FileDocumentManager tmp3_0 = FileDocumentManager.getInstance();
+//        if (tmp3_0 != null) tmpTernaryOp = tmp3_0.getFile(this.document);
     }
 
 
@@ -48,5 +49,6 @@ public final class NavigateToEditorAction extends AnAction {
         //   26: aload_1
         //   27: putfield 34	org/jetbrains/codeGolf/plugin/NavigateToEditorAction:document	Lcom/intellij/openapi/editor/Document;
         //   30: return
+        this.document = document;
     }
 }

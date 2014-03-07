@@ -29,7 +29,7 @@ public class ExportImportSolutionsHelper {
             String solutions = FileUtil.loadFile(file);
             String path = "/solution/import" + params;
             Pair result = RestClientUtil.postJsonToServer(solutions, serverUrl, path);
-            System.out.println("Server " + (String) result.getSecond() + " answered: " + (String) result.getFirst());
+            System.out.println("Server " + result.getSecond() + " answered: " + result.getFirst());
         } else if (args[0].equals("export")) {
             RestClientUtil.loadJsonToFile(serverUrl, "/solution/export" + params, file);
             System.out.println("Solutions from " + serverUrl + " exported to " + file.getAbsolutePath());

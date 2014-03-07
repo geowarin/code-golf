@@ -13,7 +13,6 @@
     <orderEntry type="module" module-name="common" exported="" />
     <orderEntry type="module" module-name="common" />
     <orderEntry type="library" name="com.sun.jersey:jersey-json:1.12" level="project" />
-    <orderEntry type="library" name="com.google.guava:guava-tests:15.0" level="project" />
   </component>
 </module>
 

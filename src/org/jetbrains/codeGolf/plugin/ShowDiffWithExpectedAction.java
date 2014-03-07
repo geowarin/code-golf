@@ -3,23 +3,12 @@ package org.jetbrains.codeGolf.plugin;
 import com.google.common.base.Preconditions;
 import com.intellij.openapi.actionSystem.AnAction;
 import com.intellij.openapi.actionSystem.AnActionEvent;
-import com.intellij.openapi.diff.DiffContent;
 import com.intellij.openapi.diff.DiffManager;
-import com.intellij.openapi.diff.DiffRequest;
 import com.intellij.openapi.diff.DiffTool;
 import com.intellij.openapi.diff.SimpleContent;
 import com.intellij.openapi.diff.SimpleDiffRequest;
 import com.intellij.openapi.editor.Document;
 import com.intellij.openapi.project.Project;
-
-import javax.swing.Icon;
-
-import jet.JetObject;
-
-import jet.runtime.typeinfo.JetClass;
-import jet.runtime.typeinfo.JetConstructor;
-import jet.runtime.typeinfo.JetMethod;
-import jet.runtime.typeinfo.JetValueParameter;
 
 
 public final class ShowDiffWithExpectedAction extends AnAction {
@@ -28,19 +17,22 @@ public final class ShowDiffWithExpectedAction extends AnAction {
 
 
     public void actionPerformed(AnActionEvent e) {
-        if (e == null) throw new NullPointerException();
         Project project = e.getProject();
         if (project == null) throw new NullPointerException();
+
         SimpleDiffRequest diffData = new SimpleDiffRequest(project, "Difference");
         diffData.setContents(new SimpleContent(this.targetCode), new SimpleContent(this.document.getText()));
         diffData.setContentTitles("Expected Code", "Actual Code");
         Preconditions.checkNotNull(DiffTool.HINT_SHOW_FRAME, "DiffTool", "HINT_SHOW_FRAME");
         diffData.addHint(DiffTool.HINT_SHOW_FRAME);
         diffData.setGroupKey("#CodeGolfDiff");
+
         DiffManager diffManager = DiffManager.getInstance();
         if (diffManager == null) throw new NullPointerException();
+
         DiffTool ideaDiffTool = diffManager.getIdeaDiffTool();
         if (ideaDiffTool == null) throw new NullPointerException();
+
         ideaDiffTool.show(diffData);
     }
 
@@ -55,6 +47,8 @@ public final class ShowDiffWithExpectedAction extends AnAction {
     }
 
     public ShowDiffWithExpectedAction(String targetCode, Document document) {
+        this.targetCode = targetCode;
+        this.document = document;
         // Byte code:
         //   0: aload_1
         //   1: ldc 132

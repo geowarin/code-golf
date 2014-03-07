@@ -9,6 +9,7 @@ import com.intellij.openapi.ui.Messages;
 import com.intellij.ui.HyperlinkLabel;
 import com.intellij.util.ui.FormBuilder;
 import com.jgoodies.common.base.Strings;
+import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.jetbrains.codeGolf.auth.AuthResult;
 import org.jetbrains.codeGolf.auth.JBAccountAuthHelper;
@@ -69,6 +70,7 @@ public final class JBAccountDialog extends DialogWrapper {
     }
 
 
+    @NotNull
     protected Action[] createActions() {
         return new Action[]{getOKAction(), this.loginAsGuestAction, getCancelAction()};
     }
@@ -80,10 +82,12 @@ public final class JBAccountDialog extends DialogWrapper {
 
 
     protected void doOKAction() {
-        String tmp8_5 = this.usernameField.getText();
-        if (tmp8_5 == null) throw new NullPointerException();
-        this.username = tmp8_5;
+        String userNameText = this.usernameField.getText();
+        Preconditions.checkNotNull(userNameText);
+
+        this.username = userNameText;
         if (Strings.isNotEmpty(this.username)) {
+
             char[] aThispasswordFieldPassword = this.passwordField.getPassword();
             if (aThispasswordFieldPassword == null) throw new NullPointerException();
             this.password = new String(aThispasswordFieldPassword);

@@ -11,7 +11,6 @@ import org.jetbrains.annotations.NonNls;
 import org.jetbrains.annotations.Nullable;
 
 import javax.swing.*;
-import java.awt.*;
 
 
 public final class CodeGolfConfigurable implements Configurable {
@@ -41,7 +40,8 @@ public final class CodeGolfConfigurable implements Configurable {
 
 
     public boolean isModified() {
-        return !(Objects.equal(CodeGolfConfigurableAccessor.getServerUrl(), this.urlField.getText()) ^ true) ? Objects.equal(CodeGolfConfigurableAccessor.getUserName(), this.userNameField.getText()) ^ true : true;
+        return !Objects.equal(CodeGolfConfigurableAccessor.getServerUrl(), this.urlField.getText())
+                || !Objects.equal(CodeGolfConfigurableAccessor.getUserName(), this.userNameField.getText());
     }
 
 
@@ -80,7 +80,7 @@ public final class CodeGolfConfigurable implements Configurable {
     @Nullable
     @NonNls
     public String getHelpTopic() {
-        return (String) null;
+        return null;
     }
 
 

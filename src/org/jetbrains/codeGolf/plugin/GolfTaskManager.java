@@ -10,7 +10,7 @@ import java.util.List;
 
 
 public final class GolfTaskManager {
-    private final List tasks = Arrays.asList(new GolfTask(null, null, "Hello World", "public class HelloWorld {}", 0, "public class HelloWorld {\n    public static void main(String[] args) {\n        System.out.println(\"Hello, world!\");\n    }\n}\n        ", null));
+    private final List<GolfTask> tasks = Arrays.asList(new GolfTask(null, null, "Hello World", "public class HelloWorld {}", 0, "public class HelloWorld {\n    public static void main(String[] args) {\n        System.out.println(\"Hello, world!\");\n    }\n}\n        ", null));
 
     public final List<GolfTask> getTasks() {
         return this.tasks;
@@ -18,14 +18,14 @@ public final class GolfTaskManager {
 
     public final List<GolfTask> loadTasks(String serverUrl) {
         Preconditions.checkNotNull(serverUrl, "loadTasks");
-        return new ArrayList(RestClientUtil.loadTasks(serverUrl));
+        return new ArrayList<GolfTask>(RestClientUtil.loadTasks(serverUrl));
     }
 
 
     public final List<UserScore> loadScores(String serverUrl, String username) {
         Preconditions.checkNotNull(serverUrl, "loadScores");
         Preconditions.checkNotNull(username, "loadScores");
-        return new ArrayList(RestClientUtil.loadScores(serverUrl, username));
+        return new ArrayList<UserScore>(RestClientUtil.loadScores(serverUrl, username));
     }
 
 
@@ -38,7 +38,7 @@ public final class GolfTaskManager {
         this.tasks.add(task);
     }
 
-    public static final GolfTaskManager getInstance() {
+    public static GolfTaskManager getInstance() {
         return ServiceManager.getService(GolfTaskManager.class);
     }
 }
