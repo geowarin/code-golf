@@ -54,7 +54,7 @@ import jet.runtime.typeinfo.JetMethod;
 import jet.runtime.typeinfo.JetValueParameter;
 import kotlin.KotlinPackage;
 
-@JetClass(signature="Ljavax/swing/JPanel;Lcom/intellij/openapi/Disposable;", flags=16, abiVersion=6)
+
 public final class RecordingControlPanel extends JPanel
   implements JetObject, Disposable
 {
@@ -69,49 +69,49 @@ public final class RecordingControlPanel extends JPanel
   private final String targetCode;
   private final ActionsRecorder recorder;
 
-  @JetMethod(flags=9, propertyType="?Lcom/intellij/openapi/editor/Editor;")
+
   private final Editor getMyEditor()
   {
     return this.myEditor;
   }
 
-  @JetMethod(flags=9, propertyType="?Lcom/intellij/openapi/editor/Editor;")
-  private final void setMyEditor(@JetValueParameter(name="<set-?>", type="?Lcom/intellij/openapi/editor/Editor;") Editor <set-?>)
+
+  private final void setMyEditor( Editor <set-?>)
   {
     this.myEditor = <set-?>;
   }
 
-  @JetMethod(flags=9, propertyType="Ljavax/swing/JLabel;")
+
   private final JLabel getMyText()
   {
     return this.myText;
   }
 
-  @JetMethod(flags=17, propertyType="?Lcom/intellij/openapi/ui/popup/JBPopup;")
+
   public final JBPopup getMyHint()
   {
     return this.myHint;
   }
 
-  @JetMethod(flags=9, propertyType="I")
+
   private final int getMAX_WIDTH()
   {
     return this.MAX_WIDTH;
   }
 
-  @JetMethod(flags=9, propertyType="I")
+
   private final int getMAX_HEIGHT()
   {
     return this.MAX_HEIGHT;
   }
 
-  @JetMethod(flags=9, propertyType="I")
+
   private final int getMIN_HEIGHT()
   {
     return this.MIN_HEIGHT;
   }
 
-  @JetMethod(returnType="V")
+
   public void dispose()
   {
     if (this.myHint == null) 1; if ((0 != 0 ? this.myHint.isDisposed() ? 0 : 1 : 0) != 0) {
@@ -119,13 +119,13 @@ public final class RecordingControlPanel extends JPanel
     }
     if (this.myEditor == null) 1; if (0 != 0)
     {
-      EditorFactory tmp62_59 = EditorFactory.getInstance(); if (tmp62_59 == null) Intrinsics.throwNpe();
-      Editor tmp73_70 = this.myEditor; if (tmp73_70 == null) Intrinsics.throwNpe(); tmp62_59.releaseEditor(tmp73_70);
+      EditorFactory tmp62_59 = EditorFactory.getInstance(); if (tmp62_59 == null) throw new NullPointerException();
+      Editor tmp73_70 = this.myEditor; if (tmp73_70 == null) throw new NullPointerException(); tmp62_59.releaseEditor(tmp73_70);
       this.myEditor = ((Editor)null);
     }
   }
 
-  @JetMethod(flags=16, returnType="Ljavax/swing/JComponent;")
+
   public final JComponent createControlComponent()
   {
     DefaultActionGroup group = new DefaultActionGroup(new AnAction[] { 
@@ -134,30 +134,30 @@ public final class RecordingControlPanel extends JPanel
       (AnAction)Separator.getInstance(), 
       (AnAction)new TryAgainAction(this.recorder), 
       (AnAction)new StopSolvingAction(this.recorder) });
-    ActionManager tmp96_93 = ActionManager.getInstance(); if (tmp96_93 == null) Intrinsics.throwNpe();
-    ActionToolbar tmp114_111 = tmp96_93.createActionToolbar("CodeGolfToolbar", (ActionGroup)group, 1); if (tmp114_111 == null) Intrinsics.throwNpe();
-    JComponent tmp126_121 = tmp114_111.getComponent(); if (tmp126_121 == null) Intrinsics.throwNpe(); return tmp126_121;
+    ActionManager tmp96_93 = ActionManager.getInstance(); if (tmp96_93 == null) throw new NullPointerException();
+    ActionToolbar tmp114_111 = tmp96_93.createActionToolbar("CodeGolfToolbar", (ActionGroup)group, 1); if (tmp114_111 == null) throw new NullPointerException();
+    JComponent tmp126_121 = tmp114_111.getComponent(); if (tmp126_121 == null) throw new NullPointerException(); return tmp126_121;
   }
-  @JetMethod(returnType="V")
-  public final void notifyUser(@JetValueParameter(name="actionsCounter", type="I") int actionsCounter, @JetValueParameter(name="movingActionsCounter", type="I") int movingActionsCounter, @JetValueParameter(name="typingCounter", type="I") int typingCounter) {
+
+  public final void notifyUser( int actionsCounter,  int movingActionsCounter,  int typingCounter) {
     notifyUser("<html>Actions: <b>" + actionsCounter + "</b>.&nbsp; Moving actions: <b>" + movingActionsCounter + "</b>.&nbsp; Chars: <b>" + typingCounter + "</b>.</html>");
   }
-  @JetMethod(returnType="V")
-  public final void notifyUser(@JetValueParameter(name="message", type="Ljava/lang/String;") String message) {
+
+  public final void notifyUser( String message) {
     Intrinsics.checkParameterIsNotNull(message, "notifyUser"); this.myText.setText(message);
     this.myText.revalidate();
     this.myText.repaint();
   }
-  @JetMethod(flags=16, returnType="V")
+
   public final void showHint() {
     JBPopup hint = this.myHint;
     if (hint != null) 1; if (0 != 0)
       return;
-    WindowManager tmp19_16 = WindowManager.getInstance(); if (tmp19_16 == null) Intrinsics.throwNpe();
-    IdeFrame tmp33_30 = tmp19_16.getIdeFrame(this.project); if (tmp33_30 == null) Intrinsics.throwNpe();
-    JComponent tmp45_40 = tmp33_30.getComponent(); if (tmp45_40 == null) Intrinsics.throwNpe(); JComponent frame = tmp45_40;
+    WindowManager tmp19_16 = WindowManager.getInstance(); if (tmp19_16 == null) throw new NullPointerException();
+    IdeFrame tmp33_30 = tmp19_16.getIdeFrame(this.project); if (tmp33_30 == null) throw new NullPointerException();
+    JComponent tmp45_40 = tmp33_30.getComponent(); if (tmp45_40 == null) throw new NullPointerException(); JComponent frame = tmp45_40;
     Rectangle tmp57_54 = frame.getVisibleRect(); Intrinsics.checkReturnedValueIsNotNull(tmp57_54, "JComponent", "getVisibleRect"); Rectangle visibleRect = tmp57_54;
-    Dimension tmp70_67 = getPreferredSize(); if (tmp70_67 == null) Intrinsics.throwNpe(); Dimension contentSize = tmp70_67;
+    Dimension tmp70_67 = getPreferredSize(); if (tmp70_67 == null) throw new NullPointerException(); Dimension contentSize = tmp70_67;
     JBPopup tmp85_84 = hint; if (tmp85_84 == null) throw new TypeCastException("com.intellij.openapi.ui.popup.JBPopup? cannot be cast to com.intellij.ui.popup.AbstractPopup");
     Dimension tmp105_102 = ((AbstractPopup)tmp85_84).getHeaderPreferredSize(); Intrinsics.checkReturnedValueIsNotNull(tmp105_102, "AbstractPopup", "getHeaderPreferredSize"); int popupHeight = contentSize.height + tmp105_102.height;
     int newPopupHeight = Math.max(Math.min(popupHeight, visibleRect.height / 2), 150);
@@ -169,13 +169,13 @@ public final class RecordingControlPanel extends JPanel
     Point point = new Point(visibleRect.x + 5, visibleRect.y + visibleRect.height - newPopupHeight - 20);
     ((AbstractPopup)hint).show(new RelativePoint((Component)frame, point));
   }
-  @JetMethod(flags=16, returnType="Lcom/intellij/openapi/editor/Editor;")
-  public final Editor createViewer(@JetValueParameter(name="code", type="Ljava/lang/String;") String code) {
+
+  public final Editor createViewer( String code) {
     Intrinsics.checkParameterIsNotNull(code, "createViewer");
-    EditorFactory tmp10_7 = EditorFactory.getInstance(); if (tmp10_7 == null) Intrinsics.throwNpe();
+    EditorFactory tmp10_7 = EditorFactory.getInstance(); if (tmp10_7 == null) throw new NullPointerException();
     Document tmp24_21 = tmp10_7.createDocument((CharSequence)code); Intrinsics.checkReturnedValueIsNotNull(tmp24_21, "EditorFactory", "createDocument"); Document document = tmp24_21;
-    EditorFactory tmp38_35 = EditorFactory.getInstance(); if (tmp38_35 == null) Intrinsics.throwNpe();
-    Editor tmp49_46 = tmp38_35.createViewer(document); if (tmp49_46 == null) Intrinsics.throwNpe(); Editor editor = tmp49_46;
+    EditorFactory tmp38_35 = EditorFactory.getInstance(); if (tmp38_35 == null) throw new NullPointerException();
+    Editor tmp49_46 = tmp38_35.createViewer(document); if (tmp49_46 == null) throw new NullPointerException(); Editor editor = tmp49_46;
     EditorSettings tmp63_58 = editor.getSettings(); Intrinsics.checkReturnedValueIsNotNull(tmp63_58, "Editor", "getSettings"); EditorSettings settings = tmp63_58;
     settings.setAdditionalLinesCount(0);
     settings.setAdditionalColumnsCount(1);
@@ -188,13 +188,13 @@ public final class RecordingControlPanel extends JPanel
     settings.setWheelFontChangeEnabled(0);
     settings.setLineCursorWidth(1);
     Editor tmp170_169 = editor; if (tmp170_169 == null) throw new TypeCastException("com.intellij.openapi.editor.Editor cannot be cast to com.intellij.openapi.editor.ex.EditorEx");
-    EditorHighlighterFactory tmp191_188 = EditorHighlighterFactory.getInstance(); if (tmp191_188 == null) Intrinsics.throwNpe();
+    EditorHighlighterFactory tmp191_188 = EditorHighlighterFactory.getInstance(); if (tmp191_188 == null) throw new NullPointerException();
     LanguageFileType tmp205_202 = StdFileTypes.JAVA; Intrinsics.checkFieldIsNotNull(tmp205_202, "StdFileTypes", "JAVA");
-    EditorHighlighter tmp221_218 = tmp191_188.createEditorHighlighter(this.project, (FileType)tmp205_202); if (tmp221_218 == null) Intrinsics.throwNpe(); ((EditorEx)tmp170_169).setHighlighter(tmp221_218);
+    EditorHighlighter tmp221_218 = tmp191_188.createEditorHighlighter(this.project, (FileType)tmp205_202); if (tmp221_218 == null) throw new NullPointerException(); ((EditorEx)tmp170_169).setHighlighter(tmp221_218);
     ((EditorEx)editor).getSelectionModel().addSelectionListener((SelectionListener)new JetObject()
     {
-      @JetMethod(returnType="V")
-      public void selectionChanged(@JetValueParameter(name="event", type="?Lcom/intellij/openapi/editor/event/SelectionEvent;") SelectionEvent event)
+
+      public void selectionChanged( SelectionEvent event)
       {
         SelectionModel tmp9_4 = this.$editor.getSelectionModel(); Intrinsics.checkReturnedValueIsNotNull(tmp9_4, "Editor", "getSelectionModel"); tmp9_4.removeSelection();
       }
@@ -202,32 +202,32 @@ public final class RecordingControlPanel extends JPanel
     return editor;
   }
 
-  @JetMethod(flags=17, propertyType="Lcom/intellij/openapi/project/Project;")
+
   public final Project getProject()
   {
     return this.project;
   }
 
-  @JetMethod(flags=17, propertyType="Lcom/intellij/openapi/editor/Document;")
+
   public final Document getDocument()
   {
     return this.document;
   }
 
-  @JetMethod(flags=17, propertyType="Ljava/lang/String;")
+
   public final String getTargetCode()
   {
     return this.targetCode;
   }
 
-  @JetMethod(flags=17, propertyType="Lorg/jetbrains/codeGolf/plugin/ActionsRecorder;")
+
   public final ActionsRecorder getRecorder()
   {
     return this.recorder;
   }
 
   @JetConstructor
-  public RecordingControlPanel(@JetValueParameter(name="project", type="Lcom/intellij/openapi/project/Project;") Project project, @JetValueParameter(name="document", type="Lcom/intellij/openapi/editor/Document;") Document document, @JetValueParameter(name="targetCode", type="Ljava/lang/String;") String targetCode, @JetValueParameter(name="recorder", type="Lorg/jetbrains/codeGolf/plugin/ActionsRecorder;") ActionsRecorder recorder)
+  public RecordingControlPanel( Project project,  Document document,  String targetCode,  ActionsRecorder recorder)
   {
     this.project = project; this.document = document; this.targetCode = targetCode; this.recorder = recorder; this.MAX_WIDTH = 500; this.MAX_HEIGHT = 
       300; this.MIN_HEIGHT = 
@@ -236,7 +236,7 @@ public final class RecordingControlPanel extends JPanel
     Disposer.register((Disposable)this.recorder, this);
     setLayout((LayoutManager)new BorderLayout());
     this.myEditor = createViewer(this.targetCode);
-    Editor tmp115_112 = this.myEditor; if (tmp115_112 == null) Intrinsics.throwNpe();
+    Editor tmp115_112 = this.myEditor; if (tmp115_112 == null) throw new NullPointerException();
     JComponent tmp127_122 = tmp115_112.getComponent(); Intrinsics.checkReturnedValueIsNotNull(tmp127_122, "Editor", "getComponent"); JComponent component = tmp127_122;
     component.setEnabled(0);
 
@@ -250,7 +250,7 @@ public final class RecordingControlPanel extends JPanel
     String tmp289_286 = BorderLayout.NORTH; Intrinsics.checkFieldIsNotNull(tmp289_286, "BorderLayout", "NORTH"); add((Component)topPanel, tmp289_286);
     String tmp311_308 = BorderLayout.CENTER; Intrinsics.checkFieldIsNotNull(tmp311_308, "BorderLayout", "CENTER"); add((Component)component, tmp311_308);
     Border tmp332_329 = BorderFactory.createEmptyBorder(0, 3, 3, 3); Intrinsics.checkReturnedValueIsNotNull(tmp332_329, "BorderFactory", "createEmptyBorder"); setBorder(tmp332_329);
-    JBPopupFactory tmp349_346 = JBPopupFactory.getInstance(); if (tmp349_346 == null) Intrinsics.throwNpe();
+    JBPopupFactory tmp349_346 = JBPopupFactory.getInstance(); if (tmp349_346 == null) throw new NullPointerException();
     ComponentPopupBuilder tmp361_358 = tmp349_346.createComponentPopupBuilder(this, this); Intrinsics.checkReturnedValueIsNotNull(tmp361_358, "JBPopupFactory", "createComponentPopupBuilder"); this.myHint = ((JBPopup)KotlinPackage.with(tmp361_358, (ExtensionFunction0)new ExtensionFunctionImpl0()
     {
       public final JBPopup invoke(ComponentPopupBuilder $receiver)

@@ -36,26 +36,26 @@ import jet.runtime.typeinfo.JetValueParameter;
 import kotlin.KotlinPackage;
 import kotlin.Pair;
 
-@JetClass(signature="Lcom/intellij/openapi/actionSystem/AnAction;", abiVersion=6)
+
 public final class StartGolfAction extends AnAction
   implements JetObject
 {
   private boolean isRecording = false;
 
-  @JetMethod(flags=17, propertyType="Z")
+
   public final boolean getIsRecording()
   {
     return this.isRecording;
   }
 
-  @JetMethod(flags=17, propertyType="Z")
-  public final void setIsRecording(@JetValueParameter(name="<set-?>", type="Z") boolean <set-?>)
+
+  public final void setIsRecording( boolean <set-?>)
   {
     this.isRecording = <set-?>;
   }
 
-  @JetMethod(returnType="V")
-  public void update(@JetValueParameter(name="e", type="?Lcom/intellij/openapi/actionSystem/AnActionEvent;") AnActionEvent e)
+
+  public void update( AnActionEvent e)
   {
     AnActionEvent tmp1_0 = e; if (tmp1_0 != null)
     {
@@ -63,8 +63,8 @@ public final class StartGolfAction extends AnAction
     }
   }
 
-  @JetMethod(returnType="V")
-  public void actionPerformed(@JetValueParameter(name="anActionEvent", type="?Lcom/intellij/openapi/actionSystem/AnActionEvent;") AnActionEvent anActionEvent)
+
+  public void actionPerformed( AnActionEvent anActionEvent)
   {
     if (!this.isRecording)
     {
@@ -73,8 +73,8 @@ public final class StartGolfAction extends AnAction
     }
   }
 
-  @JetMethod(flags=8, returnType="V")
-  private final void startTask(@JetValueParameter(name="task", type="Lorg/jetbrains/codeGolf/plugin/GolfTask;") GolfTask task, @JetValueParameter(name="project", type="Lcom/intellij/openapi/project/Project;") Project project, @JetValueParameter(name="username", type="Ljava/lang/String;") String username, @JetValueParameter(name="password", type="Ljava/lang/String;") String password)
+
+  private final void startTask( GolfTask task,  Project project,  String username,  String password)
   {
     VirtualFile file2 = createFile(project, task.getTaskName(), task.getInitialCode());
     if (file2 != null) 1; if (0 != 0) return;
@@ -85,8 +85,8 @@ public final class StartGolfAction extends AnAction
     FileEditorManager tmp51_48 = FileEditorManager.getInstance(project); if (tmp51_48 != null) tmpTernaryOp = tmp51_48.openTextEditor(descriptor, 1);
   }
 
-  @JetMethod(flags=8, returnType="?Lcom/intellij/openapi/vfs/VirtualFile;")
-  private final VirtualFile createFile(@JetValueParameter(name="project", type="?Lcom/intellij/openapi/project/Project;") Project project, @JetValueParameter(name="taskName", type="?Ljava/lang/String;") String taskName, @JetValueParameter(name="text", type="?Ljava/lang/String;") String text)
+
+  private final VirtualFile createFile( Project project,  String taskName,  String text)
   {
     String className;
     if (text == null) 1; if ((0 != 0 ? KotlinPackage.length(text) <= 0 ? 0 : 1 : 0) != 0)
@@ -95,7 +95,7 @@ public final class StartGolfAction extends AnAction
       PsiFileFactory tmp34_31 = PsiFileFactory.getInstance(project); if (tmp34_31 != null)
       {
         LanguageFileType tmp44_41 = StdFileTypes.JAVA; Intrinsics.checkFieldIsNotNull(tmp44_41, "StdFileTypes", "JAVA");
-        String tmp58_57 = text; if (tmp58_57 == null) Intrinsics.throwNpe();
+        String tmp58_57 = text; if (tmp58_57 == null) throw new NullPointerException();
         PsiFile tmp71_68 = tmp34_31.createFileFromText("A.java", (FileType)tmp44_41, (CharSequence)tmp58_57); Intrinsics.checkReturnedValueIsNotNull(tmp71_68, "PsiFileFactory", "createFileFromText"); tmpTernaryOp = tmp71_68;
       }
     }

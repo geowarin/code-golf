@@ -13,27 +13,27 @@ import jet.runtime.typeinfo.JetConstructor;
 import jet.runtime.typeinfo.JetMethod;
 import jet.runtime.typeinfo.JetValueParameter;
 
-@JetClass(signature="Lcom/intellij/openapi/actionSystem/AnAction;", flags=16, abiVersion=6)
+
 public final class NavigateToEditorAction extends AnAction
   implements JetObject
 {
   private final Document document;
 
-  @JetMethod(returnType="V")
-  public void actionPerformed(@JetValueParameter(name="e", type="?Lcom/intellij/openapi/actionSystem/AnActionEvent;") AnActionEvent e)
+
+  public void actionPerformed( AnActionEvent e)
   {
     VirtualFile file;
     FileDocumentManager tmp3_0 = FileDocumentManager.getInstance(); if (tmp3_0 != null) tmpTernaryOp = tmp3_0.getFile(this.document);
   }
 
-  @JetMethod(flags=17, propertyType="Lcom/intellij/openapi/editor/Document;")
+
   public final Document getDocument()
   {
     return this.document;
   }
 
   @JetConstructor
-  public NavigateToEditorAction(@JetValueParameter(name="document", type="Lcom/intellij/openapi/editor/Document;") Document document)
+  public NavigateToEditorAction( Document document)
   {
     // Byte code:
     //   0: aload_1

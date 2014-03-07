@@ -15,12 +15,12 @@ import jet.runtime.typeinfo.JetConstructor;
 import jet.runtime.typeinfo.JetMethod;
 import jet.runtime.typeinfo.JetValueParameter;
 
-@JetClass(signature="Lorg/jetbrains/codeGolf/plugin/writer/AdminActionBase;", abiVersion=6)
+
 public final class CreateTransformThisClassTaskAction extends AdminActionBase
   implements JetObject
 {
-  @JetMethod(flags=32, returnType="V")
-  protected void doAdminAction(@JetValueParameter(name="project", type="Lcom/intellij/openapi/project/Project;") Project project, @JetValueParameter(name="anActionEvent", type="Lcom/intellij/openapi/actionSystem/AnActionEvent;") AnActionEvent anActionEvent, @JetValueParameter(name="username", type="Ljava/lang/String;") String username, @JetValueParameter(name="password", type="Ljava/lang/String;") String password)
+
+  protected void doAdminAction( Project project,  AnActionEvent anActionEvent,  String username,  String password)
   {
     Intrinsics.checkParameterIsNotNull(project, "doAdminAction"); Intrinsics.checkParameterIsNotNull(anActionEvent, "doAdminAction"); Intrinsics.checkParameterIsNotNull(username, "doAdminAction"); Intrinsics.checkParameterIsNotNull(password, "doAdminAction");
     Editor editor;

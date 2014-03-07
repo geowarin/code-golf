@@ -33,7 +33,7 @@ import kotlin.KotlinPackage;
 import kotlin.Pair;
 import org.jetbrains.annotations.Nullable;
 
-@JetClass(signature="Lcom/intellij/openapi/ui/DialogWrapper;", abiVersion=6)
+
 public final class StartGolfDialog extends DialogWrapper
   implements JetObject
 {
@@ -41,41 +41,41 @@ public final class StartGolfDialog extends DialogWrapper
   private final JList list;
   private final Project project;
 
-  @JetMethod(flags=17, propertyType="Ljavax/swing/JPanel;")
+
   public final JPanel getMainPanel()
   {
     return this.mainPanel;
   }
 
-  @JetMethod(flags=17, propertyType="Ljavax/swing/JList;")
+
   public final JList getList()
   {
     return this.list;
   }
 
-  @JetMethod(flags=32, returnType="?Ljavax/swing/JComponent;")
+
   protected JComponent createCenterPanel()
   {
     return (JComponent)this.mainPanel; } 
   @Nullable
-  @JetMethod(returnType="?Ljavax/swing/JComponent;")
+
   public JComponent getPreferredFocusedComponent() { return (JComponent)this.list; }
 
 
-  @JetMethod(flags=16, returnType="?Lorg/jetbrains/codeGolf/plugin/GolfTask;")
+
   public final GolfTask getSelectedTask()
   {
     Object tmp7_4 = this.list.getSelectedValue(); if (tmp7_4 == null) throw new TypeCastException("jet.Any? cannot be cast to org.jetbrains.codeGolf.plugin.GolfTask"); return (GolfTask)tmp7_4;
   }
 
-  @JetMethod(flags=17, propertyType="Lcom/intellij/openapi/project/Project;")
+
   public final Project getProject()
   {
     return this.project;
   }
 
   @JetConstructor
-  public StartGolfDialog(@JetValueParameter(name="project", type="Lcom/intellij/openapi/project/Project;") Project project, @JetValueParameter(name="loadedTasks", type="?Ljet/List<Lorg/jetbrains/codeGolf/plugin/GolfTask;>;") List<? extends GolfTask> loadedTasks, @JetValueParameter(name="scores", type="?Ljet/List<Lorg/jetbrains/codeGolf/plugin/UserScore;>;") List<? extends UserScore> scores)
+  public StartGolfDialog( Project project,  List<? extends GolfTask> loadedTasks,  List<? extends UserScore> scores)
   {
     super(project); this.project = project;
 
@@ -96,19 +96,19 @@ public final class StartGolfDialog extends DialogWrapper
     List tmp150_149 = scores; if (tmp150_149 != null) tmpTernaryOp = ((HashMap)KotlinPackage.fold((Iterable)tmp150_149, new HashMap(), (Function2)scoresMap.1.instance$));
   }
 
-  @JetClass(signature="Lcom/intellij/ui/ColoredListCellRendererWrapper<Lorg/jetbrains/codeGolf/plugin/GolfTask;>;", flags=16, abiVersion=6)
+
   public static final class GolfTaskRenderer extends ColoredListCellRendererWrapper<GolfTask>
   {
     private final Map scoresMap;
 
-    @JetMethod(flags=32, returnType="V")
-    protected void doCustomize(@JetValueParameter(name="list", type="?Ljavax/swing/JList;") JList list, @JetValueParameter(name="value", type="?Lorg/jetbrains/codeGolf/plugin/GolfTask;") GolfTask value, @JetValueParameter(name="index", type="I") int index, @JetValueParameter(name="selected", type="Z") boolean selected, @JetValueParameter(name="hasFocus", type="Z") boolean hasFocus)
+
+    protected void doCustomize( JList list,  GolfTask value,  int index,  boolean selected,  boolean hasFocus)
     {
       if (value != null) 1; if (0 != 0) return;
       UserScore score = (UserScore)this.scoresMap.get(value.getTaskId());
 
       if (score != null) 1;
-      UserScore tmp55_53 = score; if (tmp55_53 == null) Intrinsics.throwNpe();
+      UserScore tmp55_53 = score; if (tmp55_53 == null) throw new NullPointerException();
       Color tmp82_79 = Color.GREEN; Intrinsics.checkFieldIsNotNull(tmp82_79, "Color", "GREEN");
       Color tmp93_90 = tmp82_79.darker(); Intrinsics.checkReturnedValueIsNotNull(tmp93_90, "Color", "darker");
       JBColor tmp150_147 = JBColor.BLUE; Intrinsics.checkFieldIsNotNull(tmp150_147, "JBColor", "BLUE");
@@ -125,14 +125,14 @@ public final class StartGolfDialog extends DialogWrapper
       setToolTipText(tooltip);
     }
 
-    @JetMethod(flags=17, propertyType="Ljet/Map<Ljava/lang/String;Lorg/jetbrains/codeGolf/plugin/UserScore;>;")
+
     public final Map<String, UserScore> getScoresMap()
     {
       return this.scoresMap;
     }
 
     @JetConstructor
-    public GolfTaskRenderer(@JetValueParameter(name="scoresMap", type="Ljet/Map<Ljava/lang/String;Lorg/jetbrains/codeGolf/plugin/UserScore;>;") Map<String, ? extends UserScore> scoresMap)
+    public GolfTaskRenderer( Map<String, ? extends UserScore> scoresMap)
     {
       this.scoresMap = scoresMap;
     }

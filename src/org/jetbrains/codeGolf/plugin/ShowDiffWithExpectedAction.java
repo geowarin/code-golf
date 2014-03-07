@@ -18,41 +18,41 @@ import jet.runtime.typeinfo.JetConstructor;
 import jet.runtime.typeinfo.JetMethod;
 import jet.runtime.typeinfo.JetValueParameter;
 
-@JetClass(signature="Lcom/intellij/openapi/actionSystem/AnAction;", flags=16, abiVersion=6)
+
 public final class ShowDiffWithExpectedAction extends AnAction
   implements JetObject
 {
   private final String targetCode;
   private final Document document;
 
-  @JetMethod(returnType="V")
-  public void actionPerformed(@JetValueParameter(name="e", type="?Lcom/intellij/openapi/actionSystem/AnActionEvent;") AnActionEvent e)
+
+  public void actionPerformed( AnActionEvent e)
   {
-    AnActionEvent tmp1_0 = e; if (tmp1_0 == null) Intrinsics.throwNpe();
-    Project tmp11_8 = tmp1_0.getProject(); if (tmp11_8 == null) Intrinsics.throwNpe(); Project project = tmp11_8;
+    AnActionEvent tmp1_0 = e; if (tmp1_0 == null) throw new NullPointerException();
+    Project tmp11_8 = tmp1_0.getProject(); if (tmp11_8 == null) throw new NullPointerException(); Project project = tmp11_8;
     SimpleDiffRequest diffData = new SimpleDiffRequest(project, "Difference");
     diffData.setContents((DiffContent)new SimpleContent(this.targetCode), (DiffContent)new SimpleContent(this.document.getText()));
     diffData.setContentTitles("Expected Code", "Actual Code");
     Object tmp79_76 = DiffTool.HINT_SHOW_FRAME; Intrinsics.checkFieldIsNotNull(tmp79_76, "DiffTool", "HINT_SHOW_FRAME"); diffData.addHint(tmp79_76);
     diffData.setGroupKey("#CodeGolfDiff");
-    DiffManager tmp99_96 = DiffManager.getInstance(); if (tmp99_96 == null) Intrinsics.throwNpe();
-    DiffTool tmp109_106 = tmp99_96.getIdeaDiffTool(); if (tmp109_106 == null) Intrinsics.throwNpe(); tmp109_106.show((DiffRequest)diffData);
+    DiffManager tmp99_96 = DiffManager.getInstance(); if (tmp99_96 == null) throw new NullPointerException();
+    DiffTool tmp109_106 = tmp99_96.getIdeaDiffTool(); if (tmp109_106 == null) throw new NullPointerException(); tmp109_106.show((DiffRequest)diffData);
   }
 
-  @JetMethod(flags=17, propertyType="Ljava/lang/String;")
+
   public final String getTargetCode()
   {
     return this.targetCode;
   }
 
-  @JetMethod(flags=17, propertyType="Lcom/intellij/openapi/editor/Document;")
+
   public final Document getDocument()
   {
     return this.document;
   }
 
   @JetConstructor
-  public ShowDiffWithExpectedAction(@JetValueParameter(name="targetCode", type="Ljava/lang/String;") String targetCode, @JetValueParameter(name="document", type="Lcom/intellij/openapi/editor/Document;") Document document)
+  public ShowDiffWithExpectedAction( String targetCode,  Document document)
   {
     // Byte code:
     //   0: aload_1

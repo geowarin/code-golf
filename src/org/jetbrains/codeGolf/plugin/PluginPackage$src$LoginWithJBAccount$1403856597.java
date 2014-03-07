@@ -10,8 +10,8 @@ import org.jetbrains.codeGolf.auth.JBAccountAuthHelper;
 
 public final class PluginPackage$src$LoginWithJBAccount$1403856597
 {
-  @JetMethod(flags=16, returnType="?Lkotlin/Pair<Ljava/lang/String;Ljava/lang/String;>;")
-  public static final Pair<String, String> showDialogAndLogin(@JetValueParameter(name="project", type="Lcom/intellij/openapi/project/Project;") Project project)
+
+  public static final Pair<String, String> showDialogAndLogin( Project project)
   {
     Intrinsics.checkParameterIsNotNull(project, "showDialogAndLogin"); String username = PluginPackage.src.CodeGolfConfigurable.-89488205.getUserName();
     String password = PluginPackage.src.CodeGolfConfigurable.-89488205.getUserPassword(project);
@@ -24,6 +24,6 @@ public final class PluginPackage$src$LoginWithJBAccount$1403856597
       username = dlg.getUsername();
       password = dlg.getPassword();
     }
-    String tmp77_74 = JBAccountAuthHelper.encodePassword(password); if (tmp77_74 == null) Intrinsics.throwNpe(); return new Pair(username, tmp77_74);
+    String tmp77_74 = JBAccountAuthHelper.encodePassword(password); if (tmp77_74 == null) throw new NullPointerException(); return new Pair(username, tmp77_74);
   }
 }

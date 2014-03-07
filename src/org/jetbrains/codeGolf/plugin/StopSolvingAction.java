@@ -9,26 +9,26 @@ import jet.runtime.typeinfo.JetConstructor;
 import jet.runtime.typeinfo.JetMethod;
 import jet.runtime.typeinfo.JetValueParameter;
 
-@JetClass(signature="Lcom/intellij/openapi/actionSystem/AnAction;", flags=16, abiVersion=6)
+
 public final class StopSolvingAction extends AnAction
   implements JetObject
 {
   private final ActionsRecorder recorder;
 
-  @JetMethod(returnType="V")
-  public void actionPerformed(@JetValueParameter(name="e", type="?Lcom/intellij/openapi/actionSystem/AnActionEvent;") AnActionEvent e)
+
+  public void actionPerformed( AnActionEvent e)
   {
     this.recorder.stopRecording();
   }
 
-  @JetMethod(flags=17, propertyType="Lorg/jetbrains/codeGolf/plugin/ActionsRecorder;")
+
   public final ActionsRecorder getRecorder()
   {
     return this.recorder;
   }
 
   @JetConstructor
-  public StopSolvingAction(@JetValueParameter(name="recorder", type="Lorg/jetbrains/codeGolf/plugin/ActionsRecorder;") ActionsRecorder recorder)
+  public StopSolvingAction( ActionsRecorder recorder)
   {
     // Byte code:
     //   0: aload_1

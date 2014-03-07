@@ -26,7 +26,7 @@ import org.jetbrains.annotations.Nullable;
 import org.jetbrains.codeGolf.auth.AuthResult;
 import org.jetbrains.codeGolf.auth.JBAccountAuthHelper;
 
-@JetClass(signature="Lcom/intellij/openapi/ui/DialogWrapper;", flags=16, abiVersion=6)
+
 public final class JBAccountDialog extends DialogWrapper
   implements JetObject
 {
@@ -39,79 +39,79 @@ public final class JBAccountDialog extends DialogWrapper
   private final Action loginAsGuestAction;
   private final Project project;
 
-  @JetMethod(flags=17, propertyType="Ljavax/swing/JTextField;")
+
   public final JTextField getUsernameField()
   {
     return this.usernameField;
   }
 
-  @JetMethod(flags=17, propertyType="Ljavax/swing/JPasswordField;")
+
   public final JPasswordField getPasswordField()
   {
     return this.passwordField;
   }
 
-  @JetMethod(flags=17, propertyType="Ljavax/swing/JCheckBox;")
+
   public final JCheckBox getSavePasswordCheckbox()
   {
     return this.savePasswordCheckbox;
   }
 
-  @JetMethod(flags=17, propertyType="Ljavax/swing/JPanel;")
+
   public final JPanel getMainPanel()
   {
     return this.mainPanel;
   }
 
-  @JetMethod(flags=17, propertyType="Ljava/lang/String;")
+
   public final String getUsername()
   {
     return this.username;
   }
 
-  @JetMethod(flags=17, propertyType="Ljava/lang/String;")
-  public final void setUsername(@JetValueParameter(name="<set-?>", type="Ljava/lang/String;") String <set-?>)
+
+  public final void setUsername( String <set-?>)
   {
     Intrinsics.checkParameterIsNotNull(<set-?>, "<set-username>");
     this.username = <set-?>;
   }
 
-  @JetMethod(flags=17, propertyType="Ljava/lang/String;")
+
   public final String getPassword()
   {
     return this.password;
   }
 
-  @JetMethod(flags=17, propertyType="Ljava/lang/String;")
-  public final void setPassword(@JetValueParameter(name="<set-?>", type="Ljava/lang/String;") String <set-?>)
+
+  public final void setPassword( String <set-?>)
   {
     Intrinsics.checkParameterIsNotNull(<set-?>, "<set-password>");
     this.password = <set-?>;
   }
 
-  @JetMethod(flags=17, propertyType="Ljavax/swing/Action;")
+
   public final Action getLoginAsGuestAction()
   {
     return this.loginAsGuestAction;
   }
 
-  @JetMethod(flags=32, returnType="[Ljavax/swing/Action;")
+
   protected Action[] createActions()
   {
     return (Action[])new Action[] { getOKAction(), this.loginAsGuestAction, getCancelAction() }; } 
   @Nullable
-  @JetMethod(returnType="?Ljavax/swing/JComponent;")
+
   public JComponent getPreferredFocusedComponent() { return (JComponent)this.usernameField; }
 
 
-  @JetMethod(flags=32, returnType="V")
+
   protected void doOKAction()
   {
-    String tmp8_5 = this.usernameField.getText(); if (tmp8_5 == null) Intrinsics.throwNpe(); this.username = tmp8_5;
+    String tmp8_5 = this.usernameField.getText(); if (tmp8_5 == null) throw new NullPointerException(); this.username = tmp8_5;
     if (!KotlinPackage.isEmpty(this.username))
     {
-      char[] tmp36_33 = this.passwordField.getPassword(); if (tmp36_33 == null) Intrinsics.throwNpe(); this.password = KotlinPackage.String(tmp36_33);
-      AuthResult tmp60_57 = JBAccountAuthHelper.login(this.username, this.password); if (tmp60_57 == null) Intrinsics.throwNpe(); AuthResult authResult = tmp60_57;
+      char[] tmp36_33 = this.passwordField.getPassword(); if (tmp36_33 == null) throw new NullPointerException(); this.password = KotlinPackage.String(tmp36_33);
+      AuthResult tmp60_57 = JBAccountAuthHelper.login(this.username, this.password); if (tmp60_57 == null) throw new NullPointerException(); AuthResult authResult = tmp60_57;
       if (!authResult.getIsOk()) {
         Messages.showErrorDialog((Component)this.mainPanel, authResult.getErrorMessage());
         return;
@@ -120,27 +120,27 @@ public final class JBAccountDialog extends DialogWrapper
       PluginPackage.src.CodeGolfConfigurable.-89488205.setUserName(this.username);
       if (this.savePasswordCheckbox.isSelected())
       {
-        PasswordSafe tmp110_107 = PasswordSafe.getInstance(); if (tmp110_107 == null) Intrinsics.throwNpe(); tmp110_107.storePassword(this.project, LoginWithJBAccountAction.class, PluginPackage.src.CodeGolfConfigurable.-89488205.getJB_ACCOUNT_FOR_CODE_GOLF_KEY(), this.password);
+        PasswordSafe tmp110_107 = PasswordSafe.getInstance(); if (tmp110_107 == null) throw new NullPointerException(); tmp110_107.storePassword(this.project, LoginWithJBAccountAction.class, PluginPackage.src.CodeGolfConfigurable.-89488205.getJB_ACCOUNT_FOR_CODE_GOLF_KEY(), this.password);
       }
     }
     doSuperOkAction();
   }
-  @JetMethod(flags=16, returnType="V")
+
   public final void doSuperOkAction() {
     super.doOKAction(); } 
   @Nullable
-  @JetMethod(flags=32, returnType="?Ljavax/swing/JComponent;")
+
   protected JComponent createCenterPanel() { return (JComponent)this.mainPanel; }
 
 
-  @JetMethod(flags=17, propertyType="Lcom/intellij/openapi/project/Project;")
+
   public final Project getProject()
   {
     return this.project;
   }
 
   @JetConstructor
-  public JBAccountDialog(@JetValueParameter(name="project", type="Lcom/intellij/openapi/project/Project;") Project project)
+  public JBAccountDialog( Project project)
   {
     super(project); this.project = project; this.usernameField = 
       new JTextField(); this.passwordField = 
@@ -158,12 +158,12 @@ public final class JBAccountDialog extends DialogWrapper
         .addLabeledComponent("User Name:", (JComponent)this.usernameField);
   }
 
-  @JetClass(signature="Ljavax/swing/AbstractAction;", flags=16, abiVersion=6)
+
   public final class LoginAsGuestAction extends AbstractAction
     implements JetObject
   {
-    @JetMethod(returnType="V")
-    public void actionPerformed(@JetValueParameter(name="e", type="Ljava/awt/event/ActionEvent;") ActionEvent e)
+
+    public void actionPerformed( ActionEvent e)
     {
       Intrinsics.checkParameterIsNotNull(e, "actionPerformed"); JBAccountDialog.this.setUsername("");
       JBAccountDialog.this.doSuperOkAction();

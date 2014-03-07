@@ -12,9 +12,9 @@ import kotlin.KotlinPackage;
 
 public final class PluginPackage$src$ActionsRecorder$-162639752
 {
-  @JetMethod(flags=16, returnType="Ljet/List<Ljava/lang/String;>;")
-  public static final List<String> computeTrimmedLines(@JetValueParameter(name="$receiver", receiver=true, type="Ljava/lang/String;") String $receiver)
+
+  public static final List<String> computeTrimmedLines( String $receiver)
   {
-    String[] tmp4_1 = StringUtil.splitByLines($receiver); if (tmp4_1 == null) Intrinsics.throwNpe(); return (List)KotlinPackage.mapTo((Object[])tmp4_1, (Collection)new ArrayList(), (Function1)PluginPackage.computeTrimmedLines.1.instance$);
+    String[] tmp4_1 = StringUtil.splitByLines($receiver); if (tmp4_1 == null) throw new NullPointerException(); return (List)KotlinPackage.mapTo((Object[])tmp4_1, (Collection)new ArrayList(), (Function1)PluginPackage.computeTrimmedLines.1.instance$);
   }
 }
