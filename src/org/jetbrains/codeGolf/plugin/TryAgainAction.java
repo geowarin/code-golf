@@ -13,8 +13,7 @@ import jet.runtime.typeinfo.JetMethod;
 import jet.runtime.typeinfo.JetValueParameter;
 
 
-public final class TryAgainAction extends AnAction
-        implements JetObject {
+public final class TryAgainAction extends AnAction {
     private final ActionsRecorder recorder;
 
 
@@ -28,7 +27,6 @@ public final class TryAgainAction extends AnAction
         return this.recorder;
     }
 
-    @JetConstructor
     public TryAgainAction(ActionsRecorder recorder) {
         // Byte code:
         //   0: aload_1

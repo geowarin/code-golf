@@ -1,23 +1,15 @@
 package org.jetbrains.codeGolf.plugin.writer;
 
+import com.google.common.base.Preconditions;
 import com.intellij.openapi.actionSystem.AnActionEvent;
 import com.intellij.openapi.actionSystem.DataContext;
 import com.intellij.openapi.actionSystem.DataKey;
 import com.intellij.openapi.actionSystem.PlatformDataKeys;
-import com.intellij.openapi.editor.Document;
 import com.intellij.openapi.editor.Editor;
 import com.intellij.openapi.project.Project;
-import com.intellij.psi.PsiFile;
-import jet.JetObject;
-
-import jet.runtime.typeinfo.JetClass;
-import jet.runtime.typeinfo.JetConstructor;
-import jet.runtime.typeinfo.JetMethod;
-import jet.runtime.typeinfo.JetValueParameter;
 
 
-public final class CreateTransformThisClassTaskAction extends AdminActionBase
-        implements JetObject {
+public final class CreateTransformThisClassTaskAction extends AdminActionBase {
 
     protected void doAdminAction(Project project, AnActionEvent anActionEvent, String username, String password) {
         Preconditions.checkNotNull(project, "doAdminAction");

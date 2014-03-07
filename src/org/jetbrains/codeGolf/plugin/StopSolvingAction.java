@@ -15,7 +15,6 @@ import jet.runtime.typeinfo.JetValueParameter;
 public final class StopSolvingAction extends AnAction {
     private final ActionsRecorder recorder;
 
-
     public void actionPerformed(AnActionEvent e) {
         this.recorder.stopRecording();
     }
