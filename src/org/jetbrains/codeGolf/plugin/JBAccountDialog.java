@@ -2,32 +2,19 @@ package org.jetbrains.codeGolf.plugin;
 
 import com.google.common.base.Preconditions;
 import com.intellij.ide.passwordSafe.PasswordSafe;
+import com.intellij.ide.passwordSafe.PasswordSafeException;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.ui.DialogWrapper;
 import com.intellij.openapi.ui.Messages;
 import com.intellij.ui.HyperlinkLabel;
 import com.intellij.util.ui.FormBuilder;
-
-import java.awt.Component;
-import java.awt.event.ActionEvent;
-import javax.swing.AbstractAction;
-import javax.swing.Action;
-import javax.swing.JCheckBox;
-import javax.swing.JComponent;
-import javax.swing.JPanel;
-import javax.swing.JPasswordField;
-import javax.swing.JTextField;
-
-import jet.JetObject;
-
-import jet.runtime.typeinfo.JetClass;
-import jet.runtime.typeinfo.JetConstructor;
-import jet.runtime.typeinfo.JetMethod;
-import jet.runtime.typeinfo.JetValueParameter;
-import kotlin.KotlinPackage;
+import com.jgoodies.common.base.Strings;
 import org.jetbrains.annotations.Nullable;
 import org.jetbrains.codeGolf.auth.AuthResult;
 import org.jetbrains.codeGolf.auth.JBAccountAuthHelper;
+
+import javax.swing.*;
+import java.awt.event.ActionEvent;
 
 
 public final class JBAccountDialog extends DialogWrapper {
@@ -87,7 +74,6 @@ public final class JBAccountDialog extends DialogWrapper {
     }
 
     @Nullable
-
     public JComponent getPreferredFocusedComponent() {
         return this.usernameField;
     }
@@ -97,23 +83,26 @@ public final class JBAccountDialog extends DialogWrapper {
         String tmp8_5 = this.usernameField.getText();
         if (tmp8_5 == null) throw new NullPointerException();
         this.username = tmp8_5;
-        if (!KotlinPackage.isEmpty(this.username)) {
-            char[] tmp36_33 = this.passwordField.getPassword();
-            if (tmp36_33 == null) throw new NullPointerException();
-            this.password = KotlinPackage.String(tmp36_33);
-            AuthResult tmp60_57 = JBAccountAuthHelper.login(this.username, this.password);
-            if (tmp60_57 == null) throw new NullPointerException();
-            AuthResult authResult = tmp60_57;
+        if (Strings.isNotEmpty(this.username)) {
+            char[] aThispasswordFieldPassword = this.passwordField.getPassword();
+            if (aThispasswordFieldPassword == null) throw new NullPointerException();
+            this.password = new String(aThispasswordFieldPassword);
+            AuthResult authResult = JBAccountAuthHelper.login(this.username, this.password);
+            if (authResult == null) throw new NullPointerException();
             if (!authResult.getIsOk()) {
-                Messages.showErrorDialog((Component) this.mainPanel, authResult.getErrorMessage());
+                Messages.showErrorDialog(this.mainPanel, authResult.getErrorMessage());
                 return;
             }
 
-            CodeGolfConfigurableAccessor. setUserName(this.username);
+            CodeGolfConfigurableAccessor.setUserName(this.username);
             if (this.savePasswordCheckbox.isSelected()) {
-                PasswordSafe tmp110_107 = PasswordSafe.getInstance();
-                if (tmp110_107 == null) throw new NullPointerException();
-                tmp110_107.storePassword(this.project, LoginWithJBAccountAction.class, CodeGolfConfigurableAccessor.getJB_ACCOUNT_FOR_CODE_GOLF_KEY(), this.password);
+                PasswordSafe passwordSafe = PasswordSafe.getInstance();
+                if (passwordSafe == null) throw new NullPointerException();
+                try {
+                    passwordSafe.storePassword(this.project, LoginWithJBAccountAction.class, CodeGolfConfigurableAccessor.getJB_ACCOUNT_FOR_CODE_GOLF_KEY(), this.password);
+                } catch (PasswordSafeException e) {
+                    throw new RuntimeException(e);
+                }
             }
         }
         doSuperOkAction();
@@ -136,25 +125,18 @@ public final class JBAccountDialog extends DialogWrapper {
     public JBAccountDialog(Project project) {
         super(project);
         this.project = project;
-        this.usernameField =
-                new JTextField();
-        this.passwordField =
-                new JPasswordField();
-        this.savePasswordCheckbox =
-                new JCheckBox("Remember Password");
-        this.username =
-                "";
-        this.password =
-                "";
+        this.usernameField = new JTextField();
+        this.passwordField = new JPasswordField();
+        this.savePasswordCheckbox = new JCheckBox("Remember Password");
+        this.username = "";
+        this.password = "";
 
-        setTitle("Login with JetBrains Account");
+        setTitle("Login With JetBrains Account");
         HyperlinkLabel hyperlink = new HyperlinkLabel("Create JetBrains Account");
         hyperlink.setHyperlinkTarget("http://account.jetbrains.com/");
-        FormBuilder builder;
-        FormBuilder tmp88_85 = FormBuilder.createFormBuilder();
-        if (tmp88_85 != null)
-            tmpTernaryOp = tmp88_85
-                    .addLabeledComponent("User Name:", this.usernameField);
+        FormBuilder formBuilder = FormBuilder.createFormBuilder().addLabeledComponent("User Name:", this.usernameField);
+        this.mainPanel = formBuilder.getPanel();
+        this.loginAsGuestAction = new LoginAsGuestAction();
     }
 
 
@@ -164,10 +146,6 @@ public final class JBAccountDialog extends DialogWrapper {
             Preconditions.checkNotNull(e, "actionPerformed");
             JBAccountDialog.this.setUsername("");
             JBAccountDialog.this.doSuperOkAction();
-        }
-
-        public LoginAsGuestAction() {
-            super();
         }
     }
 }

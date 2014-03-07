@@ -92,12 +92,10 @@ public final class StartGolfDialog extends DialogWrapper {
             tasks = loadedTasks;
         } else {
             JLabel errorLabel = new JLabel("Cannot load tasks from " + serverUrl + ", only predefined tasks are available");
-            Color tmp103_100 = Color.RED;
-            Preconditions.checkNotNull(tmp103_100, "Color", "RED");
-            errorLabel.setForeground(tmp103_100);
-            String tmp121_118 = BorderLayout.SOUTH;
-            Preconditions.checkNotNull(tmp121_118, "BorderLayout", "SOUTH");
-            this.mainPanel.add(tmp121_118, (Component) errorLabel);
+            Preconditions.checkNotNull(JBColor.RED, "Color", "RED");
+            errorLabel.setForeground(JBColor.RED);
+            Preconditions.checkNotNull(BorderLayout.SOUTH, "BorderLayout", "SOUTH");
+            this.mainPanel.add(BorderLayout.SOUTH, errorLabel);
             tasks = GolfTaskManager.getInstance().getPredefinedTasks();
         }
         Map scoresMap;
@@ -119,9 +117,8 @@ public final class StartGolfDialog extends DialogWrapper {
             if (score != null) 1;
             UserScore tmp55_53 = score;
             if (tmp55_53 == null) throw new NullPointerException();
-            Color tmp82_79 = Color.GREEN;
-            Preconditions.checkNotNull(tmp82_79, "Color", "GREEN");
-            Color tmp93_90 = tmp82_79.darker();
+            Preconditions.checkNotNull(JBColor.GREEN, "Color", "GREEN");
+            Color tmp93_90 = JBColor.GREEN.darker();
             Preconditions.checkNotNull(tmp93_90, "Color", "darker");
             JBColor tmp150_147 = JBColor.BLUE;
             Preconditions.checkNotNull(tmp150_147, "JBColor", "BLUE");

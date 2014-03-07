@@ -2,6 +2,7 @@ package org.jetbrains.codeGolf.plugin;
 
 import com.google.common.base.Objects;
 import com.google.common.base.Preconditions;
+import com.google.common.collect.Sets;
 import com.intellij.ide.FrameStateListener;
 import com.intellij.ide.IdeEventQueue;
 import com.intellij.ide.IdeEventQueue.EventDispatcher;
@@ -25,6 +26,7 @@ import com.intellij.openapi.editor.event.DocumentListener;
 import com.intellij.openapi.keymap.KeymapUtil;
 import com.intellij.openapi.keymap.impl.IdeKeyEventDispatcher;
 import com.intellij.openapi.progress.ProgressIndicator;
+import com.intellij.openapi.progress.Task;
 import com.intellij.openapi.progress.Task.Backgroundable;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.ui.popup.JBPopup;
@@ -67,9 +69,9 @@ public final class ActionsRecorder implements  Disposable {
     private int typingCounter = 0;
     private ArrayList usedActions;
     private final HashSet actionInputEvents;
-    private final Set movingActions;
-    private final Set forbiddenActions;
-    private final Set typingActions;
+    private final Set<String> movingActions;
+    private final Set<String> forbiddenActions;
+    private final Set<String> typingActions;
     private boolean disposed = false;
     private final GolfTask golfTask;
     private final Project project;
@@ -192,11 +194,10 @@ public final class ActionsRecorder implements  Disposable {
 
                     public void beforeActionPerformed(AnAction action, DataContext dataContext, AnActionEvent event) {
                         String actionId;
-                        ActionManager tmp3_0 = ActionManager.getInstance();
-                        if (tmp3_0 != null) {
-                            AnAction tmp8_7 = action;
-                            if (tmp8_7 == null) throw new NullPointerException();
-                            tmpTernaryOp = tmp3_0.getId(tmp8_7);
+                        ActionManager actionManager = ActionManager.getInstance();
+                        if (actionManager != null) {
+                            if (action == null) throw new NullPointerException();
+                            tmpTernaryOp = actionManager.getId(action);
                         }
                     }
 
@@ -300,11 +301,11 @@ public final class ActionsRecorder implements  Disposable {
                     GolfResult tmp18_15 = RestClientUtil.sendSolution(this.$solution, this.$passwordToSend);
                     if (tmp18_15 == null) throw new NullPointerException();
                     GolfResult result = tmp18_15;
-                    this.this$0.showCongratulations(result);
+                    this.showCongratulations(result);
                 } catch (Exception localException) {
                     localException.printStackTrace();
                     Notification notification = new Notification("Code Golf Error", "Cannot upload solution", "Cannot upload solution: " + localException.getMessage(), NotificationType.ERROR);
-                    Notifications.Bus.notify(notification, this.this$0.getProject());
+                    Notifications.Bus.notify(notification, this.getProject());
                 }
             }
         }
@@ -405,23 +406,11 @@ public final class ActionsRecorder implements  Disposable {
         this.password = password;
         this.restarter = restarter;
         this.usedActions = new ArrayList();
-        this.actionInputEvents =
-                new HashSet();
-        this.movingActions =
-                KotlinPackage.setOf(new String[]{
-                        "EditorLeft", "EditorRight", "EditorDown", "EditorUp",
-                        "EditorLineStart", "EditorLineEnd", "EditorPageUp", "EditorPageDown",
-                        "EditorPreviousWord", "EditorNextWord",
-                        "EditorScrollUp", "EditorScrollDown",
-                        "EditorTextStart", "EditorTextEnd",
-                        "EditorDownWithSelection", "EditorUpWithSelection",
-                        "EditorRightWithSelection", "EditorLeftWithSelection",
-                        "EditorLineStartWithSelection", "EditorLineEndWithSelection",
-                        "EditorPageDownWithSelection", "EditorPageUpWithSelection"});
-        this.forbiddenActions =
-                KotlinPackage.setOf(new String[]{"$Paste", "EditorPaste", "PasteMultiple", "EditorPasteSimple",
-                        "PlaybackLastMacro", "PlaySavedMacrosAction"});
-        this.typingActions =
-                KotlinPackage.setOf(new String[]{"EditorBackSpace"});
+        this.actionInputEvents = new HashSet();
+        this.movingActions = Sets.newHashSet("EditorLeft", "EditorRight", "EditorDown", "EditorUp", "EditorLineStart", "EditorLineEnd", "EditorPageUp", "EditorPageDown",
+                        "EditorPreviousWord", "EditorNextWord", "EditorScrollUp", "EditorScrollDown", "EditorTextStart", "EditorTextEnd", "EditorDownWithSelection", "EditorUpWithSelection",
+                        "EditorRightWithSelection", "EditorLeftWithSelection", "EditorLineStartWithSelection", "EditorLineEndWithSelection", "EditorPageDownWithSelection", "EditorPageUpWithSelection");
+        this.forbiddenActions = Sets.newHashSet("$Paste", "EditorPaste", "PasteMultiple", "EditorPasteSimple", "PlaybackLastMacro", "PlaySavedMacrosAction");
+        this.typingActions = Sets.newHashSet("EditorBackSpace");
     }
 }
