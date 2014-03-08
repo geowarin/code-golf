@@ -49,7 +49,7 @@ import java.util.*;
 import java.util.List;
 
 public final class ActionsRecorder implements Disposable {
-    private RecordingControlPanel controlPanel;
+    public RecordingControlPanel controlPanel;
     private int movingActionsCounter = 0;
     private int actionsCounter = 0;
     private int typingCounter = 0;
@@ -268,7 +268,6 @@ public final class ActionsRecorder implements Disposable {
         }.queue();
     }
 
-
     public final void discardSolution(String reason) {
         Preconditions.checkNotNull(reason, "discardSolution");
         stopRecording();
@@ -314,9 +313,6 @@ public final class ActionsRecorder implements Disposable {
     public final void stopRecording() {
         LOG.info("Recording stopped");
         this.recording = false;
-//        if (controlPanel != null) {
-//            controlPanel.dispose();
-//        }
         Disposer.dispose(this);
     }
 

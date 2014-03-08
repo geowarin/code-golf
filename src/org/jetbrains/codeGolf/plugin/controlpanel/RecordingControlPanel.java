@@ -35,7 +35,7 @@ import java.awt.*;
 public final class RecordingControlPanel extends JPanel implements Disposable {
     private Editor myEditor;
     private final JLabel myText;
-    private final JBPopup myHint;
+    public final JBPopup myHint;
     private final int MAX_WIDTH = 500;
     private final int MAX_HEIGHT = 300;
     private final int MIN_HEIGHT = 45;
@@ -70,24 +70,19 @@ public final class RecordingControlPanel extends JPanel implements Disposable {
         add(topPanel, BorderLayout.NORTH);
         add(component, BorderLayout.CENTER);
 
-        Border border = BorderFactory.createEmptyBorder(0, 3, 3, 3);
-        setBorder(border);
+        setBorder(BorderFactory.createEmptyBorder(0, 3, 3, 3));
 
-        JBPopupFactory popupFactory = JBPopupFactory.getInstance();
-
-        ComponentPopupBuilder componentPopupBuilder = popupFactory.createComponentPopupBuilder(this, this);
+        ComponentPopupBuilder componentPopupBuilder = JBPopupFactory.getInstance().createComponentPopupBuilder(this, this);
         this.myHint = createHint(componentPopupBuilder);
         notifyUser(0, 0, 0);
     }
 
     public void dispose() {
-        if (this.myEditor == null) {
+        myHint.dispose();
+        if (this.myEditor != null) {
             EditorFactory.getInstance().releaseEditor(this.myEditor);
             this.myEditor = null;
         }
-//        myHint.setUiVisible(false);
-        myHint.cancel();
-//        Disposer.dispose(myHint);
     }
 
     public final JComponent createControlComponent() {
@@ -96,9 +91,9 @@ public final class RecordingControlPanel extends JPanel implements Disposable {
                 new NavigateToEditorAction(this.document),
                 Separator.getInstance(),
                 new TryAgainAction(this.recorder),
-                new StopSolvingAction(this.recorder));
-        ActionManager actionManager = ActionManager.getInstance();
-        ActionToolbar actionToolbar = actionManager.createActionToolbar("CodeGolfToolbar", group, true);
+                new StopSolvingAction(this.recorder)
+        );
+        ActionToolbar actionToolbar = ActionManager.getInstance().createActionToolbar("CodeGolfToolbar", group, true);
         return actionToolbar.getComponent();
     }
 

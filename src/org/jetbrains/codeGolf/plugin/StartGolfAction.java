@@ -91,7 +91,6 @@ public final class StartGolfAction extends AnAction {
 
         RecordingControlPanel recordingControlPanel = new RecordingControlPanel(project, document, task.getTargetCode(), recorder);
         recorder.setControlPanel(recordingControlPanel);
-        recordingControlPanel.showHint();
 
         recorder.startRecording();
     }
