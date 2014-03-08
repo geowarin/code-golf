@@ -16,17 +16,14 @@ public class JBAccountAuthHelper {
         Client client = Client.create();
         try {
             WebResource webResource = client.resource(serverUrl + "/login?user=" + username + "&scrumbled-password=" + encodedPassword);
-            ClientResponse response = (ClientResponse) webResource.type(MediaType.TEXT_PLAIN_TYPE).post(ClientResponse.class);
+            ClientResponse response = webResource.type(MediaType.TEXT_PLAIN_TYPE).post(ClientResponse.class);
             int status = response.getStatus();
-            String output = (String) response.getEntity(String.class);
-            AuthResult localAuthResult;
+            String output = response.getEntity(String.class);
             if (status == 200) {
                 return AuthResult.object$.getSUCCESS();
             }
-
             return new AuthResult(output);
         } catch (Exception e) {
-            ClientResponse response;
             return new AuthResult(e.getMessage() != null ? e.getMessage() : "error");
         } finally {
             client.destroy();

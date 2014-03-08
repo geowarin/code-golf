@@ -5,17 +5,8 @@ import com.intellij.openapi.actionSystem.AnActionEvent;
 import com.intellij.openapi.actionSystem.DataContext;
 import com.intellij.openapi.actionSystem.DataKey;
 import com.intellij.openapi.actionSystem.PlatformDataKeys;
-import com.intellij.openapi.editor.Document;
 import com.intellij.openapi.editor.Editor;
 import com.intellij.openapi.project.Project;
-import com.intellij.psi.PsiFile;
-import jet.JetObject;
-
-import jet.runtime.typeinfo.JetClass;
-import jet.runtime.typeinfo.JetConstructor;
-import jet.runtime.typeinfo.JetMethod;
-import jet.runtime.typeinfo.JetValueParameter;
-import org.jetbrains.codeGolf.plugin.GolfTask;
 
 
 public final class CreateRecoverThisClassTaskAction extends AdminActionBase {
@@ -32,7 +23,8 @@ public final class CreateRecoverThisClassTaskAction extends AdminActionBase {
         if (tmp36_28 != null) {
             DataContext dataContext = anActionEvent.getDataContext();
             Preconditions.checkNotNull(dataContext, "AnActionEvent", "getDataContext");
-            tmpTernaryOp = ((Editor) tmp36_28.getData(dataContext));
+//            tmpTernaryOp = ((Editor) tmp36_28.getData(dataContext));
+            // TODO ??
         }
     }
 }

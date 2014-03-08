@@ -3,14 +3,6 @@ package org.jetbrains.codeGolf.plugin;
 import com.intellij.openapi.actionSystem.AnAction;
 import com.intellij.openapi.actionSystem.AnActionEvent;
 
-import javax.swing.Icon;
-
-import jet.JetObject;
-import jet.runtime.typeinfo.JetClass;
-import jet.runtime.typeinfo.JetConstructor;
-import jet.runtime.typeinfo.JetMethod;
-import jet.runtime.typeinfo.JetValueParameter;
-
 
 public final class StopSolvingAction extends AnAction {
     private final ActionsRecorder recorder;
@@ -42,5 +34,6 @@ public final class StopSolvingAction extends AnAction {
         //   26: aload_1
         //   27: putfield 28	org/jetbrains/codeGolf/plugin/StopSolvingAction:recorder	Lorg/jetbrains/codeGolf/plugin/ActionsRecorder;
         //   30: return
+        this.recorder = recorder;
     }
 }

@@ -23,7 +23,8 @@ public final class CreateTransformThisClassTaskAction extends AdminActionBase {
         if (tmp36_28 != null) {
             DataContext tmp44_41 = anActionEvent.getDataContext();
             Preconditions.checkNotNull(tmp44_41, "AnActionEvent", "getDataContext");
-            tmpTernaryOp = ((Editor) tmp36_28.getData(tmp44_41));
+            // TODO ???
+//            tmpTernaryOp = ((Editor) tmp36_28.getData(tmp44_41));
         }
     }
 }

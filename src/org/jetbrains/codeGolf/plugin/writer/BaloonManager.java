@@ -29,18 +29,17 @@ public class BaloonManager {
     public static void ShowBalloonForTransformTask(final String oldCode, final int initialOffset, final PsiFile psiFile, final Document document, final Project project, final String username, final String password) {
         JComponent component = WindowManager.getInstance().getIdeFrame(null).getStatusBar().getComponent();
         JButton button = new JButton("Submit new transform task");
-        Ref ref = new Ref();
+        final Ref<Balloon> ref = new Ref();
         button.addMouseListener(new MouseAdapter() {
+
             public void mouseClicked(@NotNull MouseEvent mouseEvent) {
-                if (mouseEvent == null)
-                    throw new IllegalArgumentException("Argument 0 for @NotNull parameter of org/jetbrains/codeGolf/plugin/writer/BaloonManager$1.mouseClicked must not be null");
-                if ((this.val$ref.isNull()) || (((Balloon) this.val$ref.get()).isDisposed())) return;
-                ((Balloon) this.val$ref.get()).dispose();
-                this.val$ref.set(null);
+                if (ref.isNull() || ref.get().isDisposed()) return;
+                ref.get().dispose();
+                ref.set(null);
                 String defaultTaskName = psiFile.getVirtualFile().getNameWithoutExtension();
                 GolfTask task = BaloonManager.createTask(defaultTaskName, oldCode, initialOffset, document.getText(), project, username);
                 if (task != null)
-                    AdminActionBase.object$.sendTaskToServer(project, task, password);
+                    AdminActionBase.sendTaskToServer(project, task, password);
             }
         });
         BalloonBuilder builder = JBPopupFactory.getInstance().createBalloonBuilder(button);
