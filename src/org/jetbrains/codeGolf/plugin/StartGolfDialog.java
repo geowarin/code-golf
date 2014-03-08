@@ -22,41 +22,7 @@ public final class StartGolfDialog extends DialogWrapper {
     private final JList list;
     private final Project project;
 
-
-    public final JPanel getMainPanel() {
-        return this.mainPanel;
-    }
-
-
-    public final JList getList() {
-        return this.list;
-    }
-
-
-    protected JComponent createCenterPanel() {
-        return this.mainPanel;
-    }
-
-    @Nullable
-    public JComponent getPreferredFocusedComponent() {
-        return this.list;
-    }
-
-    @Nullable
-    public final GolfTask getSelectedTask() {
-        Object selectedValue = this.list.getSelectedValue();
-        if (selectedValue instanceof GolfTask) {
-            return (GolfTask) selectedValue;
-        } else {
-            return null;
-        }
-    }
-
-    public final Project getProject() {
-        return this.project;
-    }
-
-    public StartGolfDialog(Project project, List<? extends GolfTask> loadedTasks, List<UserScore> scores) {
+    public StartGolfDialog(Project project, List<GolfTask> loadedTasks, List<UserScore> scores) {
         super(project);
         this.project = project;
 
@@ -83,6 +49,29 @@ public final class StartGolfDialog extends DialogWrapper {
         init();
     }
 
+    protected JComponent createCenterPanel() {
+        return this.mainPanel;
+    }
+
+    @Nullable
+    public JComponent getPreferredFocusedComponent() {
+        return this.list;
+    }
+
+    @Nullable
+    public final GolfTask getSelectedTask() {
+        Object selectedValue = this.list.getSelectedValue();
+        if (selectedValue instanceof GolfTask) {
+            return (GolfTask) selectedValue;
+        } else {
+            return null;
+        }
+    }
+
+    public final Project getProject() {
+        return this.project;
+    }
+
     public static final class GolfTaskRenderer extends ColoredListCellRendererWrapper<GolfTask> {
         private final Map<String, UserScore> scoresMap;
 
@@ -104,11 +93,6 @@ public final class StartGolfDialog extends DialogWrapper {
 
             append(value.getTaskName(), new SimpleTextAttributes(SimpleTextAttributes.STYLE_PLAIN, color));
             setToolTipText(tooltip);
-        }
-
-
-        public final Map<String, UserScore> getScoresMap() {
-            return this.scoresMap;
         }
 
         public GolfTaskRenderer(Map<String, UserScore> scoresMap) {

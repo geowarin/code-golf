@@ -26,8 +26,13 @@ import com.intellij.openapi.keymap.impl.IdeKeyEventDispatcher;
 import com.intellij.openapi.progress.ProgressIndicator;
 import com.intellij.openapi.progress.Task;
 import com.intellij.openapi.project.Project;
+import com.intellij.openapi.ui.MessageType;
+import com.intellij.openapi.ui.popup.Balloon;
+import com.intellij.openapi.ui.popup.JBPopupFactory;
 import com.intellij.openapi.util.Disposer;
 import com.intellij.openapi.util.text.StringUtil;
+import com.intellij.openapi.wm.WindowManager;
+import com.intellij.ui.awt.RelativePoint;
 import com.intellij.util.ui.UIUtil;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.codeGolf.plugin.controlpanel.RecordingControlPanel;
@@ -61,7 +66,7 @@ public final class ActionsRecorder implements Disposable {
     private String password;
     private final Restarter restarter;
 
-    private static final Logger LOG = Logger.getInstance(ActionsRecorder.class.getName());
+    private static final Logger LOG = Logger.getInstance("#org.jetbrains.codeGolf");
 
     public ActionsRecorder(GolfTask golfTask, Project project, Document document, String username, String password, Restarter restarter) {
         this.golfTask = golfTask;
@@ -71,7 +76,6 @@ public final class ActionsRecorder implements Disposable {
         this.password = password;
         this.restarter = restarter;
     }
-
 
     public void setControlPanel(RecordingControlPanel controlPanel) {
         this.controlPanel = controlPanel;
@@ -108,36 +112,61 @@ public final class ActionsRecorder implements Disposable {
             public void beforeActionPerformed(AnAction action, DataContext dataContext, AnActionEvent event) {
                 ActionManager actionManager = ActionManager.getInstance();
                 String actionId = actionManager.getId(action);
+                LOG.info("actionId = " + actionId);
                 if (actionId != null) {
 //                    AnAction editorAction = actionManager.getAction(actionId);
 
                     if (movingActions.contains(actionId)) {
+                        LOG.info("move");
                         movingActionsCounter++;
                         notifyUser();
                     } else if (forbiddenActions.contains(actionId)) {
+                        LOG.info("Forbidden");
                         discardSolution("Action " + actionId + " is forbidden");
                     } else if (typingActions.contains(actionId)) {
+                        LOG.info("typing action");
                         typingCounter++;
                         notifyUser();
                     } else {
+
                         KeyEvent keyEvent = IdeEventQueue.getInstance().getKeyEventDispatcher().getContext().getInputEvent();
-                        processKeyPressedEvent(keyEvent);
+                        if (keyEvent != null) {
+                            processKeyPressedEvent(keyEvent);
+                        } else {
+                            AWTEvent currentEvent = IdeEventQueue.getCurrentEvent();
+                            if (currentEvent instanceof MouseEvent) {
+                                LOG.info("mouse event " + currentEvent);
+                                MouseEvent mouseEvent = (MouseEvent) currentEvent;
+                                Notifications.Bus.notify(new Notification("mouse is bad", "Don't use mouse !", "mouse actions are worth 1000 actions", NotificationType.WARNING));
+//                            showBalloon(htmlText);
+
+                                if (!isInsideExpectedCodeViewer(mouseEvent)) {
+                                    LOG.info("Click is not inside code viewer");
+                                }
+                            }
+                        }
                     }
                 }
-
             }
 
             public void afterActionPerformed(AnAction action, DataContext dataContext, AnActionEvent event) {
-                System.out.println("after");
             }
 
             public void beforeEditorTyping(char c, DataContext dataContext) {
-                actionsCounter++;
+                typingCounter++;
                 notifyUser();
             }
         }, this);
     }
 
+    private void showBalloon(String htmlText) {
+        JComponent statusBar = WindowManager.getInstance().getIdeFrame(null).getStatusBar().getComponent();
+        JBPopupFactory.getInstance()
+                .createHtmlTextBalloonBuilder(htmlText, MessageType.WARNING, null)
+                .setFadeoutTime(7500)
+                .createBalloon()
+                .showInCenterOf(statusBar);
+    }
 
     public final boolean isTaskSolved() {
         if (this.disposed) return false;
@@ -187,8 +216,9 @@ public final class ActionsRecorder implements Disposable {
         boolean isEnter = e.getKeyCode() == KeyEvent.VK_ENTER;
 
         if (plainType && !isEnter) {
+            LOG.info("plain typing");
             this.usedActions.add(String.valueOf(e.getKeyChar()));
-            this.typingCounter += 1;
+            this.typingCounter++;
         } else {
             String keystrokeText = KeymapUtil.getKeystrokeText(KeyStroke.getKeyStrokeForEvent(e));
             if (keystrokeText == null) throw new NullPointerException();
@@ -197,11 +227,13 @@ public final class ActionsRecorder implements Disposable {
             Set movingKeys = Sets.newHashSet(KeyEvent.VK_UP, KeyEvent.VK_DOWN, KeyEvent.VK_LEFT, KeyEvent.VK_RIGHT,
                     KeyEvent.VK_HOME, KeyEvent.VK_END, KeyEvent.VK_PAGE_DOWN, KeyEvent.VK_PAGE_UP);
 
-            this.movingActionsCounter += 1;
-
-            this.actionsCounter =
-                    !hasActionModifiers && movingKeys.contains(Integer.valueOf(e.getKeyCode())) ?
-                            this.movingActionsCounter : this.actionsCounter + 1;
+            if (hasActionModifiers && movingKeys.contains(e.getKeyCode())) {
+                LOG.info("moving action");
+                this.movingActionsCounter++;
+            } else {
+                LOG.info("action");
+                this.actionsCounter++;
+            }
         }
 
         notifyUser();
@@ -223,10 +255,8 @@ public final class ActionsRecorder implements Disposable {
         new Task.Backgroundable(project, passwordToSend) {
 
             public void run(@NotNull ProgressIndicator indicator) {
-                Preconditions.checkNotNull(indicator, "run");
                 try {
                     GolfResult golfResult = RestClientUtil.sendSolution(solution, passwordToSend);
-                    if (golfResult == null) throw new NullPointerException();
                     showCongratulations(golfResult);
 
                 } catch (Exception localException) {
@@ -252,8 +282,6 @@ public final class ActionsRecorder implements Disposable {
 
         return new NotificationListener() {
             public void hyperlinkUpdate(Notification notification, HyperlinkEvent event) {
-                Preconditions.checkNotNull(notification, "hyperlinkUpdate");
-                Preconditions.checkNotNull(event, "hyperlinkUpdate");
                 if ((Objects.equal(event.getEventType(), EventType.ACTIVATED)
                         && Objects.equal(event.getDescription(), "restart"))) {
                     notification.expire();
@@ -265,18 +293,22 @@ public final class ActionsRecorder implements Disposable {
         };
     }
 
-
     public final void showCongratulations(GolfResult result) {
         Preconditions.checkNotNull(result, "showCongratulations");
         String errorMessage = result.getErrorMessage();
+        Notification notification;
         if (errorMessage != null) {
-            new Notification("Failed to submit solution", "Gode Golf Error", "", NotificationType.ERROR);
-            return;
+            notification = new Notification("Failed to submit solution", "Gode Golf Error", "", NotificationType.ERROR);
+        } else {
+            if (result.getResult().equals(result.getBestResult())) {
+                String message = String.format("Your score of %d is the best score registered so far", result.getResult());
+                notification = new Notification("Best score", "Congratulations", message, NotificationType.INFORMATION);
+            } else {
+                String message = String.format("Your score %d has been registered, best score is %d", result.getResult(), result.getBestResult());
+                notification = new Notification("Registered", "Congratulations", message, NotificationType.INFORMATION);
+            }
         }
-
-        if (result.getResult().equals(result.getBestResult())) {
-
-        }
+        Notifications.Bus.notify(notification, this.project);
     }
 
     public final void stopRecording() {

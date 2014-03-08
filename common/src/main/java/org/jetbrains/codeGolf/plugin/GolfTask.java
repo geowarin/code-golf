@@ -23,9 +23,6 @@ public final class GolfTask {
     }
 
     public final String toHtml() {
-        if (this == null) {
-            return null;
-        }
         return getTargetCode().replaceAll("\n", "<BR/>").replaceAll(" ", "&nbsp;");
     }
 
