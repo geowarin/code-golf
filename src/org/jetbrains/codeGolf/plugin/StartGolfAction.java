@@ -1,6 +1,5 @@
 package org.jetbrains.codeGolf.plugin;
 
-import com.google.common.base.Preconditions;
 import com.google.common.collect.Lists;
 import com.intellij.openapi.actionSystem.AnAction;
 import com.intellij.openapi.actionSystem.AnActionEvent;
@@ -27,29 +26,27 @@ import java.util.List;
 
 
 public final class StartGolfAction extends AnAction {
-    private boolean isRecording = false;
+
+    private ActionsRecorder recorder;
 
     public StartGolfAction() {
         super("Start Code Golf...");
     }
 
-    public final boolean getIsRecording() {
-        return this.isRecording;
-    }
-
-    public void setRecording(boolean recording) {
-        isRecording = recording;
-    }
-
     public void update(AnActionEvent e) {
-        if (e != null) {
-            Presentation presentation = e.getPresentation();
-            // TODO ??
-        }
+        Presentation presentation = e.getPresentation();
+        presentation.setEnabled(!isRecording());
+//            Project project = (Project) e.getDataContext().getData(DataConstants.PROJECT);
+//            VirtualFile[] files = (VirtualFile[]) e.getDataContext().getData(DataConstants.VIRTUAL_FILE_ARRAY);
+//            boolean visible = project != null && files != null && files.length > 0;
+//            // Visibility
+//            e.getPresentation().setVisible(visible);
+//            // Enable or disable
+//            e.getPresentation().setEnabled(visible);
     }
 
     public void actionPerformed(AnActionEvent anActionEvent) {
-        if (!this.isRecording) {
+        if (!this.isRecording()) {
             String serverUrl = CodeGolfConfigurableAccessor.getServerUrl();
             List<GolfTask> tasks = RestClientUtil.loadTasks(serverUrl);
 
@@ -59,10 +56,8 @@ public final class StartGolfAction extends AnAction {
             if (Strings.isNotBlank(userName)) {
                 password = CodeGolfConfigurableAccessor.getUserPassword(project);
             }
-            List<UserScore> userScores = Lists.newArrayList();
-            if (Strings.isNotBlank(userName)) {
-                userScores = RestClientUtil.loadScores(serverUrl, userName);
-            }
+            List<UserScore> userScores = getUserScores(serverUrl, userName);
+
             StartGolfDialog startGolfDialog = new StartGolfDialog(project, tasks, userScores);
             startGolfDialog.show();
             GolfTask selectedTask = startGolfDialog.getSelectedTask();
@@ -72,28 +67,39 @@ public final class StartGolfAction extends AnAction {
         }
     }
 
-    private void startTask(GolfTask task, Project project, String username, String password) {
-        VirtualFile file = createFile(project, task.getTaskName(), task.getInitialCode());
-        Preconditions.checkNotNull(file);
-
-        OpenFileDescriptor descriptor = new OpenFileDescriptor(project, file, task.getInitialOffset());
-        FileEditorManager fileEditorManager = FileEditorManager.getInstance(project);
-        if (fileEditorManager != null) {
-//            isRecording = true;
-            fileEditorManager.openTextEditor(descriptor, true);
-            Document document = FileDocumentManager.getInstance().getDocument(file);
-
-            ActionsRecorder recorder = new ActionsRecorder(task, project, document, username, password, new ActionsRecorder.Restarter() {
-                @Override
-                public void restart() {
-                }
-            });
-            RecordingControlPanel recordingControlPanel = new RecordingControlPanel(project, document, task.getTargetCode(), recorder);
-            recorder.setControlPanel(recordingControlPanel);
-            recordingControlPanel.showHint();
-
-            recorder.startRecording();
+    private List<UserScore> getUserScores(String serverUrl, String userName) {
+        List<UserScore> userScores = Lists.newArrayList();
+        if (Strings.isNotBlank(userName)) {
+            userScores = RestClientUtil.loadScores(serverUrl, userName);
         }
+        return userScores;
+    }
+
+    private void startTask(final GolfTask task, final Project project, final String username, final String password) {
+
+        VirtualFile file = createFile(project, task.getTaskName(), task.getInitialCode());
+        setFocusOnFile(project, file, task.getInitialOffset());
+
+        Document document = FileDocumentManager.getInstance().getDocument(file);
+        recorder = new ActionsRecorder(task, project, document, username, password);
+        recorder.setRestarter(new ActionsRecorder.Restarter() {
+            @Override
+            public void restart() {
+                startTask(task, project, username, password);
+            }
+        });
+
+        RecordingControlPanel recordingControlPanel = new RecordingControlPanel(project, document, task.getTargetCode(), recorder);
+        recorder.setControlPanel(recordingControlPanel);
+        recordingControlPanel.showHint();
+
+        recorder.startRecording();
+    }
+
+    private void setFocusOnFile(Project project, VirtualFile file, int initialOffset) {
+        OpenFileDescriptor descriptor = new OpenFileDescriptor(project, file, initialOffset);
+        FileEditorManager fileEditorManager = FileEditorManager.getInstance(project);
+        fileEditorManager.openTextEditor(descriptor, true);
     }
 
     private VirtualFile createFile(final Project project, final String taskName, final String text) {
@@ -126,5 +132,9 @@ public final class StartGolfAction extends AnAction {
         }
         PsiFile added = (PsiFile) root.add(tempFile);
         return added.getVirtualFile();
+    }
+
+    public boolean isRecording() {
+        return recorder != null && recorder.isRecording();
     }
 }

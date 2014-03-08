@@ -1,6 +1,7 @@
 package org.jetbrains.codeGolf.plugin.controlpanel;
 
 import com.google.common.base.Preconditions;
+import com.intellij.ide.IdePopupManager;
 import com.intellij.openapi.Disposable;
 import com.intellij.openapi.actionSystem.ActionManager;
 import com.intellij.openapi.actionSystem.ActionToolbar;
@@ -23,6 +24,7 @@ import com.intellij.openapi.wm.WindowManager;
 import com.intellij.ui.awt.RelativePoint;
 import com.intellij.ui.popup.AbstractPopup;
 import com.intellij.ui.popup.NotLookupOrSearchCondition;
+import org.jetbrains.annotations.NotNull;
 import org.jetbrains.codeGolf.plugin.ActionsRecorder;
 
 import javax.swing.*;
@@ -51,11 +53,10 @@ public final class RecordingControlPanel extends JPanel implements Disposable {
         Disposer.register(this.recorder, this);
         setLayout(new BorderLayout());
         this.myEditor = createViewer(this.targetCode);
-        Editor editor = this.myEditor;
-        if (editor == null) throw new NullPointerException();
+        if (this.myEditor == null) throw new NullPointerException();
 
-        JComponent component = editor.getComponent();
-        Preconditions.checkNotNull(editor, "Editor", "getComponent");
+        JComponent component = this.myEditor.getComponent();
+        Preconditions.checkNotNull(this.myEditor, "Editor", "getComponent");
         component.setEnabled(false);
 
         this.myText = new JLabel("Actions: WWW Moving actions: WWW Chars: WWW", SwingConstants.LEFT);
@@ -76,12 +77,17 @@ public final class RecordingControlPanel extends JPanel implements Disposable {
 
         ComponentPopupBuilder componentPopupBuilder = popupFactory.createComponentPopupBuilder(this, this);
         this.myHint = createHint(componentPopupBuilder);
+        notifyUser(0, 0, 0);
     }
 
     public void dispose() {
-        if (this.myEditor == null) return;
-        EditorFactory.getInstance().releaseEditor(this.myEditor);
-        this.myEditor = null;
+        if (this.myEditor == null) {
+            EditorFactory.getInstance().releaseEditor(this.myEditor);
+            this.myEditor = null;
+        }
+//        myHint.setUiVisible(false);
+        myHint.cancel();
+//        Disposer.dispose(myHint);
     }
 
     public final JComponent createControlComponent() {
@@ -92,12 +98,8 @@ public final class RecordingControlPanel extends JPanel implements Disposable {
                 new TryAgainAction(this.recorder),
                 new StopSolvingAction(this.recorder));
         ActionManager actionManager = ActionManager.getInstance();
-        if (actionManager == null) throw new NullPointerException();
         ActionToolbar actionToolbar = actionManager.createActionToolbar("CodeGolfToolbar", group, true);
-        if (actionToolbar == null) throw new NullPointerException();
-        JComponent component = actionToolbar.getComponent();
-        if (component == null) throw new NullPointerException();
-        return component;
+        return actionToolbar.getComponent();
     }
 
     public final void notifyUser(int actionsCounter, int movingActionsCounter, int typingCounter) {
@@ -112,44 +114,30 @@ public final class RecordingControlPanel extends JPanel implements Disposable {
     }
 
     public final void showHint() {
-        JBPopup hint = this.myHint;
         WindowManager windowManager = WindowManager.getInstance();
-        if (windowManager == null) throw new NullPointerException();
-
         IdeFrame ideFrame = windowManager.getIdeFrame(this.project);
-        if (ideFrame == null) throw new NullPointerException();
-
         JComponent frame = ideFrame.getComponent();
-        if (frame == null) throw new NullPointerException();
 
         Rectangle visibleRect = frame.getVisibleRect();
-        Preconditions.checkNotNull(visibleRect, "JComponent", "getVisibleRect");
         Dimension contentSize = getPreferredSize();
-        if (contentSize == null) throw new NullPointerException();
 
-        Dimension hintSize = ((AbstractPopup) hint).getHeaderPreferredSize();
-        Preconditions.checkNotNull(hintSize, "AbstractPopup", "getHeaderPreferredSize");
+        Dimension hintSize = ((AbstractPopup) this.myHint).getHeaderPreferredSize();
         int popupHeight = contentSize.height + hintSize.height;
         int newPopupHeight = Math.max(Math.min(popupHeight, visibleRect.height / 2), 150);
         if (newPopupHeight != popupHeight) {
             popupHeight = newPopupHeight;
-            hint.setSize(new Dimension(contentSize.width, popupHeight));
+            this.myHint.setSize(new Dimension(contentSize.width, popupHeight));
         }
 
         Point point = new Point(visibleRect.x + 5, visibleRect.y + visibleRect.height - newPopupHeight - 20);
-        hint.show(new RelativePoint(frame, point));
+        this.myHint.show(new RelativePoint(frame, point));
     }
 
-    public final Editor createViewer(String code) {
-        Preconditions.checkNotNull(code, "createViewer");
+    public final Editor createViewer(@NotNull String code) {
+
         EditorFactory editorFactory = EditorFactory.getInstance();
-        if (editorFactory == null) throw new NullPointerException();
-
         Document document = editorFactory.createDocument(code);
-        Preconditions.checkNotNull(document, "EditorFactory", "createDocument");
-
         final Editor editor = editorFactory.createViewer(document);
-        if (editor == null) throw new NullPointerException();
 
         EditorSettings settings = editor.getSettings();
         Preconditions.checkNotNull(settings, "Editor", "getSettings");
@@ -165,31 +153,24 @@ public final class RecordingControlPanel extends JPanel implements Disposable {
         settings.setLineCursorWidth(1);
 
         EditorHighlighterFactory editorHighlighterFactory = EditorHighlighterFactory.getInstance();
-        if (editorHighlighterFactory == null) throw new NullPointerException();
 
         EditorHighlighter editorHighlighter = editorHighlighterFactory.createEditorHighlighter(this.project, StdFileTypes.JAVA);
-        if (editorHighlighter == null) throw new NullPointerException();
         ((EditorEx) editor).setHighlighter(editorHighlighter);
         editor.getSelectionModel().addSelectionListener(new SelectionListener() {
 
             public void selectionChanged(SelectionEvent event) {
 
                 SelectionModel selectionModel = editor.getSelectionModel();
-                Preconditions.checkNotNull(selectionModel, "Editor", "getSelectionModel");
                 selectionModel.removeSelection();
             }
         });
         return editor;
     }
 
-    public final Project getProject() {
-        return this.project;
-    }
-
     private JBPopup createHint(ComponentPopupBuilder componentPopupBuilder) {
         return componentPopupBuilder
-                .setRequestFocusCondition(this.getProject(), NotLookupOrSearchCondition.INSTANCE)
-                .setProject(this.getProject())
+                .setRequestFocusCondition(this.project, NotLookupOrSearchCondition.INSTANCE)
+                .setProject(this.project)
                 .setResizable(true)
                 .setMovable(true)
                 .setCancelKeyEnabled(false)

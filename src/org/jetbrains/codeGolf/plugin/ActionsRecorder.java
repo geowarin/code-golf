@@ -64,17 +64,18 @@ public final class ActionsRecorder implements Disposable {
     private final Document document;
     private final String username;
     private String password;
-    private final Restarter restarter;
+    private Restarter restarter;
+    private boolean recording;
 
     private static final Logger LOG = Logger.getInstance("#org.jetbrains.codeGolf");
 
-    public ActionsRecorder(GolfTask golfTask, Project project, Document document, String username, String password, Restarter restarter) {
+    public ActionsRecorder(@NotNull GolfTask golfTask, @NotNull Project project, @NotNull Document document, String username, String password) {
         this.golfTask = golfTask;
         this.project = project;
         this.document = document;
         this.username = username;
         this.password = password;
-        this.restarter = restarter;
+        this.controlPanel = new RecordingControlPanel(project, document, golfTask.getTargetCode(), this);
     }
 
     public void setControlPanel(RecordingControlPanel controlPanel) {
@@ -82,7 +83,9 @@ public final class ActionsRecorder implements Disposable {
     }
 
     public final void startRecording() {
+        recording = true;
         LOG.info("recording started");
+        controlPanel.showHint();
 
         this.document.addDocumentListener(new DocumentListener() {
 
@@ -129,22 +132,19 @@ public final class ActionsRecorder implements Disposable {
                         notifyUser();
                     } else {
 
-                        KeyEvent keyEvent = IdeEventQueue.getInstance().getKeyEventDispatcher().getContext().getInputEvent();
-                        if (keyEvent != null) {
-                            processKeyPressedEvent(keyEvent);
-                        } else {
-                            AWTEvent currentEvent = IdeEventQueue.getCurrentEvent();
-                            if (currentEvent instanceof MouseEvent) {
-                                LOG.info("mouse event " + currentEvent);
-                                MouseEvent mouseEvent = (MouseEvent) currentEvent;
-                                Notifications.Bus.notify(new Notification("mouse is bad", "Don't use mouse !", "mouse actions are worth 1000 actions", NotificationType.WARNING));
-//                            showBalloon(htmlText);
+                        InputEvent inputEvent = event.getInputEvent();
+                        if (inputEvent instanceof KeyEvent) {
+                            processKeyPressedEvent((KeyEvent) inputEvent);
+                        } else if (inputEvent instanceof MouseEvent) {
+                            MouseEvent mouseEvent = (MouseEvent) inputEvent;
+                            Notifications.Bus.notify(new Notification("mouse is bad", "Don't use mouse !", "mouse actions are worth 1000 actions", NotificationType.WARNING));
 
-                                if (!isInsideExpectedCodeViewer(mouseEvent)) {
-                                    LOG.info("Click is not inside code viewer");
-                                }
+                            if (!isInsideExpectedCodeViewer(mouseEvent)) {
+                                LOG.info("Click is not inside code viewer");
                             }
                         }
+//                        KeyEvent keyEvent = IdeEventQueue.getInstance().getKeyEventDispatcher().getContext().getInputEvent();
+//                        AWTEvent currentEvent = IdeEventQueue.getCurrentEvent();
                     }
                 }
             }
@@ -313,41 +313,17 @@ public final class ActionsRecorder implements Disposable {
 
     public final void stopRecording() {
         LOG.info("Recording stopped");
+        this.recording = false;
+//        if (controlPanel != null) {
+//            controlPanel.dispose();
+//        }
         Disposer.dispose(this);
     }
 
     public void dispose() {
         this.disposed = true;
         this.password = "";
-    }
-
-
-    public final GolfTask getGolfTask() {
-        return this.golfTask;
-    }
-
-
-    public final Project getProject() {
-        return this.project;
-    }
-
-
-    public final Document getDocument() {
-        return this.document;
-    }
-
-
-    public final String getUsername() {
-        return this.username;
-    }
-
-
-    public final String getPassword() {
-        return this.password;
-    }
-
-    public void setPassword(String password) {
-        this.password = password;
+        this.recording = false;
     }
 
     public final Restarter getRestarter() {
@@ -365,7 +341,15 @@ public final class ActionsRecorder implements Disposable {
         return result;
     }
 
+    public void setRestarter(Restarter restarter) {
+        this.restarter = restarter;
+    }
+
     public interface Restarter {
         public void restart();
+    }
+
+    public boolean isRecording() {
+        return recording;
     }
 }
