@@ -17,6 +17,5 @@ public final class StopSolvingAction extends AnAction {
 
     public void actionPerformed(AnActionEvent e) {
         this.recorder.stopRecording();
-//        recorder.controlPanel.myHint.dispose();
     }
 }

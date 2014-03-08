@@ -1,7 +1,6 @@
 package org.jetbrains.codeGolf.plugin.controlpanel;
 
 import com.google.common.base.Preconditions;
-import com.intellij.ide.IdePopupManager;
 import com.intellij.openapi.Disposable;
 import com.intellij.openapi.actionSystem.ActionManager;
 import com.intellij.openapi.actionSystem.ActionToolbar;
@@ -28,7 +27,6 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.codeGolf.plugin.ActionsRecorder;
 
 import javax.swing.*;
-import javax.swing.border.Border;
 import java.awt.*;
 
 

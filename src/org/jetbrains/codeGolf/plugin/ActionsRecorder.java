@@ -27,12 +27,10 @@ import com.intellij.openapi.progress.ProgressIndicator;
 import com.intellij.openapi.progress.Task;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.ui.MessageType;
-import com.intellij.openapi.ui.popup.Balloon;
 import com.intellij.openapi.ui.popup.JBPopupFactory;
 import com.intellij.openapi.util.Disposer;
 import com.intellij.openapi.util.text.StringUtil;
 import com.intellij.openapi.wm.WindowManager;
-import com.intellij.ui.awt.RelativePoint;
 import com.intellij.util.ui.UIUtil;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.codeGolf.plugin.controlpanel.RecordingControlPanel;
@@ -70,6 +68,7 @@ public final class ActionsRecorder implements Disposable {
     private static final Logger LOG = Logger.getInstance("#org.jetbrains.codeGolf");
 
     public ActionsRecorder(@NotNull GolfTask golfTask, @NotNull Project project, @NotNull Document document, String username, String password) {
+        Preconditions.checkNotNull(project);
         this.golfTask = golfTask;
         this.project = project;
         this.document = document;
@@ -252,7 +251,7 @@ public final class ActionsRecorder implements Disposable {
 //                        KotlinPackage.makeString$default((Iterable) this.usedActions, "|", null, null, 0, null, 30));
         final String passwordToSend = this.password;
 
-        new Task.Backgroundable(project, passwordToSend) {
+        new Task.Backgroundable(project, "sending data") {
 
             public void run(@NotNull ProgressIndicator indicator) {
                 try {
@@ -280,7 +279,7 @@ public final class ActionsRecorder implements Disposable {
     public final NotificationListener createNotificationListener() {
 
         return new NotificationListener() {
-            public void hyperlinkUpdate(Notification notification, HyperlinkEvent event) {
+            public void hyperlinkUpdate(@NotNull Notification notification, @NotNull HyperlinkEvent event) {
                 if ((Objects.equal(event.getEventType(), EventType.ACTIVATED)
                         && Objects.equal(event.getDescription(), "restart"))) {
                     notification.expire();
@@ -297,7 +296,7 @@ public final class ActionsRecorder implements Disposable {
         String errorMessage = result.getErrorMessage();
         Notification notification;
         if (errorMessage != null) {
-            notification = new Notification("Failed to submit solution", "Gode Golf Error", "", NotificationType.ERROR);
+            notification = new Notification("Failed to submit solution", "Gode Golf Error", errorMessage, NotificationType.ERROR);
         } else {
             if (result.getResult().equals(result.getBestResult())) {
                 String message = String.format("Your score of %d is the best score registered so far", result.getResult());

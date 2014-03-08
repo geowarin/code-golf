@@ -25,7 +25,6 @@ public final class CodeGolfConfigurableAccessor {
         propertiesComponent.setValue(CodeGolfSettings.USER_NAME_PROPERTY, username);
     }
 
-
     public static String getUserPassword(@NotNull Project project) {
         PasswordSafe passwordSafe = PasswordSafe.getInstance();
         try {

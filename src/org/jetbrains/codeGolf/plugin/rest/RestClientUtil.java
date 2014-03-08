@@ -35,7 +35,7 @@ public class RestClientUtil {
             String output = response.getEntity(String.class);
             LOG.info("Loaded from server:");
             LOG.info(output);
-            List tasks = JsonSerializer.deserializeTasks(output);
+            List<GolfTask> tasks = JsonSerializer.deserializeTasks(output);
             LOG.info(String.valueOf(tasks.size()) + " tasks loaded");
             return tasks;
         } catch (Exception e) {
@@ -54,7 +54,7 @@ public class RestClientUtil {
             String output = response.getEntity(String.class);
             LOG.info("Loaded from server:");
             LOG.info(output);
-            List scores = JsonSerializer.deserializeScores(output);
+            List<UserScore> scores = JsonSerializer.deserializeScores(output);
             LOG.info(String.valueOf(scores.size()) + " scores loaded");
             return scores;
         } catch (Exception e) {
@@ -147,12 +147,9 @@ public class RestClientUtil {
             WebResource webResource = client.resource(getActualServerUrl(serverUrl, client) + path);
             ClientResponse response = webResource.type(MediaType.APPLICATION_JSON_TYPE).get(ClientResponse.class);
             FileOutputStream output;
-            try {
-                InputStream input = response.getEntityInputStream();
-                output = new FileOutputStream(target);
-                FileUtil.copy(input, output);
-            } finally {
-            }
+            InputStream input = response.getEntityInputStream();
+            output = new FileOutputStream(target);
+            FileUtil.copy(input, output);
         } catch (Exception e) {
             throw new RuntimeException(e);
         } finally {

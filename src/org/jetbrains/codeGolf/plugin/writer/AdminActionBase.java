@@ -1,7 +1,6 @@
 package org.jetbrains.codeGolf.plugin.writer;
 
 import com.google.common.base.Preconditions;
-import com.intellij.ide.util.PropertiesComponent;
 import com.intellij.openapi.actionSystem.AnAction;
 import com.intellij.openapi.actionSystem.AnActionEvent;
 import com.intellij.openapi.actionSystem.Presentation;
