@@ -5,14 +5,20 @@ import com.google.common.collect.Lists;
 import com.intellij.openapi.actionSystem.AnAction;
 import com.intellij.openapi.actionSystem.AnActionEvent;
 import com.intellij.openapi.actionSystem.Presentation;
+import com.intellij.openapi.application.ApplicationManager;
+import com.intellij.openapi.editor.Document;
 import com.intellij.openapi.editor.Editor;
+import com.intellij.openapi.fileEditor.FileDocumentManager;
 import com.intellij.openapi.fileEditor.FileEditorManager;
 import com.intellij.openapi.fileEditor.OpenFileDescriptor;
 import com.intellij.openapi.fileTypes.StdFileTypes;
 import com.intellij.openapi.project.Project;
+import com.intellij.openapi.util.Computable;
 import com.intellij.openapi.vfs.VirtualFile;
+import com.intellij.psi.PsiDirectory;
 import com.intellij.psi.PsiFile;
 import com.intellij.psi.PsiFileFactory;
+import com.intellij.psi.PsiManager;
 import com.jgoodies.common.base.Strings;
 import org.jetbrains.codeGolf.plugin.rest.RestClientUtil;
 
@@ -69,27 +75,46 @@ public final class StartGolfAction extends AnAction {
         Preconditions.checkNotNull(file);
 
         OpenFileDescriptor descriptor = new OpenFileDescriptor(project, file, task.getInitialOffset());
-        Editor editor;
         FileEditorManager fileEditorManager = FileEditorManager.getInstance(project);
         if (fileEditorManager != null)
             fileEditorManager.openTextEditor(descriptor, true);
     }
 
-    private VirtualFile createFile(Project project, String taskName, String text) {
-        String className;
+    private VirtualFile createFile(final Project project, final String taskName, final String text) {
         if (text == null)
             return null;
 
         if (text.length() > 0) {
-            PsiFile tempFile;
-            PsiFileFactory psiFileFactory = PsiFileFactory.getInstance(project);
-            if (psiFileFactory != null) {
-                PsiFile psiFile = psiFileFactory.createFileFromText("A.java", StdFileTypes.JAVA, text);
-                Preconditions.checkNotNull(psiFile, "PsiFileFactory", "createFileFromText");
-                return psiFile.getVirtualFile();
-            }
+
+            return ApplicationManager.getApplication().runWriteAction(new Computable<VirtualFile>() {
+                @Override
+                public VirtualFile compute() {
+                    return createOrReplaceFile(project, taskName, text);
+                }
+            });
         }
         return null;
+    }
+
+    private VirtualFile createOrReplaceFile(Project project, String fileName, String text) {
+        VirtualFile baseDir = project.getBaseDir();
+        PsiDirectory root = PsiManager.getInstance(project).findDirectory(baseDir);
+        PsiFileFactory psiFileFactory = PsiFileFactory.getInstance(project);
+
+        String className = fileName + ".java";
+        PsiFile tempFile = psiFileFactory.createFileFromText(className, StdFileTypes.JAVA, text);
+        VirtualFile file = baseDir.findChild(className);
+//        selectedVFile = LocalFileSystem.getInstance().findFileByIoFile(fileChooser.getSelectedFile());
+        // Get document file
+
+        if (file != null && file.exists()) {
+            Document docFile = FileDocumentManager.getInstance().getDocument(file);
+            docFile.setText(text);
+            return file;
+//            file.delete(this);
+        }
+        PsiFile added = (PsiFile) root.add(tempFile);
+        return added.getVirtualFile();
     }
 
     public StartGolfAction() {
