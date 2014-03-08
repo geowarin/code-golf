@@ -1,4 +1,4 @@
-package org.jetbrains.codeGolf.plugin;
+package org.jetbrains.codeGolf.plugin.login;
 
 import com.intellij.openapi.actionSystem.AnAction;
 import com.intellij.openapi.actionSystem.AnActionEvent;
@@ -12,5 +12,6 @@ public final class LoginWithJBAccountAction extends AnAction {
         if (eProject == null) throw new NullPointerException();
         Project project = eProject;
         new StringBuilder().append("User name ");
+        // TODO ??
     }
 }

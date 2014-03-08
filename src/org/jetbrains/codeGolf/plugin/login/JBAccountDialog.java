@@ -1,8 +1,6 @@
-package org.jetbrains.codeGolf.plugin;
+package org.jetbrains.codeGolf.plugin.login;
 
 import com.google.common.base.Preconditions;
-import com.intellij.ide.passwordSafe.PasswordSafe;
-import com.intellij.ide.passwordSafe.PasswordSafeException;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.ui.DialogWrapper;
 import com.intellij.openapi.ui.Messages;
@@ -13,6 +11,7 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.jetbrains.codeGolf.auth.AuthResult;
 import org.jetbrains.codeGolf.auth.JBAccountAuthHelper;
+import org.jetbrains.codeGolf.plugin.settings.CodeGolfConfigurableAccessor;
 
 import javax.swing.*;
 import java.awt.event.ActionEvent;
@@ -28,26 +27,22 @@ public final class JBAccountDialog extends DialogWrapper {
     private final Action loginAsGuestAction;
     private final Project project;
 
+    public JBAccountDialog(Project project) {
+        super(project);
+        this.project = project;
+        this.usernameField = new JTextField();
+        this.passwordField = new JPasswordField();
+        this.savePasswordCheckbox = new JCheckBox("Remember Password");
+        this.username = "";
+        this.password = "";
 
-    public final JTextField getUsernameField() {
-        return this.usernameField;
+        setTitle("Login With JetBrains Account");
+        HyperlinkLabel hyperlink = new HyperlinkLabel("Create JetBrains Account");
+        hyperlink.setHyperlinkTarget("http://account.jetbrains.com/");
+        FormBuilder formBuilder = FormBuilder.createFormBuilder().addLabeledComponent("User Name:", this.usernameField);
+        this.mainPanel = formBuilder.getPanel();
+        this.loginAsGuestAction = new LoginAsGuestAction();
     }
-
-
-    public final JPasswordField getPasswordField() {
-        return this.passwordField;
-    }
-
-
-    public final JCheckBox getSavePasswordCheckbox() {
-        return this.savePasswordCheckbox;
-    }
-
-
-    public final JPanel getMainPanel() {
-        return this.mainPanel;
-    }
-
 
     public final String getUsername() {
         return this.username;
@@ -64,11 +59,6 @@ public final class JBAccountDialog extends DialogWrapper {
     public final String getPassword() {
         return this.password;
     }
-
-    public final Action getLoginAsGuestAction() {
-        return this.loginAsGuestAction;
-    }
-
 
     @NotNull
     protected Action[] createActions() {
@@ -100,13 +90,7 @@ public final class JBAccountDialog extends DialogWrapper {
 
             CodeGolfConfigurableAccessor.setUserName(this.username);
             if (this.savePasswordCheckbox.isSelected()) {
-                PasswordSafe passwordSafe = PasswordSafe.getInstance();
-                if (passwordSafe == null) throw new NullPointerException();
-                try {
-                    passwordSafe.storePassword(this.project, LoginWithJBAccountAction.class, CodeGolfConfigurableAccessor.getJB_ACCOUNT_FOR_CODE_GOLF_KEY(), this.password);
-                } catch (PasswordSafeException e) {
-                    throw new RuntimeException(e);
-                }
+                CodeGolfConfigurableAccessor.savePassword(this.project, this.password);
             }
         }
         doSuperOkAction();
@@ -125,24 +109,6 @@ public final class JBAccountDialog extends DialogWrapper {
     public final Project getProject() {
         return this.project;
     }
-
-    public JBAccountDialog(Project project) {
-        super(project);
-        this.project = project;
-        this.usernameField = new JTextField();
-        this.passwordField = new JPasswordField();
-        this.savePasswordCheckbox = new JCheckBox("Remember Password");
-        this.username = "";
-        this.password = "";
-
-        setTitle("Login With JetBrains Account");
-        HyperlinkLabel hyperlink = new HyperlinkLabel("Create JetBrains Account");
-        hyperlink.setHyperlinkTarget("http://account.jetbrains.com/");
-        FormBuilder formBuilder = FormBuilder.createFormBuilder().addLabeledComponent("User Name:", this.usernameField);
-        this.mainPanel = formBuilder.getPanel();
-        this.loginAsGuestAction = new LoginAsGuestAction();
-    }
-
 
     public final class LoginAsGuestAction extends AbstractAction {
 

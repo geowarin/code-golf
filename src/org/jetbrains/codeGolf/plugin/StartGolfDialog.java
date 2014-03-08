@@ -8,6 +8,7 @@ import com.intellij.ui.JBColor;
 import com.intellij.ui.SimpleTextAttributes;
 import com.intellij.ui.components.JBList;
 import org.jetbrains.annotations.Nullable;
+import org.jetbrains.codeGolf.plugin.settings.CodeGolfConfigurableAccessor;
 
 import javax.swing.*;
 import java.awt.*;

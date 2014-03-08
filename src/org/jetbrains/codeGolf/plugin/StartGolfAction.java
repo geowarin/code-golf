@@ -19,7 +19,9 @@ import com.intellij.psi.PsiFile;
 import com.intellij.psi.PsiFileFactory;
 import com.intellij.psi.PsiManager;
 import com.jgoodies.common.base.Strings;
+import org.jetbrains.codeGolf.plugin.controlpanel.RecordingControlPanel;
 import org.jetbrains.codeGolf.plugin.rest.RestClientUtil;
+import org.jetbrains.codeGolf.plugin.settings.CodeGolfConfigurableAccessor;
 
 import java.util.List;
 
@@ -27,6 +29,9 @@ import java.util.List;
 public final class StartGolfAction extends AnAction {
     private boolean isRecording = false;
 
+    public StartGolfAction() {
+        super("Start Code Golf...");
+    }
 
     public final boolean getIsRecording() {
         return this.isRecording;
@@ -42,7 +47,6 @@ public final class StartGolfAction extends AnAction {
             // TODO ??
         }
     }
-
 
     public void actionPerformed(AnActionEvent anActionEvent) {
         if (!this.isRecording) {
@@ -79,22 +83,21 @@ public final class StartGolfAction extends AnAction {
             fileEditorManager.openTextEditor(descriptor, true);
             Document document = FileDocumentManager.getInstance().getDocument(file);
 
-            ActionsRecorder recorder = new ActionsRecorder(task, project, document, username, password, null);
+            ActionsRecorder recorder = new ActionsRecorder(task, project, document, username, password, new ActionsRecorder.Restarter() {
+                @Override
+                public void restart() {
+                }
+            });
             RecordingControlPanel recordingControlPanel = new RecordingControlPanel(project, document, task.getTargetCode(), recorder);
             recorder.setControlPanel(recordingControlPanel);
             recordingControlPanel.showHint();
-
 
             recorder.startRecording();
         }
     }
 
     private VirtualFile createFile(final Project project, final String taskName, final String text) {
-        if (text == null)
-            return null;
-
-        if (text.length() > 0) {
-
+        if (Strings.isNotBlank(text)) {
             return ApplicationManager.getApplication().runWriteAction(new Computable<VirtualFile>() {
                 @Override
                 public VirtualFile compute() {
@@ -108,25 +111,20 @@ public final class StartGolfAction extends AnAction {
     private VirtualFile createOrReplaceFile(Project project, String fileName, String text) {
         VirtualFile baseDir = project.getBaseDir();
         PsiDirectory root = PsiManager.getInstance(project).findDirectory(baseDir);
-        PsiFileFactory psiFileFactory = PsiFileFactory.getInstance(project);
 
         String className = fileName + ".java";
-        PsiFile tempFile = psiFileFactory.createFileFromText(className, StdFileTypes.JAVA, text);
+        PsiFile tempFile = PsiFileFactory.getInstance(project).createFileFromText(className, StdFileTypes.JAVA, text);
         VirtualFile file = baseDir.findChild(className);
 //        selectedVFile = LocalFileSystem.getInstance().findFileByIoFile(fileChooser.getSelectedFile());
         // Get document file
 
         if (file != null && file.exists()) {
             Document docFile = FileDocumentManager.getInstance().getDocument(file);
+            assert docFile != null;
             docFile.setText(text);
             return file;
-//            file.delete(this);
         }
         PsiFile added = (PsiFile) root.add(tempFile);
         return added.getVirtualFile();
-    }
-
-    public StartGolfAction() {
-        super("Start Code Golf...");
     }
 }

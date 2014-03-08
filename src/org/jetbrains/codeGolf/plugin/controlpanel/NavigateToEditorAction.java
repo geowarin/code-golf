@@ -1,4 +1,4 @@
-package org.jetbrains.codeGolf.plugin;
+package org.jetbrains.codeGolf.plugin.controlpanel;
 
 import com.intellij.icons.AllIcons;
 import com.intellij.openapi.actionSystem.AnAction;
@@ -13,8 +13,14 @@ import com.intellij.openapi.project.Project;
 import com.intellij.openapi.vfs.VirtualFile;
 
 
+@SuppressWarnings("ComponentNotRegistered")
 public final class NavigateToEditorAction extends AnAction {
     private final Document document;
+
+    public NavigateToEditorAction(Document document) {
+        super("Navigate to editor", "Navigate to editor", AllIcons.General.AutoscrollToSource);
+        this.document = document;
+    }
 
     public void actionPerformed(AnActionEvent e) {
 
@@ -28,15 +34,5 @@ public final class NavigateToEditorAction extends AnAction {
 
         FileEditorManager fileEditorManager = FileEditorManager.getInstance(project);
         fileEditorManager.openTextEditor(descriptor, true);
-    }
-
-
-    public final Document getDocument() {
-        return this.document;
-    }
-
-    public NavigateToEditorAction(Document document) {
-        super("Navigate to editor", "Navigate to editor", AllIcons.General.AutoscrollToSource);
-        this.document = document;
     }
 }

@@ -27,7 +27,10 @@ import com.intellij.openapi.progress.ProgressIndicator;
 import com.intellij.openapi.progress.Task;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.util.Disposer;
+import com.intellij.openapi.util.text.StringUtil;
 import com.intellij.util.ui.UIUtil;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.codeGolf.plugin.controlpanel.RecordingControlPanel;
 import org.jetbrains.codeGolf.plugin.rest.RestClientUtil;
 
 import javax.swing.*;
@@ -45,11 +48,11 @@ public final class ActionsRecorder implements Disposable {
     private int movingActionsCounter = 0;
     private int actionsCounter = 0;
     private int typingCounter = 0;
-    private List<String> usedActions;
-    private final Set<InputEvent> actionInputEvents;
-    private final Set<String> movingActions;
-    private final Set<String> forbiddenActions;
-    private final Set<String> typingActions;
+    private List<String> usedActions = new ArrayList<String>();
+    private final Set<InputEvent> actionInputEvents = new HashSet<InputEvent>();
+    private final Set<String> movingActions = Sets.newHashSet("EditorLeft", "EditorRight", "EditorDown", "EditorUp", "EditorLineStart", "EditorLineEnd", "EditorPageUp", "EditorPageDown", "EditorPreviousWord", "EditorNextWord", "EditorScrollUp", "EditorScrollDown", "EditorTextStart", "EditorTextEnd", "EditorDownWithSelection", "EditorUpWithSelection", "EditorRightWithSelection", "EditorLeftWithSelection", "EditorLineStartWithSelection", "EditorLineEndWithSelection", "EditorPageDownWithSelection", "EditorPageUpWithSelection");
+    private final Set<String> forbiddenActions = Sets.newHashSet("$Paste", "EditorPaste", "PasteMultiple", "EditorPasteSimple", "PlaybackLastMacro", "PlaySavedMacrosAction");
+    private final Set<String> typingActions = Sets.newHashSet("EditorBackSpace");
     private boolean disposed = false;
     private final GolfTask golfTask;
     private final Project project;
@@ -60,69 +63,18 @@ public final class ActionsRecorder implements Disposable {
 
     private static final Logger LOG = Logger.getInstance(ActionsRecorder.class.getName());
 
+    public ActionsRecorder(GolfTask golfTask, Project project, Document document, String username, String password, Restarter restarter) {
+        this.golfTask = golfTask;
+        this.project = project;
+        this.document = document;
+        this.username = username;
+        this.password = password;
+        this.restarter = restarter;
+    }
+
+
     public void setControlPanel(RecordingControlPanel controlPanel) {
         this.controlPanel = controlPanel;
-    }
-
-    private int getMovingActionsCounter() {
-        return this.movingActionsCounter;
-    }
-
-
-    public void setMovingActionsCounter(int movingActionsCounter) {
-        this.movingActionsCounter = movingActionsCounter;
-    }
-
-    public int getActionsCounter() {
-        return actionsCounter;
-    }
-
-    public void setActionsCounter(int actionsCounter) {
-        this.actionsCounter = actionsCounter;
-    }
-
-    public int getTypingCounter() {
-        return typingCounter;
-    }
-
-    public void setTypingCounter(int typingCounter) {
-        this.typingCounter = typingCounter;
-    }
-
-    private List<String> getUsedActions() {
-        return this.usedActions;
-    }
-
-    public void setUsedActions(List<String> usedActions) {
-        this.usedActions = usedActions;
-    }
-
-    private Set<InputEvent> getActionInputEvents() {
-        return this.actionInputEvents;
-    }
-
-
-    private Set<String> getMovingActions() {
-        return this.movingActions;
-    }
-
-
-    private Set<String> getForbiddenActions() {
-        return this.forbiddenActions;
-    }
-
-
-    private Set<String> getTypingActions() {
-        return this.typingActions;
-    }
-
-
-    private boolean getDisposed() {
-        return this.disposed;
-    }
-
-    public void setDisposed(boolean disposed) {
-        this.disposed = disposed;
     }
 
     public final void startRecording() {
@@ -189,8 +141,8 @@ public final class ActionsRecorder implements Disposable {
 
     public final boolean isTaskSolved() {
         if (this.disposed) return false;
-        List expected = ActionsRecorderAccessor.computeTrimmedLines(this.golfTask.getTargetCode());
-        List actual = ActionsRecorderAccessor.computeTrimmedLines(String.valueOf(this.document.getText()));
+        List expected = computeTrimmedLines(this.golfTask.getTargetCode());
+        List actual = computeTrimmedLines(String.valueOf(this.document.getText()));
         LOG.info("Expected:");
         LOG.info(expected.toString());
         LOG.info("Actual:");
@@ -221,23 +173,20 @@ public final class ActionsRecorder implements Disposable {
             this.actionInputEvents.remove(e);
             return;
         }
-        List<Integer> keys = Arrays.asList(KeyEvent.VK_CONTROL, KeyEvent.VK_ALT, KeyEvent.VK_META, KeyEvent.VK_SHIFT);
-        if (keys.contains(Integer.valueOf(e.getKeyCode())))
+        List<Integer> modifiers = Arrays.asList(KeyEvent.VK_CONTROL, KeyEvent.VK_ALT, KeyEvent.VK_META, KeyEvent.VK_SHIFT);
+        if (modifiers.contains(Integer.valueOf(e.getKeyCode())))
             return;
         IdeEventQueue eventQueue = IdeEventQueue.getInstance();
-        if (eventQueue == null) throw new NullPointerException();
         IdeKeyEventDispatcher keyEventDispatcher = eventQueue.getKeyEventDispatcher();
-        if (keyEventDispatcher == null) throw new NullPointerException();
-        if (!keyEventDispatcher.isReady()) {
+        if (!keyEventDispatcher.isReady())
             return;
-        }
 
         boolean isChar = e.getKeyChar() != KeyEvent.CHAR_UNDEFINED && UIUtil.isReallyTypedEvent(e);
         boolean hasActionModifiers = e.isAltDown() || e.isControlDown();
         boolean plainType = isChar && !hasActionModifiers;
         boolean isEnter = e.getKeyCode() == KeyEvent.VK_ENTER;
 
-        if ((plainType ? isEnter ? 0 : 1 : 0) != 0) {
+        if (plainType && !isEnter) {
             this.usedActions.add(String.valueOf(e.getKeyChar()));
             this.typingCounter += 1;
         } else {
@@ -271,16 +220,14 @@ public final class ActionsRecorder implements Disposable {
 //                        KotlinPackage.makeString$default((Iterable) this.usedActions, "|", null, null, 0, null, 30));
         final String passwordToSend = this.password;
 
-        final ActionsRecorder recorder = this;
         new Task.Backgroundable(project, passwordToSend) {
 
-            public void run(ProgressIndicator indicator) {
+            public void run(@NotNull ProgressIndicator indicator) {
                 Preconditions.checkNotNull(indicator, "run");
                 try {
                     GolfResult golfResult = RestClientUtil.sendSolution(solution, passwordToSend);
                     if (golfResult == null) throw new NullPointerException();
-                    GolfResult result = golfResult;
-                    recorder.showCongratulations(result);
+                    showCongratulations(golfResult);
 
                 } catch (Exception localException) {
                     localException.printStackTrace();
@@ -303,7 +250,6 @@ public final class ActionsRecorder implements Disposable {
 
     public final NotificationListener createNotificationListener() {
 
-        final ActionsRecorder recorder = this;
         return new NotificationListener() {
             public void hyperlinkUpdate(Notification notification, HyperlinkEvent event) {
                 Preconditions.checkNotNull(notification, "hyperlinkUpdate");
@@ -311,7 +257,7 @@ public final class ActionsRecorder implements Disposable {
                 if ((Objects.equal(event.getEventType(), EventType.ACTIVATED)
                         && Objects.equal(event.getDescription(), "restart"))) {
                     notification.expire();
-                    recorder.getRestarter().invoke();
+                    getRestarter().restart();
                 } else {
                     NotificationListener.URL_OPENING_LISTENER.hyperlinkUpdate(notification, event);
                 }
@@ -322,12 +268,16 @@ public final class ActionsRecorder implements Disposable {
 
     public final void showCongratulations(GolfResult result) {
         Preconditions.checkNotNull(result, "showCongratulations");
-        Integer totalCount = result.getResult();
-        if (totalCount == null) {
+        String errorMessage = result.getErrorMessage();
+        if (errorMessage != null) {
             new Notification("Failed to submit solution", "Gode Golf Error", "", NotificationType.ERROR);
+            return;
+        }
+
+        if (result.getResult().equals(result.getBestResult())) {
+
         }
     }
-
 
     public final void stopRecording() {
         LOG.info("Recording stopped");
@@ -372,23 +322,18 @@ public final class ActionsRecorder implements Disposable {
         return this.restarter;
     }
 
-    public ActionsRecorder(GolfTask golfTask, Project project, Document document, String username, String password, Restarter restarter) {
-        this.golfTask = golfTask;
-        this.project = project;
-        this.document = document;
-        this.username = username;
-        this.password = password;
-        this.restarter = restarter;
-        this.usedActions = new ArrayList<String>();
-        this.actionInputEvents = new HashSet<InputEvent>();
-        this.movingActions = Sets.newHashSet("EditorLeft", "EditorRight", "EditorDown", "EditorUp", "EditorLineStart", "EditorLineEnd", "EditorPageUp", "EditorPageDown",
-                "EditorPreviousWord", "EditorNextWord", "EditorScrollUp", "EditorScrollDown", "EditorTextStart", "EditorTextEnd", "EditorDownWithSelection", "EditorUpWithSelection",
-                "EditorRightWithSelection", "EditorLeftWithSelection", "EditorLineStartWithSelection", "EditorLineEndWithSelection", "EditorPageDownWithSelection", "EditorPageUpWithSelection");
-        this.forbiddenActions = Sets.newHashSet("$Paste", "EditorPaste", "PasteMultiple", "EditorPasteSimple", "PlaybackLastMacro", "PlaySavedMacrosAction");
-        this.typingActions = Sets.newHashSet("EditorBackSpace");
+    private List<String> computeTrimmedLines(String input) {
+        String[] lines = StringUtil.splitByLines(input);
+        if (lines == null) throw new NullPointerException();
+
+        List<String> result = new ArrayList<String>();
+        for (String line : lines) {
+            result.add(line.trim());
+        }
+        return result;
     }
 
     public interface Restarter {
-        public void invoke();
+        public void restart();
     }
 }

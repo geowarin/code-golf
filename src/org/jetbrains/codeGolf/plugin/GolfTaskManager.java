@@ -21,13 +21,11 @@ public final class GolfTaskManager {
         return new ArrayList<GolfTask>(RestClientUtil.loadTasks(serverUrl));
     }
 
-
     public final List<UserScore> loadScores(String serverUrl, String username) {
         Preconditions.checkNotNull(serverUrl, "loadScores");
         Preconditions.checkNotNull(username, "loadScores");
         return new ArrayList<UserScore>(RestClientUtil.loadScores(serverUrl, username));
     }
-
 
     public final List<GolfTask> getPredefinedTasks() {
         return this.tasks;

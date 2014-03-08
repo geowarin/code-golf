@@ -1,4 +1,4 @@
-package org.jetbrains.codeGolf.plugin;
+package org.jetbrains.codeGolf.plugin.settings;
 
 import com.intellij.ide.util.PropertiesComponent;
 import com.intellij.util.SystemProperties;

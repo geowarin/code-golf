@@ -22,7 +22,7 @@ public class BaloonManager {
     public static void ShowBalloonForTransformTask(final String oldCode, final int initialOffset, final PsiFile psiFile, final Document document, final Project project, final String username, final String password) {
         JComponent component = WindowManager.getInstance().getIdeFrame(null).getStatusBar().getComponent();
         JButton button = new JButton("Submit new transform task");
-        final Ref<Balloon> ref = new Ref();
+        final Ref<Balloon> ref = new Ref<Balloon>();
         button.addMouseListener(new MouseAdapter() {
 
             public void mouseClicked(@NotNull MouseEvent mouseEvent) {

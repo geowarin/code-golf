@@ -1,10 +1,11 @@
-package org.jetbrains.codeGolf.plugin;
+package org.jetbrains.codeGolf.plugin.login;
 
 import com.google.common.base.Preconditions;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.util.Pair;
 import com.intellij.openapi.util.text.StringUtil;
 import org.jetbrains.codeGolf.auth.JBAccountAuthHelper;
+import org.jetbrains.codeGolf.plugin.settings.CodeGolfConfigurableAccessor;
 
 public final class LoginWithJBAccount {
 

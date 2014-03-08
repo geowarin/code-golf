@@ -1,6 +1,7 @@
 package org.jetbrains.codeGolf.plugin.writer;
 
 import com.google.common.base.Preconditions;
+import com.intellij.ide.util.PropertiesComponent;
 import com.intellij.openapi.actionSystem.AnAction;
 import com.intellij.openapi.actionSystem.AnActionEvent;
 import com.intellij.openapi.actionSystem.Presentation;
@@ -9,9 +10,9 @@ import com.intellij.openapi.project.Project;
 import com.intellij.openapi.ui.Messages;
 import com.intellij.openapi.util.Pair;
 import org.jetbrains.codeGolf.auth.AuthPackage;
-import org.jetbrains.codeGolf.plugin.CodeGolfConfigurableAccessor;
 import org.jetbrains.codeGolf.plugin.GolfTask;
-import org.jetbrains.codeGolf.plugin.LoginWithJBAccount;
+import org.jetbrains.codeGolf.plugin.login.LoginWithJBAccount;
+import org.jetbrains.codeGolf.plugin.settings.CodeGolfConfigurableAccessor;
 
 
 public abstract class AdminActionBase extends AnAction {

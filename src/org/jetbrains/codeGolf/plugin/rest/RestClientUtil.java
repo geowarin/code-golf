@@ -8,7 +8,11 @@ import com.sun.jersey.api.client.ClientResponse;
 import com.sun.jersey.api.client.WebResource;
 import org.codehaus.jackson.JsonNode;
 import org.codehaus.jackson.map.ObjectMapper;
-import org.jetbrains.codeGolf.plugin.*;
+import org.jetbrains.codeGolf.plugin.GolfResult;
+import org.jetbrains.codeGolf.plugin.GolfSolution;
+import org.jetbrains.codeGolf.plugin.GolfTask;
+import org.jetbrains.codeGolf.plugin.UserScore;
+import org.jetbrains.codeGolf.plugin.settings.CodeGolfSettings;
 
 import javax.ws.rs.core.MediaType;
 import java.io.File;

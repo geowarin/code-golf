@@ -1,4 +1,4 @@
-package org.jetbrains.codeGolf.plugin;
+package org.jetbrains.codeGolf.plugin.controlpanel;
 
 import com.google.common.base.Preconditions;
 import com.intellij.openapi.Disposable;
@@ -23,6 +23,7 @@ import com.intellij.openapi.wm.WindowManager;
 import com.intellij.ui.awt.RelativePoint;
 import com.intellij.ui.popup.AbstractPopup;
 import com.intellij.ui.popup.NotLookupOrSearchCondition;
+import org.jetbrains.codeGolf.plugin.ActionsRecorder;
 
 import javax.swing.*;
 import javax.swing.border.Border;
@@ -33,54 +34,55 @@ public final class RecordingControlPanel extends JPanel implements Disposable {
     private Editor myEditor;
     private final JLabel myText;
     private final JBPopup myHint;
-    private final int MAX_WIDTH;
-    private final int MAX_HEIGHT;
-    private final int MIN_HEIGHT;
+    private final int MAX_WIDTH = 500;
+    private final int MAX_HEIGHT = 300;
+    private final int MIN_HEIGHT = 45;
     private final Project project;
     private final Document document;
     private final String targetCode;
     private final ActionsRecorder recorder;
 
+    public RecordingControlPanel(Project project, Document document, String targetCode, ActionsRecorder recorder) {
+        this.project = project;
+        this.document = document;
+        this.targetCode = targetCode;
+        this.recorder = recorder;
 
-    private final Editor getMyEditor() {
-        return this.myEditor;
+        Disposer.register(this.recorder, this);
+        setLayout(new BorderLayout());
+        this.myEditor = createViewer(this.targetCode);
+        Editor editor = this.myEditor;
+        if (editor == null) throw new NullPointerException();
+
+        JComponent component = editor.getComponent();
+        Preconditions.checkNotNull(editor, "Editor", "getComponent");
+        component.setEnabled(false);
+
+        this.myText = new JLabel("Actions: WWW Moving actions: WWW Chars: WWW", SwingConstants.LEFT);
+        JPanel topPanel = new JPanel(new BorderLayout());
+        topPanel.add(createControlComponent(), BorderLayout.EAST);
+        topPanel.add(this.myText, BorderLayout.WEST);
+
+        JPanel separator = new JPanel();
+        separator.setMinimumSize(new Dimension(20, 5));
+        topPanel.add(separator, BorderLayout.CENTER);
+        add(topPanel, BorderLayout.NORTH);
+        add(component, BorderLayout.CENTER);
+
+        Border border = BorderFactory.createEmptyBorder(0, 3, 3, 3);
+        setBorder(border);
+
+        JBPopupFactory popupFactory = JBPopupFactory.getInstance();
+
+        ComponentPopupBuilder componentPopupBuilder = popupFactory.createComponentPopupBuilder(this, this);
+        this.myHint = createHint(componentPopupBuilder);
     }
-
-    public void setMyEditor(Editor myEditor) {
-        this.myEditor = myEditor;
-    }
-
-    private final JLabel getMyText() {
-        return this.myText;
-    }
-
-
-    public final JBPopup getMyHint() {
-        return this.myHint;
-    }
-
-
-    private final int getMAX_WIDTH() {
-        return this.MAX_WIDTH;
-    }
-
-
-    private final int getMAX_HEIGHT() {
-        return this.MAX_HEIGHT;
-    }
-
-
-    private final int getMIN_HEIGHT() {
-        return this.MIN_HEIGHT;
-    }
-
 
     public void dispose() {
         if (this.myEditor == null) return;
         EditorFactory.getInstance().releaseEditor(this.myEditor);
         this.myEditor = null;
     }
-
 
     public final JComponent createControlComponent() {
         DefaultActionGroup group = new DefaultActionGroup(
@@ -180,63 +182,8 @@ public final class RecordingControlPanel extends JPanel implements Disposable {
         return editor;
     }
 
-
     public final Project getProject() {
         return this.project;
-    }
-
-
-    public final Document getDocument() {
-        return this.document;
-    }
-
-
-    public final String getTargetCode() {
-        return this.targetCode;
-    }
-
-
-    public final ActionsRecorder getRecorder() {
-        return this.recorder;
-    }
-
-    public RecordingControlPanel(Project project, Document document, String targetCode, ActionsRecorder recorder) {
-        this.project = project;
-        this.document = document;
-        this.targetCode = targetCode;
-        this.recorder = recorder;
-        this.MAX_WIDTH = 500;
-        this.MAX_HEIGHT = 300;
-        this.MIN_HEIGHT = 45;
-
-        Disposer.register(this.recorder, this);
-        setLayout(new BorderLayout());
-        this.myEditor = createViewer(this.targetCode);
-        Editor editor = this.myEditor;
-        if (editor == null) throw new NullPointerException();
-
-        JComponent component = editor.getComponent();
-        Preconditions.checkNotNull(editor, "Editor", "getComponent");
-        component.setEnabled(false);
-
-        this.myText = new JLabel("Actions: WWW Moving actions: WWW Chars: WWW", SwingConstants.LEFT);
-        JPanel topPanel = new JPanel(new BorderLayout());
-        topPanel.add(createControlComponent(), BorderLayout.EAST);
-        topPanel.add(this.myText, BorderLayout.WEST);
-
-        JPanel separator = new JPanel();
-        separator.setMinimumSize(new Dimension(20, 5));
-        topPanel.add(separator, BorderLayout.CENTER);
-        add(topPanel, BorderLayout.NORTH);
-        add(component, BorderLayout.CENTER);
-
-        Border border = BorderFactory.createEmptyBorder(0, 3, 3, 3);
-        setBorder(border);
-
-        JBPopupFactory popupFactory = JBPopupFactory.getInstance();
-
-        ComponentPopupBuilder componentPopupBuilder = popupFactory.createComponentPopupBuilder(this, this);
-        this.myHint = createHint(componentPopupBuilder);
     }
 
     private JBPopup createHint(ComponentPopupBuilder componentPopupBuilder) {
