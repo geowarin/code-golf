@@ -1,6 +1,7 @@
 package org.jetbrains.codeGolf.plugin;
 
 import com.google.common.base.Preconditions;
+import com.intellij.icons.AllIcons;
 import com.intellij.openapi.actionSystem.AnAction;
 import com.intellij.openapi.actionSystem.AnActionEvent;
 import com.intellij.openapi.diff.DiffManager;
@@ -47,30 +48,8 @@ public final class ShowDiffWithExpectedAction extends AnAction {
     }
 
     public ShowDiffWithExpectedAction(String targetCode, Document document) {
+        super("Diff", "show differences with solution", AllIcons.Actions.DiffWithCurrent);
         this.targetCode = targetCode;
         this.document = document;
-        // Byte code:
-        //   0: aload_1
-        //   1: ldc 132
-        //   3: invokestatic 136	jet/runtime/Intrinsics:checkParameterIsNotNull	(Ljava/lang/Object;Ljava/lang/String;)V
-        //   6: aload_2
-        //   7: ldc 132
-        //   9: invokestatic 136	jet/runtime/Intrinsics:checkParameterIsNotNull	(Ljava/lang/Object;Ljava/lang/String;)V
-        //   12: aload_0
-        //   13: ldc 138
-        //   15: ldc 140
-        //   17: getstatic 146	com/intellij/icons/AllIcons$Actions:DiffWithCurrent	Ljavax/swing/Icon;
-        //   20: dup
-        //   21: ldc 148
-        //   23: ldc 149
-        //   25: invokestatic 90	jet/runtime/Intrinsics:checkFieldIsNotNull	(Ljava/lang/Object;Ljava/lang/String;Ljava/lang/String;)V
-        //   28: invokespecial 152	com/intellij/openapi/actionSystem/AnAction:<init>	(Ljava/lang/String;Ljava/lang/String;Ljavax/swing/Icon;)V
-        //   31: aload_0
-        //   32: aload_1
-        //   33: putfield 50	org/jetbrains/codeGolf/plugin/ShowDiffWithExpectedAction:targetCode	Ljava/lang/String;
-        //   36: aload_0
-        //   37: aload_2
-        //   38: putfield 59	org/jetbrains/codeGolf/plugin/ShowDiffWithExpectedAction:document	Lcom/intellij/openapi/editor/Document;
-        //   41: return
     }
 }

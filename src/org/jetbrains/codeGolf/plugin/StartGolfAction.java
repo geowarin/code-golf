@@ -7,7 +7,6 @@ import com.intellij.openapi.actionSystem.AnActionEvent;
 import com.intellij.openapi.actionSystem.Presentation;
 import com.intellij.openapi.application.ApplicationManager;
 import com.intellij.openapi.editor.Document;
-import com.intellij.openapi.editor.Editor;
 import com.intellij.openapi.fileEditor.FileDocumentManager;
 import com.intellij.openapi.fileEditor.FileEditorManager;
 import com.intellij.openapi.fileEditor.OpenFileDescriptor;
@@ -41,7 +40,6 @@ public final class StartGolfAction extends AnAction {
         if (e != null) {
             Presentation presentation = e.getPresentation();
             // TODO ??
-//            tmpTernaryOp = presentation;
         }
     }
 
@@ -76,8 +74,19 @@ public final class StartGolfAction extends AnAction {
 
         OpenFileDescriptor descriptor = new OpenFileDescriptor(project, file, task.getInitialOffset());
         FileEditorManager fileEditorManager = FileEditorManager.getInstance(project);
-        if (fileEditorManager != null)
+        if (fileEditorManager != null) {
+//            isRecording = true;
             fileEditorManager.openTextEditor(descriptor, true);
+            Document document = FileDocumentManager.getInstance().getDocument(file);
+
+            ActionsRecorder recorder = new ActionsRecorder(task, project, document, username, password, null);
+            RecordingControlPanel recordingControlPanel = new RecordingControlPanel(project, document, task.getTargetCode(), recorder);
+            recorder.setControlPanel(recordingControlPanel);
+            recordingControlPanel.showHint();
+
+
+            recorder.startRecording();
+        }
     }
 
     private VirtualFile createFile(final Project project, final String taskName, final String text) {

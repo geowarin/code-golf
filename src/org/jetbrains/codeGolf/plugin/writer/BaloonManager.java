@@ -7,23 +7,16 @@ import com.intellij.openapi.ui.popup.Balloon;
 import com.intellij.openapi.ui.popup.BalloonBuilder;
 import com.intellij.openapi.ui.popup.JBPopupFactory;
 import com.intellij.openapi.util.Ref;
-import com.intellij.openapi.vfs.VirtualFile;
-import com.intellij.openapi.wm.IdeFrame;
-import com.intellij.openapi.wm.StatusBar;
 import com.intellij.openapi.wm.WindowManager;
 import com.intellij.psi.PsiFile;
 import com.intellij.util.ui.FormBuilder;
-
-import java.awt.Dimension;
-import java.awt.event.MouseAdapter;
-import java.awt.event.MouseEvent;
-import javax.swing.JButton;
-import javax.swing.JComponent;
-import javax.swing.JPanel;
-import javax.swing.JTextField;
-
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.codeGolf.plugin.GolfTask;
+
+import javax.swing.*;
+import java.awt.*;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
 
 public class BaloonManager {
     public static void ShowBalloonForTransformTask(final String oldCode, final int initialOffset, final PsiFile psiFile, final Document document, final Project project, final String username, final String password) {

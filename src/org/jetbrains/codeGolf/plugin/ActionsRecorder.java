@@ -128,22 +128,21 @@ public final class ActionsRecorder implements Disposable {
     public final void startRecording() {
         LOG.info("recording started");
 
-        final ActionsRecorder recorder = this;
         this.document.addDocumentListener(new DocumentListener() {
 
             public void beforeDocumentChange(DocumentEvent event) {
             }
 
             public void documentChanged(DocumentEvent event) {
-                if (recorder.isTaskSolved()) {
+                if (isTaskSolved()) {
                     Application application = ApplicationManager.getApplication();
                     application.invokeLater(new Runnable() {
                         public final void run() {
-                            if (recorder.isTaskSolved())
+                            if (isTaskSolved())
                                 try {
-                                    recorder.sendSolutionToServer();
+                                    sendSolutionToServer();
                                 } finally {
-                                    recorder.stopRecording();
+                                    stopRecording();
                                 }
 
                         }
@@ -155,19 +154,34 @@ public final class ActionsRecorder implements Disposable {
         if (actionManager != null) actionManager.addAnActionListener(new AnActionListener() {
 
             public void beforeActionPerformed(AnAction action, DataContext dataContext, AnActionEvent event) {
-                String actionId;
                 ActionManager actionManager = ActionManager.getInstance();
-                if (actionManager != null) {
-                    if (action == null) throw new NullPointerException();
-                    final String id = actionManager.getId(action);
-                    // TODO ??
+                String actionId = actionManager.getId(action);
+                if (actionId != null) {
+//                    AnAction editorAction = actionManager.getAction(actionId);
+
+                    if (movingActions.contains(actionId)) {
+                        movingActionsCounter++;
+                        notifyUser();
+                    } else if (forbiddenActions.contains(actionId)) {
+                        discardSolution("Action " + actionId + " is forbidden");
+                    } else if (typingActions.contains(actionId)) {
+                        typingCounter++;
+                        notifyUser();
+                    } else {
+                        KeyEvent keyEvent = IdeEventQueue.getInstance().getKeyEventDispatcher().getContext().getInputEvent();
+                        processKeyPressedEvent(keyEvent);
+                    }
                 }
+
             }
 
             public void afterActionPerformed(AnAction action, DataContext dataContext, AnActionEvent event) {
+                System.out.println("after");
             }
 
             public void beforeEditorTyping(char c, DataContext dataContext) {
+                actionsCounter++;
+                notifyUser();
             }
         }, this);
     }
@@ -244,12 +258,10 @@ public final class ActionsRecorder implements Disposable {
         notifyUser();
     }
 
-
     public final void notifyUser() {
-        RecordingControlPanel tmp4_1 = this.controlPanel;
-        if (tmp4_1 != null) tmp4_1.notifyUser(this.actionsCounter, this.movingActionsCounter, this.typingCounter);
+        if (this.controlPanel != null)
+            this.controlPanel.notifyUser(this.actionsCounter, this.movingActionsCounter, this.typingCounter);
     }
-
 
     public final void sendSolutionToServer() {
         final GolfSolution solution =
@@ -301,9 +313,7 @@ public final class ActionsRecorder implements Disposable {
                     notification.expire();
                     recorder.getRestarter().invoke();
                 } else {
-                    NotificationListener tmp72_69 = NotificationListener.URL_OPENING_LISTENER;
-                    Preconditions.checkNotNull(tmp72_69, "NotificationListener", "URL_OPENING_LISTENER");
-                    tmp72_69.hyperlinkUpdate(notification, event);
+                    NotificationListener.URL_OPENING_LISTENER.hyperlinkUpdate(notification, event);
                 }
             }
         };
