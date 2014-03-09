@@ -11,6 +11,7 @@ import com.intellij.openapi.fileEditor.FileEditorManager;
 import com.intellij.openapi.fileEditor.OpenFileDescriptor;
 import com.intellij.openapi.fileTypes.StdFileTypes;
 import com.intellij.openapi.project.Project;
+import com.intellij.openapi.roots.ProjectRootManager;
 import com.intellij.openapi.util.Computable;
 import com.intellij.openapi.util.Pair;
 import com.intellij.openapi.vfs.VirtualFile;
@@ -111,6 +112,11 @@ public final class StartGolfAction extends AnAction {
 
     private VirtualFile createOrReplaceFile(Project project, String fileName, String text) {
         VirtualFile baseDir = project.getBaseDir();
+
+        VirtualFile[] sourceRoots = ProjectRootManager.getInstance(project).getContentSourceRoots();
+        if (sourceRoots.length > 0)
+            baseDir = sourceRoots[0];
+
         PsiDirectory root = PsiManager.getInstance(project).findDirectory(baseDir);
 
         String className = fileName + ".java";
