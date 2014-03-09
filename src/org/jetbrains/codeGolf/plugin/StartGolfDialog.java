@@ -7,6 +7,7 @@ import com.intellij.ui.ColoredListCellRendererWrapper;
 import com.intellij.ui.JBColor;
 import com.intellij.ui.SimpleTextAttributes;
 import com.intellij.ui.components.JBList;
+import com.intellij.ui.components.JBScrollPane;
 import org.jetbrains.annotations.Nullable;
 import org.jetbrains.codeGolf.plugin.settings.CodeGolfConfigurableAccessor;
 
@@ -45,7 +46,9 @@ public final class StartGolfDialog extends DialogWrapper {
 
         list = new JBList(tasks);
         list.setCellRenderer(new GolfTaskRenderer(scoresMap));
-        mainPanel.add(list, BorderLayout.CENTER);
+        mainPanel.add(new JLabel("Select Task:"), BorderLayout.NORTH);
+        mainPanel.add(new JBScrollPane(list), BorderLayout.CENTER);
+        mainPanel.setPreferredSize(new Dimension(400, 400));
         init();
     }
 

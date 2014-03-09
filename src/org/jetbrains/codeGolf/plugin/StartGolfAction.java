@@ -44,7 +44,6 @@ public final class StartGolfAction extends AnAction {
         if (!this.isRecording()) {
 
             Project project = anActionEvent.getProject();
-            List<GolfTask> tasks = RestClientUtil.loadTasks(CodeGolfConfigurableAccessor.getServerUrl());
             Pair<String,String> credentials = LoginWithJBAccount.showDialogAndLogin(project);
 
             if (credentials == null)
@@ -52,6 +51,8 @@ public final class StartGolfAction extends AnAction {
 
             String userName = credentials.getFirst();
             String password = credentials.getSecond();
+
+            List<GolfTask> tasks = RestClientUtil.loadTasks(CodeGolfConfigurableAccessor.getServerUrl());
             List<UserScore> userScores = getUserScores(CodeGolfConfigurableAccessor.getServerUrl(), userName);
 
             StartGolfDialog startGolfDialog = new StartGolfDialog(project, tasks, userScores);
@@ -116,7 +117,6 @@ public final class StartGolfAction extends AnAction {
         PsiFile tempFile = PsiFileFactory.getInstance(project).createFileFromText(className, StdFileTypes.JAVA, text);
         VirtualFile file = baseDir.findChild(className);
 //        selectedVFile = LocalFileSystem.getInstance().findFileByIoFile(fileChooser.getSelectedFile());
-        // Get document file
 
         if (file != null && file.exists()) {
             Document docFile = FileDocumentManager.getInstance().getDocument(file);
