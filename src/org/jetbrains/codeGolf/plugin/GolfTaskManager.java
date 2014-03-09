@@ -1,7 +1,7 @@
 package org.jetbrains.codeGolf.plugin;
 
-import com.google.common.base.Preconditions;
 import com.intellij.openapi.components.ServiceManager;
+import org.jetbrains.annotations.NotNull;
 import org.jetbrains.codeGolf.plugin.rest.RestClientUtil;
 
 import java.util.ArrayList;
@@ -16,14 +16,11 @@ public final class GolfTaskManager {
         return this.tasks;
     }
 
-    public final List<GolfTask> loadTasks(String serverUrl) {
-        Preconditions.checkNotNull(serverUrl, "loadTasks");
+    public final List<GolfTask> loadTasks(@NotNull String serverUrl) {
         return new ArrayList<GolfTask>(RestClientUtil.loadTasks(serverUrl));
     }
 
-    public final List<UserScore> loadScores(String serverUrl, String username) {
-        Preconditions.checkNotNull(serverUrl, "loadScores");
-        Preconditions.checkNotNull(username, "loadScores");
+    public final List<UserScore> loadScores(@NotNull String serverUrl, @NotNull String username) {
         return new ArrayList<UserScore>(RestClientUtil.loadScores(serverUrl, username));
     }
 
@@ -31,8 +28,7 @@ public final class GolfTaskManager {
         return this.tasks;
     }
 
-    public final void addTask(GolfTask task) {
-        Preconditions.checkNotNull(task, "addTask");
+    public final void addTask(@NotNull GolfTask task) {
         this.tasks.add(task);
     }
 

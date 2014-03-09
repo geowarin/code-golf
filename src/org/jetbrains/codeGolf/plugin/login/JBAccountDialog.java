@@ -39,25 +39,16 @@ public final class JBAccountDialog extends DialogWrapper {
         setTitle("Login With JetBrains Account");
         HyperlinkLabel hyperlink = new HyperlinkLabel("Create JetBrains Account");
         hyperlink.setHyperlinkTarget("http://account.jetbrains.com/");
-        FormBuilder formBuilder = FormBuilder.createFormBuilder().addLabeledComponent("User Name:", this.usernameField);
+
+        FormBuilder formBuilder =
+                FormBuilder.createFormBuilder()
+                        .addLabeledComponent("User Name:", this.usernameField)
+                        .addLabeledComponent("Password:", this.passwordField)
+                        .addLabeledComponent("Remember Password:", this.savePasswordCheckbox)
+                        .addComponent(hyperlink);
         this.mainPanel = formBuilder.getPanel();
         this.loginAsGuestAction = new LoginAsGuestAction();
-    }
-
-    public final String getUsername() {
-        return this.username;
-    }
-
-    public void setUsername(String username) {
-        this.username = username;
-    }
-
-    public void setPassword(String password) {
-        this.password = password;
-    }
-
-    public final String getPassword() {
-        return this.password;
+        init();
     }
 
     @NotNull
@@ -70,6 +61,10 @@ public final class JBAccountDialog extends DialogWrapper {
         return this.usernameField;
     }
 
+    @Nullable
+    protected JComponent createCenterPanel() {
+        return this.mainPanel;
+    }
 
     protected void doOKAction() {
         String userNameText = this.usernameField.getText();
@@ -78,11 +73,8 @@ public final class JBAccountDialog extends DialogWrapper {
         this.username = userNameText;
         if (Strings.isNotEmpty(this.username)) {
 
-            char[] aThispasswordFieldPassword = this.passwordField.getPassword();
-            if (aThispasswordFieldPassword == null) throw new NullPointerException();
-            this.password = new String(aThispasswordFieldPassword);
+            this.password = new String(this.passwordField.getPassword());
             AuthResult authResult = JBAccountAuthHelper.login(this.username, this.password);
-            if (authResult == null) throw new NullPointerException();
             if (!authResult.getIsOk()) {
                 Messages.showErrorDialog(this.mainPanel, authResult.getErrorMessage());
                 return;
@@ -100,22 +92,35 @@ public final class JBAccountDialog extends DialogWrapper {
         super.doOKAction();
     }
 
-    @Nullable
-    protected JComponent createCenterPanel() {
-        return this.mainPanel;
+    public final class LoginAsGuestAction extends AbstractAction {
+        public LoginAsGuestAction() {
+            putValue(NAME, "Login as Guest");
+            putValue(SHORT_DESCRIPTION, "Log in anonymously");
+        }
+
+        public void actionPerformed(ActionEvent e) {
+            JBAccountDialog.this.setUsername("");
+            JBAccountDialog.this.doSuperOkAction();
+        }
     }
 
+    public final String getUsername() {
+        return this.username;
+    }
 
     public final Project getProject() {
         return this.project;
     }
 
-    public final class LoginAsGuestAction extends AbstractAction {
+    public void setUsername(String username) {
+        this.username = username;
+    }
 
-        public void actionPerformed(ActionEvent e) {
-            Preconditions.checkNotNull(e, "actionPerformed");
-            JBAccountDialog.this.setUsername("");
-            JBAccountDialog.this.doSuperOkAction();
-        }
+    public void setPassword(String password) {
+        this.password = password;
+    }
+
+    public final String getPassword() {
+        return this.password;
     }
 }

@@ -3,7 +3,8 @@ package org.jetbrains.codeGolf.auth;
 public final class AuthResult {
     private final boolean isOk;
     private final String errorMessage;
-    public static final object object$ = new object();
+
+    public static final AuthResult SUCCESS = new AuthResult(true);
 
     public final boolean getIsOk() {
         return this.isOk;
@@ -18,12 +19,8 @@ public final class AuthResult {
         this.isOk = false;
     }
 
-    public static final class object {
-        private final AuthResult SUCCESS = new AuthResult((String) null);
-
-
-        public final AuthResult getSUCCESS() {
-            return this.SUCCESS;
-        }
+    private AuthResult(boolean ok) {
+        errorMessage = null;
+        isOk = ok;
     }
 }

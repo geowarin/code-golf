@@ -194,7 +194,6 @@ public final class ActionsRecorder implements Disposable {
 //                false;
     }
 
-
     public final void processKeyPressedEvent(KeyEvent e) {
         Preconditions.checkNotNull(e, "processKeyPressedEvent");
         if (this.actionInputEvents.contains(e)) {
@@ -271,7 +270,7 @@ public final class ActionsRecorder implements Disposable {
         Preconditions.checkNotNull(reason, "discardSolution");
         stopRecording();
 
-        Notification notification = new Notification("Code Golf Info", "Solution discarded", reason + "<br/><a href=" + "\"" + "restart" + "\"" + ">Try again</a>",
+        Notification notification = new Notification("Code Golf Info", "Solution discarded", reason + "<br/><a href=\"restart\">Try again</a>",
                 NotificationType.WARNING, createNotificationListener());
         Notifications.Bus.notify(notification, this.project);
     }
@@ -280,8 +279,8 @@ public final class ActionsRecorder implements Disposable {
 
         return new NotificationListener() {
             public void hyperlinkUpdate(@NotNull Notification notification, @NotNull HyperlinkEvent event) {
-                if ((Objects.equal(event.getEventType(), EventType.ACTIVATED)
-                        && Objects.equal(event.getDescription(), "restart"))) {
+                if (Objects.equal(event.getEventType(), EventType.ACTIVATED)
+                        && Objects.equal(event.getDescription(), "restart")) {
                     notification.expire();
                     getRestarter().restart();
                 } else {
@@ -302,7 +301,11 @@ public final class ActionsRecorder implements Disposable {
                 String message = String.format("Your score of %d is the best score registered so far", result.getResult());
                 notification = new Notification("Best score", "Congratulations", message, NotificationType.INFORMATION);
             } else {
-                String message = String.format("Your score %d has been registered, best score is %d", result.getResult(), result.getBestResult());
+                String message = String.format(
+                        "Your result is %d. The best result is %d.<br/>" +
+                        "The details about the task can be found here.<br/>" +
+                        "<a href=\"restart\">Try again</a> if you want to improve your solution.",
+                        result.getResult(), result.getBestResult());
                 notification = new Notification("Registered", "Congratulations", message, NotificationType.INFORMATION);
             }
         }

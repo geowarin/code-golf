@@ -12,6 +12,7 @@ import com.intellij.openapi.fileEditor.OpenFileDescriptor;
 import com.intellij.openapi.fileTypes.StdFileTypes;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.util.Computable;
+import com.intellij.openapi.util.Pair;
 import com.intellij.openapi.vfs.VirtualFile;
 import com.intellij.psi.PsiDirectory;
 import com.intellij.psi.PsiFile;
@@ -19,6 +20,7 @@ import com.intellij.psi.PsiFileFactory;
 import com.intellij.psi.PsiManager;
 import com.jgoodies.common.base.Strings;
 import org.jetbrains.codeGolf.plugin.controlpanel.RecordingControlPanel;
+import org.jetbrains.codeGolf.plugin.login.LoginWithJBAccount;
 import org.jetbrains.codeGolf.plugin.rest.RestClientUtil;
 import org.jetbrains.codeGolf.plugin.settings.CodeGolfConfigurableAccessor;
 
@@ -36,34 +38,27 @@ public final class StartGolfAction extends AnAction {
     public void update(AnActionEvent e) {
         Presentation presentation = e.getPresentation();
         presentation.setEnabled(!isRecording());
-//            Project project = (Project) e.getDataContext().getData(DataConstants.PROJECT);
-//            VirtualFile[] files = (VirtualFile[]) e.getDataContext().getData(DataConstants.VIRTUAL_FILE_ARRAY);
-//            boolean visible = project != null && files != null && files.length > 0;
-//            // Visibility
-//            e.getPresentation().setVisible(visible);
-//            // Enable or disable
-//            e.getPresentation().setEnabled(visible);
     }
 
     public void actionPerformed(AnActionEvent anActionEvent) {
         if (!this.isRecording()) {
-            String serverUrl = CodeGolfConfigurableAccessor.getServerUrl();
-            List<GolfTask> tasks = RestClientUtil.loadTasks(serverUrl);
 
             Project project = anActionEvent.getProject();
-            String userName = CodeGolfConfigurableAccessor.getUserName();
-            String password = null;
-            if (Strings.isNotBlank(userName)) {
-                password = CodeGolfConfigurableAccessor.getUserPassword(project);
-            }
-            List<UserScore> userScores = getUserScores(serverUrl, userName);
+            List<GolfTask> tasks = RestClientUtil.loadTasks(CodeGolfConfigurableAccessor.getServerUrl());
+            Pair<String,String> credentials = LoginWithJBAccount.showDialogAndLogin(project);
+
+            if (credentials == null)
+                return;
+
+            String userName = credentials.getFirst();
+            String password = credentials.getSecond();
+            List<UserScore> userScores = getUserScores(CodeGolfConfigurableAccessor.getServerUrl(), userName);
 
             StartGolfDialog startGolfDialog = new StartGolfDialog(project, tasks, userScores);
             startGolfDialog.show();
             GolfTask selectedTask = startGolfDialog.getSelectedTask();
-            if (selectedTask != null && startGolfDialog.isOK()) {
+            if (selectedTask != null && startGolfDialog.isOK())
                 startTask(selectedTask, project, userName, password);
-            }
         }
     }
 

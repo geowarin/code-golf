@@ -20,7 +20,7 @@ public class JBAccountAuthHelper {
             int status = response.getStatus();
             String output = response.getEntity(String.class);
             if (status == 200) {
-                return AuthResult.object$.getSUCCESS();
+                return AuthResult.SUCCESS;
             }
             return new AuthResult(output);
         } catch (Exception e) {

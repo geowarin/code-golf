@@ -14,8 +14,7 @@ public final class LoginWithJBAccount {
         String username = CodeGolfConfigurableAccessor.getUserName();
         String password = CodeGolfConfigurableAccessor.getUserPassword(project);
 
-        boolean userNameIsEmpty = StringUtil.isEmpty(username);
-        if (userNameIsEmpty || StringUtil.isEmpty(password)) {
+        if (StringUtil.isEmpty(username) || StringUtil.isEmpty(password)) {
             JBAccountDialog dlg = new JBAccountDialog(project);
             dlg.show();
             if (!dlg.isOK()) {
@@ -25,7 +24,6 @@ public final class LoginWithJBAccount {
             password = dlg.getPassword();
         }
         String encodedPassword = JBAccountAuthHelper.encodePassword(password);
-        if (encodedPassword == null) throw new NullPointerException();
         return new Pair<String, String>(username, encodedPassword);
     }
 }
