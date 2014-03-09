@@ -24,16 +24,7 @@ public final class NavigateToEditorAction extends AnAction {
     }
 
     public void actionPerformed(AnActionEvent e) {
-
-        Editor editor = e.getData(PlatformDataKeys.EDITOR);
-        Project project = editor.getProject();
-//        PsiFile psiFile = e.getData(LangDataKeys.PSI_FILE);
-
-        FileDocumentManager fileDocumentManager = FileDocumentManager.getInstance();
-        VirtualFile file = fileDocumentManager.getFile(document);
-        OpenFileDescriptor descriptor = new OpenFileDescriptor(project, file, 0);
-
-        FileEditorManager fileEditorManager = FileEditorManager.getInstance(project);
-        fileEditorManager.openTextEditor(descriptor, true);
+        VirtualFile file = FileDocumentManager.getInstance().getFile(document);
+        FileEditorManager.getInstance(e.getProject()).openFile(file, true);
     }
 }
