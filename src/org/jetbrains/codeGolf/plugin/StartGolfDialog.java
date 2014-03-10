@@ -10,6 +10,7 @@ import com.intellij.ui.components.JBList;
 import com.intellij.ui.components.JBScrollPane;
 import org.jetbrains.annotations.Nullable;
 import org.jetbrains.codeGolf.plugin.settings.CodeGolfConfigurableAccessor;
+import org.jetbrains.codeGolf.plugin.task.GolfTaskManager;
 
 import javax.swing.*;
 import java.awt.*;

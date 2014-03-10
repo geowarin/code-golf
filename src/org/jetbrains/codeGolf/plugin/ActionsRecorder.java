@@ -31,12 +31,11 @@ import com.intellij.openapi.util.text.StringUtil;
 import com.intellij.util.ui.UIUtil;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.codeGolf.plugin.controlpanel.RecordingControlPanel;
-import org.jetbrains.codeGolf.plugin.rest.RestClientUtil;
+import org.jetbrains.codeGolf.plugin.task.GolfRestClient;
 
 import javax.swing.*;
 import javax.swing.event.HyperlinkEvent;
 import javax.swing.event.HyperlinkEvent.EventType;
-import java.awt.*;
 import java.awt.event.InputEvent;
 import java.awt.event.KeyEvent;
 import java.awt.event.MouseEvent;
@@ -228,7 +227,7 @@ public final class ActionsRecorder implements Disposable {
 
             public void run(@NotNull ProgressIndicator indicator) {
                 try {
-                    GolfResult golfResult = RestClientUtil.sendSolution(solution, passwordToSend);
+                    GolfResult golfResult = GolfRestClient.getInstance().sendSolution(solution, passwordToSend);
                     showCongratulations(golfResult);
 
                 } catch (Exception localException) {

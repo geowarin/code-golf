@@ -39,7 +39,7 @@
     </actions>
 
     <extensions defaultExtensionNs="com.intellij">
-        <applicationService serviceImplementation="org.jetbrains.codeGolf.plugin.GolfTaskManager"/>
+        <applicationService serviceImplementation="org.jetbrains.codeGolf.plugin.task.GolfRestClient"/>
         <applicationConfigurable instance="org.jetbrains.codeGolf.plugin.settings.CodeGolfConfigurable"/>
     </extensions>
 </idea-plugin>
