@@ -19,8 +19,12 @@ import com.intellij.openapi.application.Application;
 import com.intellij.openapi.application.ApplicationManager;
 import com.intellij.openapi.diagnostic.Logger;
 import com.intellij.openapi.editor.Document;
-import com.intellij.openapi.editor.event.DocumentEvent;
-import com.intellij.openapi.editor.event.DocumentListener;
+import com.intellij.openapi.editor.Editor;
+import com.intellij.openapi.editor.event.*;
+import com.intellij.openapi.fileEditor.FileDocumentManager;
+import com.intellij.openapi.fileEditor.FileEditor;
+import com.intellij.openapi.fileEditor.FileEditorManager;
+import com.intellij.openapi.fileEditor.TextEditor;
 import com.intellij.openapi.keymap.KeymapUtil;
 import com.intellij.openapi.keymap.impl.IdeKeyEventDispatcher;
 import com.intellij.openapi.progress.ProgressIndicator;
@@ -30,6 +34,7 @@ import com.intellij.openapi.ui.MessageType;
 import com.intellij.openapi.ui.popup.JBPopupFactory;
 import com.intellij.openapi.util.Disposer;
 import com.intellij.openapi.util.text.StringUtil;
+import com.intellij.openapi.vfs.VirtualFile;
 import com.intellij.openapi.wm.WindowManager;
 import com.intellij.util.ui.UIUtil;
 import org.jetbrains.annotations.NotNull;
@@ -86,6 +91,15 @@ public final class ActionsRecorder implements Disposable {
         LOG.info("recording started");
         controlPanel.showHint();
 
+        VirtualFile file = FileDocumentManager.getInstance().getFile(document);
+        TextEditor selectedEditor = (TextEditor)FileEditorManager.getInstance(project).getSelectedEditor(file);
+        selectedEditor.getEditor().addEditorMouseListener(new EditorMouseAdapter() {
+            @Override
+            public void mouseClicked(EditorMouseEvent e) {
+                Notifications.Bus.notify(new Notification("mouse on editor", "Don't use mouse on editor!", "mouse actions are worth 1000 actions", NotificationType.WARNING));
+            }
+        });
+
         this.document.addDocumentListener(new DocumentListener() {
 
             public void beforeDocumentChange(DocumentEvent event) {
@@ -136,7 +150,7 @@ public final class ActionsRecorder implements Disposable {
                             processKeyPressedEvent((KeyEvent) inputEvent);
                         } else if (inputEvent instanceof MouseEvent) {
                             MouseEvent mouseEvent = (MouseEvent) inputEvent;
-                            Notifications.Bus.notify(new Notification("mouse is bad", "Don't use mouse !", "mouse actions are worth 1000 actions", NotificationType.WARNING));
+                            Notifications.Bus.notify(new Notification("mouse action", "Don't use mouse for actions!", "mouse actions are worth 1000 actions", NotificationType.WARNING));
 
                             if (!isInsideExpectedCodeViewer(mouseEvent)) {
                                 LOG.info("Click is not inside code viewer");
@@ -171,10 +185,10 @@ public final class ActionsRecorder implements Disposable {
         if (this.disposed) return false;
         List expected = computeTrimmedLines(this.golfTask.getTargetCode());
         List actual = computeTrimmedLines(String.valueOf(this.document.getText()));
-        LOG.info("Expected:");
-        LOG.info(expected.toString());
-        LOG.info("Actual:");
-        LOG.info(actual.toString());
+        LOG.debug("Expected:");
+        LOG.debug(expected.toString());
+        LOG.debug("Actual:");
+        LOG.debug(actual.toString());
         return Objects.equal(expected, actual);
     }
 
