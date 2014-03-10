@@ -7,18 +7,10 @@ import com.intellij.openapi.actionSystem.Presentation;
 import com.intellij.openapi.application.ApplicationManager;
 import com.intellij.openapi.editor.Document;
 import com.intellij.openapi.fileEditor.FileDocumentManager;
-import com.intellij.openapi.fileEditor.FileEditorManager;
-import com.intellij.openapi.fileEditor.OpenFileDescriptor;
-import com.intellij.openapi.fileTypes.StdFileTypes;
 import com.intellij.openapi.project.Project;
-import com.intellij.openapi.roots.ProjectRootManager;
 import com.intellij.openapi.util.Computable;
 import com.intellij.openapi.util.Pair;
 import com.intellij.openapi.vfs.VirtualFile;
-import com.intellij.psi.PsiDirectory;
-import com.intellij.psi.PsiFile;
-import com.intellij.psi.PsiFileFactory;
-import com.intellij.psi.PsiManager;
 import com.jgoodies.common.base.Strings;
 import org.jetbrains.codeGolf.plugin.controlpanel.RecordingControlPanel;
 import org.jetbrains.codeGolf.plugin.login.LoginWithJBAccount;
@@ -43,10 +35,9 @@ public final class StartGolfAction extends AnAction {
 
     public void actionPerformed(AnActionEvent anActionEvent) {
         if (!this.isRecording()) {
-
             Project project = anActionEvent.getProject();
             Pair<String,String> credentials = LoginWithJBAccount.showDialogAndLogin(project);
-
+            // User cancels
             if (credentials == null)
                 return;
 
@@ -73,9 +64,8 @@ public final class StartGolfAction extends AnAction {
     }
 
     private void startTask(final GolfTask task, final Project project, final String username, final String password) {
-
-        VirtualFile file = createFile(project, task.getTaskName(), task.getInitialCode());
-        setFocusOnFile(project, file, task.getInitialOffset());
+        VirtualFile file = createFile(project, task.getInitialCode());
+        IdeaUtils.setFocusOnFile(project, file, task.getInitialOffset());
 
         Document document = FileDocumentManager.getInstance().getDocument(file);
         recorder = new ActionsRecorder(task, project, document, username, password);
@@ -92,46 +82,13 @@ public final class StartGolfAction extends AnAction {
         recorder.startRecording();
     }
 
-    private void setFocusOnFile(Project project, VirtualFile file, int initialOffset) {
-        OpenFileDescriptor descriptor = new OpenFileDescriptor(project, file, initialOffset);
-        FileEditorManager fileEditorManager = FileEditorManager.getInstance(project);
-        fileEditorManager.openTextEditor(descriptor, true);
-    }
-
-    private VirtualFile createFile(final Project project, final String taskName, final String text) {
-        if (Strings.isNotBlank(text)) {
-            return ApplicationManager.getApplication().runWriteAction(new Computable<VirtualFile>() {
-                @Override
-                public VirtualFile compute() {
-                    return createOrReplaceFile(project, taskName, text);
-                }
-            });
-        }
-        return null;
-    }
-
-    private VirtualFile createOrReplaceFile(Project project, String fileName, String text) {
-        VirtualFile baseDir = project.getBaseDir();
-
-        VirtualFile[] sourceRoots = ProjectRootManager.getInstance(project).getContentSourceRoots();
-        if (sourceRoots.length > 0)
-            baseDir = sourceRoots[0];
-
-        PsiDirectory root = PsiManager.getInstance(project).findDirectory(baseDir);
-
-        String className = fileName + ".java";
-        PsiFile tempFile = PsiFileFactory.getInstance(project).createFileFromText(className, StdFileTypes.JAVA, text);
-        VirtualFile file = baseDir.findChild(className);
-//        selectedVFile = LocalFileSystem.getInstance().findFileByIoFile(fileChooser.getSelectedFile());
-
-        if (file != null && file.exists()) {
-            Document docFile = FileDocumentManager.getInstance().getDocument(file);
-            assert docFile != null;
-            docFile.setText(text);
-            return file;
-        }
-        PsiFile added = (PsiFile) root.add(tempFile);
-        return added.getVirtualFile();
+    private VirtualFile createFile(final Project project, final String text) {
+        return ApplicationManager.getApplication().runWriteAction(new Computable<VirtualFile>() {
+            @Override
+            public VirtualFile compute() {
+                return IdeaUtils.createOrReplaceFile(project, text);
+            }
+        });
     }
 
     public boolean isRecording() {

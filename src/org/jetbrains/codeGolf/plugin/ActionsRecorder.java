@@ -21,21 +21,13 @@ import com.intellij.openapi.diagnostic.Logger;
 import com.intellij.openapi.editor.Document;
 import com.intellij.openapi.editor.Editor;
 import com.intellij.openapi.editor.event.*;
-import com.intellij.openapi.fileEditor.FileDocumentManager;
-import com.intellij.openapi.fileEditor.FileEditor;
-import com.intellij.openapi.fileEditor.FileEditorManager;
-import com.intellij.openapi.fileEditor.TextEditor;
 import com.intellij.openapi.keymap.KeymapUtil;
 import com.intellij.openapi.keymap.impl.IdeKeyEventDispatcher;
 import com.intellij.openapi.progress.ProgressIndicator;
 import com.intellij.openapi.progress.Task;
 import com.intellij.openapi.project.Project;
-import com.intellij.openapi.ui.MessageType;
-import com.intellij.openapi.ui.popup.JBPopupFactory;
 import com.intellij.openapi.util.Disposer;
 import com.intellij.openapi.util.text.StringUtil;
-import com.intellij.openapi.vfs.VirtualFile;
-import com.intellij.openapi.wm.WindowManager;
 import com.intellij.util.ui.UIUtil;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.codeGolf.plugin.controlpanel.RecordingControlPanel;
@@ -71,15 +63,26 @@ public final class ActionsRecorder implements Disposable {
     private boolean recording;
 
     private static final Logger LOG = Logger.getInstance("#org.jetbrains.codeGolf");
+    private final Editor editor;
+    private final EditorMouseAdapter editorMouseListener;
 
     public ActionsRecorder(@NotNull GolfTask golfTask, @NotNull Project project, @NotNull Document document, String username, String password) {
         Preconditions.checkNotNull(project);
         this.golfTask = golfTask;
         this.project = project;
         this.document = document;
+        this.editor = IdeaUtils.getEditor(project, document);
         this.username = username;
         this.password = password;
         this.controlPanel = new RecordingControlPanel(project, document, golfTask.getTargetCode(), this);
+        this.editorMouseListener = new EditorMouseAdapter() {
+            @Override
+            public void mouseClicked(EditorMouseEvent e) {
+                Notifications.Bus.notify(new Notification("mouse on editor", "Don't use mouse on editor!", "mouse actions are worth 1000 actions", NotificationType.WARNING));
+                movingActionsCounter += 1000;
+                notifyUser();
+            }
+        };
     }
 
     public void setControlPanel(RecordingControlPanel controlPanel) {
@@ -91,15 +94,7 @@ public final class ActionsRecorder implements Disposable {
         LOG.info("recording started");
         controlPanel.showHint();
 
-        VirtualFile file = FileDocumentManager.getInstance().getFile(document);
-        TextEditor selectedEditor = (TextEditor)FileEditorManager.getInstance(project).getSelectedEditor(file);
-        selectedEditor.getEditor().addEditorMouseListener(new EditorMouseAdapter() {
-            @Override
-            public void mouseClicked(EditorMouseEvent e) {
-                Notifications.Bus.notify(new Notification("mouse on editor", "Don't use mouse on editor!", "mouse actions are worth 1000 actions", NotificationType.WARNING));
-            }
-        });
-
+        editor.addEditorMouseListener(editorMouseListener);
         this.document.addDocumentListener(new DocumentListener() {
 
             public void beforeDocumentChange(DocumentEvent event) {
@@ -122,15 +117,15 @@ public final class ActionsRecorder implements Disposable {
                 }
             }
         }, this);
-        ActionManager actionManager = ActionManager.getInstance();
-        if (actionManager != null) actionManager.addAnActionListener(new AnActionListener() {
+        ActionManager.getInstance().addAnActionListener(new AnActionListener() {
 
             public void beforeActionPerformed(AnAction action, DataContext dataContext, AnActionEvent event) {
                 ActionManager actionManager = ActionManager.getInstance();
                 String actionId = actionManager.getId(action);
                 LOG.info("actionId = " + actionId);
                 if (actionId != null) {
-//                    AnAction editorAction = actionManager.getAction(actionId);
+                    AnAction editorAction = actionManager.getAction(actionId);
+                    LOG.info("editorAction = " + editorAction);
 
                     if (movingActions.contains(actionId)) {
                         LOG.info("move");
@@ -151,13 +146,9 @@ public final class ActionsRecorder implements Disposable {
                         } else if (inputEvent instanceof MouseEvent) {
                             MouseEvent mouseEvent = (MouseEvent) inputEvent;
                             Notifications.Bus.notify(new Notification("mouse action", "Don't use mouse for actions!", "mouse actions are worth 1000 actions", NotificationType.WARNING));
-
-                            if (!isInsideExpectedCodeViewer(mouseEvent)) {
-                                LOG.info("Click is not inside code viewer");
-                            }
+                            actionsCounter += 1000;
+                            notifyUser();
                         }
-//                        KeyEvent keyEvent = IdeEventQueue.getInstance().getKeyEventDispatcher().getContext().getInputEvent();
-//                        AWTEvent currentEvent = IdeEventQueue.getCurrentEvent();
                     }
                 }
             }
@@ -172,23 +163,10 @@ public final class ActionsRecorder implements Disposable {
         }, this);
     }
 
-    private void showBalloon(String htmlText) {
-        JComponent statusBar = WindowManager.getInstance().getIdeFrame(null).getStatusBar().getComponent();
-        JBPopupFactory.getInstance()
-                .createHtmlTextBalloonBuilder(htmlText, MessageType.WARNING, null)
-                .setFadeoutTime(7500)
-                .createBalloon()
-                .showInCenterOf(statusBar);
-    }
-
     public final boolean isTaskSolved() {
         if (this.disposed) return false;
         List expected = computeTrimmedLines(this.golfTask.getTargetCode());
         List actual = computeTrimmedLines(String.valueOf(this.document.getText()));
-        LOG.debug("Expected:");
-        LOG.debug(expected.toString());
-        LOG.debug("Actual:");
-        LOG.debug(actual.toString());
         return Objects.equal(expected, actual);
     }
 
@@ -259,8 +237,7 @@ public final class ActionsRecorder implements Disposable {
     public final void sendSolutionToServer() {
         final GolfSolution solution =
                 new GolfSolution(this.golfTask.getTaskId(), this.username, this.movingActionsCounter, this.typingCounter,
-                        this.actionsCounter,
-                        Joiner.on('|').join(this.usedActions));
+                        this.actionsCounter, Joiner.on('|').join(this.usedActions));
 //                        KotlinPackage.makeString$default((Iterable) this.usedActions, "|", null, null, 0, null, 30));
         final String passwordToSend = this.password;
 
@@ -329,6 +306,7 @@ public final class ActionsRecorder implements Disposable {
     public final void stopRecording() {
         LOG.info("Recording stopped");
         this.recording = false;
+        this.editor.removeEditorMouseListener(editorMouseListener);
         Disposer.dispose(this);
     }
 
