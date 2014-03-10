@@ -13,7 +13,7 @@ import org.jetbrains.codeGolf.auth.AuthPackage;
 import org.jetbrains.codeGolf.plugin.GolfTask;
 import org.jetbrains.codeGolf.plugin.login.Credentials;
 import org.jetbrains.codeGolf.plugin.login.LoginService;
-import org.jetbrains.codeGolf.plugin.settings.CodeGolfConfigurableAccessor;
+import org.jetbrains.codeGolf.plugin.settings.CodeGolfSettings;
 
 
 public abstract class AdminActionBase extends AnAction {
@@ -23,7 +23,7 @@ public abstract class AdminActionBase extends AnAction {
         Presentation presentation = e.getPresentation();
         Preconditions.checkNotNull(presentation, "AnActionEvent", "getPresentation");
         Preconditions.checkNotNull(e.getProject(), "AnActionEvent", "getPresentation");
-        presentation.setVisible(AuthPackage.hasAdminAccess(CodeGolfConfigurableAccessor.getUserName()));
+        presentation.setVisible(AuthPackage.hasAdminAccess(CodeGolfSettings.getUserName()));
     }
 
 

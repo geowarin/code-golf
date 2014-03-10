@@ -34,8 +34,8 @@ public final class CodeGolfConfigurable implements Configurable {
 
 
     public boolean isModified() {
-        return !Objects.equal(CodeGolfConfigurableAccessor.getServerUrl(), this.urlField.getText())
-                || !Objects.equal(CodeGolfConfigurableAccessor.getUserName(), this.userNameField.getText());
+        return !Objects.equal(CodeGolfSettings.getServerUrl(), this.urlField.getText())
+                || !Objects.equal(CodeGolfSettings.getUserName(), this.userNameField.getText());
     }
 
 
@@ -48,13 +48,13 @@ public final class CodeGolfConfigurable implements Configurable {
         } else {
             propertiesComponent.unsetValue(CodeGolfSettings.SERVER_URL_PROPERTY);
         }
-        CodeGolfConfigurableAccessor.setUserName(this.userNameField.getText());
+        CodeGolfSettings.setUserName(this.userNameField.getText());
     }
 
 
     public void reset() {
-        this.urlField.setText(CodeGolfConfigurableAccessor.getServerUrl());
-        this.userNameField.setText(CodeGolfConfigurableAccessor.getUserName());
+        this.urlField.setText(CodeGolfSettings.getServerUrl());
+        this.userNameField.setText(CodeGolfSettings.getUserName());
     }
 
 

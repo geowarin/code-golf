@@ -47,7 +47,7 @@ public final class ActionsRecorder implements Disposable {
     private int movingActionsCounter = 0;
     private int actionsCounter = 0;
     private int typingCounter = 0;
-    private List<String> usedActions = new ArrayList<String>();
+    private final List<String> usedActions = new ArrayList<String>();
     private final Set<InputEvent> actionInputEvents = new HashSet<InputEvent>();
     private final Set<String> movingActions = Sets.newHashSet("EditorLeft", "EditorRight", "EditorDown", "EditorUp", "EditorLineStart", "EditorLineEnd", "EditorPageUp", "EditorPageDown", "EditorPreviousWord", "EditorNextWord", "EditorScrollUp", "EditorScrollDown", "EditorTextStart", "EditorTextEnd", "EditorDownWithSelection", "EditorUpWithSelection", "EditorRightWithSelection", "EditorLeftWithSelection", "EditorLineStartWithSelection", "EditorLineEndWithSelection", "EditorPageDownWithSelection", "EditorPageUpWithSelection");
     private final Set<String> forbiddenActions = Sets.newHashSet("$Paste", "EditorPaste", "PasteMultiple", "EditorPasteSimple", "PlaybackLastMacro", "PlaySavedMacrosAction");

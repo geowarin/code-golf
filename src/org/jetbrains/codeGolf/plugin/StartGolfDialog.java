@@ -9,7 +9,7 @@ import com.intellij.ui.SimpleTextAttributes;
 import com.intellij.ui.components.JBList;
 import com.intellij.ui.components.JBScrollPane;
 import org.jetbrains.annotations.Nullable;
-import org.jetbrains.codeGolf.plugin.settings.CodeGolfConfigurableAccessor;
+import org.jetbrains.codeGolf.plugin.settings.CodeGolfSettings;
 import org.jetbrains.codeGolf.plugin.task.GolfTaskManager;
 
 import javax.swing.*;
@@ -34,7 +34,7 @@ public final class StartGolfDialog extends DialogWrapper {
         if (loadedTasks != null) {
             tasks = loadedTasks;
         } else {
-            String serverUrl = CodeGolfConfigurableAccessor.getServerUrl();
+            String serverUrl = CodeGolfSettings.getServerUrl();
             JLabel errorLabel = new JLabel("Cannot load tasks from " + serverUrl + ", only predefined tasks are available");
             errorLabel.setForeground(JBColor.RED);
             this.mainPanel.add(BorderLayout.SOUTH, errorLabel);
@@ -64,12 +64,7 @@ public final class StartGolfDialog extends DialogWrapper {
 
     @Nullable
     public final GolfTask getSelectedTask() {
-        Object selectedValue = this.list.getSelectedValue();
-        if (selectedValue instanceof GolfTask) {
-            return (GolfTask) selectedValue;
-        } else {
-            return null;
-        }
+        return (GolfTask) this.list.getSelectedValue();
     }
 
     public final Project getProject() {

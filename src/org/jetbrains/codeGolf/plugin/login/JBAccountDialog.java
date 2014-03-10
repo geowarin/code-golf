@@ -11,7 +11,7 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.jetbrains.codeGolf.auth.AuthResult;
 import org.jetbrains.codeGolf.auth.JBAccountAuthHelper;
-import org.jetbrains.codeGolf.plugin.settings.CodeGolfConfigurableAccessor;
+import org.jetbrains.codeGolf.plugin.settings.CodeGolfSettings;
 
 import javax.swing.*;
 import java.awt.event.ActionEvent;
@@ -80,9 +80,9 @@ public final class JBAccountDialog extends DialogWrapper {
                 return;
             }
 
-            CodeGolfConfigurableAccessor.setUserName(this.username);
+            CodeGolfSettings.setUserName(this.username);
             if (this.savePasswordCheckbox.isSelected()) {
-                CodeGolfConfigurableAccessor.savePassword(this.project, this.password);
+                CodeGolfSettings.savePassword(this.project, this.password);
             }
         }
         doSuperOkAction();

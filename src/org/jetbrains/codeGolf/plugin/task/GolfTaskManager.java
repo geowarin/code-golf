@@ -5,7 +5,7 @@ import com.jgoodies.common.base.Strings;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.codeGolf.plugin.GolfTask;
 import org.jetbrains.codeGolf.plugin.UserScore;
-import org.jetbrains.codeGolf.plugin.settings.CodeGolfConfigurableAccessor;
+import org.jetbrains.codeGolf.plugin.settings.CodeGolfSettings;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -19,7 +19,7 @@ public final class GolfTaskManager extends TaskManager {
 
     public GolfTaskManager() {
         golfRestClient = GolfRestClient.getInstance();
-        serverUrl = CodeGolfConfigurableAccessor.getServerUrl();
+        serverUrl = CodeGolfSettings.getServerUrl();
     }
 
     @Override
