@@ -1,36 +1,45 @@
 <idea-plugin version="2">
-  <id>org.jetbrains.code-golf</id>
-  <name>IntelliJ Code Golf</name>
-  <version>0.1.7</version>
-  <vendor email="Nikolay.Chashnikov@jetbrains.com" url="http://www.jetbrains.com">JetBrains</vendor>
+    <id>org.jetbrains.code-golf</id>
+    <name>IntelliJ Code Golf</name>
+    <version>0.2.0</version>
+    <vendor email="Nikolay.Chashnikov@jetbrains.com" url="http://www.jetbrains.com">JetBrains</vendor>
 
-  <description>This plugin for IntelliJ IDEA allows to carry out competitions on knowledge of IDEA features
-      (e.g. 'write this code using minimum number of keystrokes', 'transform one piece of code to another using minimum
-      number of refactorings'). Invoke Code | 'Start Code Golf' to start.</description>
+    <description>This plugin for IntelliJ IDEA allows to carry out competitions on knowledge of IDEA features
+        (e.g. 'write this code using minimum number of keystrokes', 'transform one piece of code to another using
+        minimum
+        number of refactorings'). Invoke Code | 'Start Code Golf' to start.
+    </description>
 
-  <idea-version since-build="129.1"/>
+    <idea-version since-build="129.1"/>
 
-  <actions>
-    <action class="org.jetbrains.codeGolf.plugin.StartGolfAction" id="CodeGolf.StartGolf" text="Start Code Golf...">
-        <keyboard-shortcut keymap="$default" first-keystroke="ctrl shift g"/>
-        <keyboard-shortcut keymap="Mac OS X" first-keystroke="meta ctrl g"/>
-        <keyboard-shortcut keymap="Mac OS X 10.5+" first-keystroke="meta ctrl g"/>
-        <add-to-group group-id="CodeMenu" anchor="first"/>
-    </action>
-      <action id="org.jetbrains.codeGolf.plugin.writer.CreateRecoverThisClassTaskAction"
-              class="org.jetbrains.codeGolf.plugin.writer.CreateRecoverThisClassTaskAction" text="Create Recover Task "
-              description='Create "Recover this file" task'>
-          <add-to-group group-id="CodeMenu" anchor="first"/>
-      </action>
-      <action id="org.jetbrains.codeGolf.plugin.writer.CreateTransformThisClassTaskAction"
-              class="org.jetbrains.codeGolf.plugin.writer.CreateTransformThisClassTaskAction"
-              text="Create Transform Task" description='Create "Transform this class to another" task'>
-          <add-to-group group-id="CodeMenu" anchor="first"/>
-      </action>
-  </actions>
+    <application-components>
+        <component>
+            <implementation-class>org.jetbrains.codeGolf.plugin.CodeGolfApplication</implementation-class>
+        </component>
+    </application-components>
 
-  <extensions defaultExtensionNs="com.intellij">
-    <applicationService serviceImplementation="org.jetbrains.codeGolf.plugin.GolfTaskManager"/>
-    <applicationConfigurable instance="org.jetbrains.codeGolf.plugin.settings.CodeGolfConfigurable"/>
-  </extensions>
+    <actions>
+        <action class="org.jetbrains.codeGolf.plugin.StartGolfAction" id="CodeGolf.StartGolf" text="Start Code Golf...">
+            <keyboard-shortcut keymap="$default" first-keystroke="ctrl shift g"/>
+            <keyboard-shortcut keymap="Mac OS X" first-keystroke="meta ctrl g"/>
+            <keyboard-shortcut keymap="Mac OS X 10.5+" first-keystroke="meta ctrl g"/>
+            <add-to-group group-id="CodeMenu" anchor="first"/>
+        </action>
+        <action id="org.jetbrains.codeGolf.plugin.writer.CreateRecoverThisClassTaskAction"
+                class="org.jetbrains.codeGolf.plugin.writer.CreateRecoverThisClassTaskAction"
+                text="Create Recover Task "
+                description='Create "Recover this file" task'>
+            <add-to-group group-id="CodeMenu" anchor="first"/>
+        </action>
+        <action id="org.jetbrains.codeGolf.plugin.writer.CreateTransformThisClassTaskAction"
+                class="org.jetbrains.codeGolf.plugin.writer.CreateTransformThisClassTaskAction"
+                text="Create Transform Task" description='Create "Transform this class to another" task'>
+            <add-to-group group-id="CodeMenu" anchor="first"/>
+        </action>
+    </actions>
+
+    <extensions defaultExtensionNs="com.intellij">
+        <applicationService serviceImplementation="org.jetbrains.codeGolf.plugin.GolfTaskManager"/>
+        <applicationConfigurable instance="org.jetbrains.codeGolf.plugin.settings.CodeGolfConfigurable"/>
+    </extensions>
 </idea-plugin>

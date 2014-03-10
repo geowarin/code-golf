@@ -4,13 +4,15 @@ import com.google.common.base.Preconditions;
 import com.intellij.openapi.actionSystem.AnAction;
 import com.intellij.openapi.actionSystem.AnActionEvent;
 import com.intellij.openapi.actionSystem.Presentation;
+import com.intellij.openapi.progress.ProgressIndicator;
 import com.intellij.openapi.progress.Task;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.ui.Messages;
-import com.intellij.openapi.util.Pair;
+import org.jetbrains.annotations.NotNull;
 import org.jetbrains.codeGolf.auth.AuthPackage;
 import org.jetbrains.codeGolf.plugin.GolfTask;
-import org.jetbrains.codeGolf.plugin.login.LoginWithJBAccount;
+import org.jetbrains.codeGolf.plugin.login.Credentials;
+import org.jetbrains.codeGolf.plugin.login.LoginService;
 import org.jetbrains.codeGolf.plugin.settings.CodeGolfConfigurableAccessor;
 
 
@@ -30,28 +32,23 @@ public abstract class AdminActionBase extends AnAction {
         Project project = e.getProject();
         Preconditions.checkNotNull(project);
 
-        Pair usernameAndPassword = LoginWithJBAccount.showDialogAndLogin(project);
-        if (usernameAndPassword != null)
+        Credentials credentials = LoginService.getInstance().showDialogAndLogin(project);
+        if (credentials != null)
             return;
 
-        String username = (String) usernameAndPassword.getFirst();
-        String password = (String) usernameAndPassword.getSecond();
-        if (!AuthPackage.hasAdminAccess(username)) {
+        if (!AuthPackage.hasAdminAccess(credentials.getUserName())) {
             Messages.showErrorDialog(project, "This action can be performed by admins only", "Code Golf Error");
             return;
         }
-        doAdminAction(project, e, username, password);
+        doAdminAction(project, e, credentials.getUserName(), credentials.getToken());
     }
 
     protected abstract void doAdminAction(Project paramProject, AnActionEvent paramAnActionEvent, String paramString1, String paramString2);
 
-    public static void sendTaskToServer(Project project, GolfTask task, String password) {
-        Preconditions.checkNotNull(project, "sendTaskToServer");
-        Preconditions.checkNotNull(task, "sendTaskToServer");
-        Preconditions.checkNotNull(password, "sendTaskToServer");
+    public static void sendTaskToServer(@NotNull Project project, @NotNull GolfTask task, @NotNull String password) {
         new Task.Backgroundable(project, password) { // ERROR //
 
-            public void run(com.intellij.openapi.progress.ProgressIndicator indicator) { // Byte code:
+            public void run(ProgressIndicator indicator) { // Byte code:
                 //   0: aload_1
                 //   1: ldc 33
                 //   3: invokestatic 39	jet/runtime/Intrinsics:checkParameterIsNotNull	(Ljava/lang/Object;Ljava/lang/String;)V

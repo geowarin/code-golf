@@ -1,16 +1,15 @@
 package org.jetbrains.codeGolf.plugin.login;
 
-import com.google.common.base.Preconditions;
 import com.intellij.openapi.project.Project;
-import com.intellij.openapi.util.Pair;
 import com.intellij.openapi.util.text.StringUtil;
+import org.jetbrains.annotations.NotNull;
 import org.jetbrains.codeGolf.auth.JBAccountAuthHelper;
 import org.jetbrains.codeGolf.plugin.settings.CodeGolfConfigurableAccessor;
 
-public final class LoginWithJBAccount {
+public final class LoginWithJBAccount extends LoginService {
 
-    public static Pair<String, String> showDialogAndLogin(Project project) {
-        Preconditions.checkNotNull(project, "showDialogAndLogin");
+    @Override
+    public Credentials showDialogAndLogin(@NotNull Project project) {
         String username = CodeGolfConfigurableAccessor.getUserName();
         String password = CodeGolfConfigurableAccessor.getUserPassword(project);
 
@@ -24,6 +23,6 @@ public final class LoginWithJBAccount {
             password = dlg.getPassword();
         }
         String encodedPassword = JBAccountAuthHelper.encodePassword(password);
-        return new Pair<String, String>(username, encodedPassword);
+        return new JBCredentials(username, password, encodedPassword);
     }
 }

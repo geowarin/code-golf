@@ -170,24 +170,7 @@ public final class ActionsRecorder implements Disposable {
         return Objects.equal(expected, actual);
     }
 
-    public final boolean isInsideExpectedCodeViewer(MouseEvent e) {
-        Preconditions.checkNotNull(e, "isInsideExpectedCodeViewer");
-        Component component = e.getComponent();
-        if (component == null)
-            return true;
-        Window window = SwingUtilities.getWindowAncestor(component);
-
-        return (window instanceof RootPaneContainer && ((RootPaneContainer) window).getRootPane() != null)
-                || (component instanceof RootPaneContainer && ((RootPaneContainer) component).getRootPane() != null);
-
-//        return (window instanceof RootPaneContainer) ?
-//                ((RootPaneContainer) window).getRootPane() : (component instanceof RootPaneContainer) ?
-//                ((RootPaneContainer) component).getRootPane() :
-//                false;
-    }
-
     public final void processKeyPressedEvent(KeyEvent e) {
-        Preconditions.checkNotNull(e, "processKeyPressedEvent");
         if (this.actionInputEvents.contains(e)) {
             this.actionInputEvents.remove(e);
             return;

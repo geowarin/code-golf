@@ -33,8 +33,8 @@ public class RestClientUtil {
             ClientResponse response = webResource.type(MediaType.APPLICATION_JSON_TYPE).get(ClientResponse.class);
             LOG.info("Loading tasks from server...");
             String output = response.getEntity(String.class);
-            LOG.info("Loaded from server:");
-            LOG.info(output);
+            LOG.debug("Loaded from server:");
+            LOG.debug(output);
             List<GolfTask> tasks = JsonSerializer.deserializeTasks(output);
             LOG.info(String.valueOf(tasks.size()) + " tasks loaded");
             return tasks;
@@ -52,8 +52,8 @@ public class RestClientUtil {
             ClientResponse response = webResource.type(MediaType.APPLICATION_JSON_TYPE).get(ClientResponse.class);
             LOG.info("Loading scores from server...");
             String output = response.getEntity(String.class);
-            LOG.info("Loaded from server:");
-            LOG.info(output);
+            LOG.debug("Loaded from server:");
+            LOG.debug(output);
             List<UserScore> scores = JsonSerializer.deserializeScores(output);
             LOG.info(String.valueOf(scores.size()) + " scores loaded");
             return scores;

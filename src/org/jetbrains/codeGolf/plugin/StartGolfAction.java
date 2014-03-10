@@ -13,6 +13,8 @@ import com.intellij.openapi.util.Pair;
 import com.intellij.openapi.vfs.VirtualFile;
 import com.jgoodies.common.base.Strings;
 import org.jetbrains.codeGolf.plugin.controlpanel.RecordingControlPanel;
+import org.jetbrains.codeGolf.plugin.login.Credentials;
+import org.jetbrains.codeGolf.plugin.login.LoginService;
 import org.jetbrains.codeGolf.plugin.login.LoginWithJBAccount;
 import org.jetbrains.codeGolf.plugin.rest.RestClientUtil;
 import org.jetbrains.codeGolf.plugin.settings.CodeGolfConfigurableAccessor;
@@ -36,22 +38,19 @@ public final class StartGolfAction extends AnAction {
     public void actionPerformed(AnActionEvent anActionEvent) {
         if (!this.isRecording()) {
             Project project = anActionEvent.getProject();
-            Pair<String,String> credentials = LoginWithJBAccount.showDialogAndLogin(project);
+            Credentials credentials = LoginService.getInstance().showDialogAndLogin(project);
             // User cancels
             if (credentials == null)
                 return;
 
-            String userName = credentials.getFirst();
-            String password = credentials.getSecond();
-
             List<GolfTask> tasks = RestClientUtil.loadTasks(CodeGolfConfigurableAccessor.getServerUrl());
-            List<UserScore> userScores = getUserScores(CodeGolfConfigurableAccessor.getServerUrl(), userName);
+            List<UserScore> userScores = getUserScores(CodeGolfConfigurableAccessor.getServerUrl(), credentials.getUserName());
 
             StartGolfDialog startGolfDialog = new StartGolfDialog(project, tasks, userScores);
             startGolfDialog.show();
             GolfTask selectedTask = startGolfDialog.getSelectedTask();
             if (selectedTask != null && startGolfDialog.isOK())
-                startTask(selectedTask, project, userName, password);
+                startTask(selectedTask, project, credentials.getUserName(), credentials.getToken());
         }
     }
 
