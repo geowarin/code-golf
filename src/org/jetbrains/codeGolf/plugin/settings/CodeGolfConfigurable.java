@@ -20,52 +20,59 @@ public final class CodeGolfConfigurable implements Configurable {
     public CodeGolfConfigurable() {
         FormBuilder formBuilder =
                 FormBuilder.createFormBuilder()
-                        .addLabeledComponent("Server URL:", this.urlField)
-                        .addLabeledComponent("User name:", this.userNameField);
+                        .addLabeledComponent("Server URL:", urlField)
+                        .addLabeledComponent("User name:", userNameField);
         JPanel topPanel = formBuilder.getPanel();
-        this.mainPanel = new JPanel(new VerticalFlowLayout());
-        this.mainPanel.add(topPanel);
+        mainPanel = new JPanel(new VerticalFlowLayout());
+        mainPanel.add(topPanel);
     }
 
+    @Override
     @Nullable
     public JComponent createComponent() {
-        return this.mainPanel;
+        return mainPanel;
     }
 
 
+    @Override
     public boolean isModified() {
-        return !Objects.equal(CodeGolfSettings.getServerUrl(), this.urlField.getText())
-                || !Objects.equal(CodeGolfSettings.getUserName(), this.userNameField.getText());
+        return !Objects.equal(CodeGolfSettings.getServerUrl(), urlField.getText())
+                || !Objects.equal(CodeGolfSettings.getUserName(), userNameField.getText());
     }
 
 
+    @Override
     public void apply() {
         PropertiesComponent propertiesComponent = PropertiesComponent.getInstance();
 
-        String serverUrl = this.urlField.getText();
+        String serverUrl = urlField.getText();
         if (!Objects.equal(serverUrl, CodeGolfSettings.DEFAULT_SERVER_URL)) {
             propertiesComponent.setValue(CodeGolfSettings.SERVER_URL_PROPERTY, serverUrl);
         } else {
             propertiesComponent.unsetValue(CodeGolfSettings.SERVER_URL_PROPERTY);
         }
-        CodeGolfSettings.setUserName(this.userNameField.getText());
+        CodeGolfSettings.setUserName(userNameField.getText());
     }
 
 
+    @Override
     public void reset() {
-        this.urlField.setText(CodeGolfSettings.getServerUrl());
-        this.userNameField.setText(CodeGolfSettings.getUserName());
+        urlField.setText(CodeGolfSettings.getServerUrl());
+        userNameField.setText(CodeGolfSettings.getUserName());
     }
 
 
+    @Override
     public void disposeUIResources() {
     }
 
+    @Override
     @Nls
     public String getDisplayName() {
         return "Code Golf";
     }
 
+    @Override
     @Nullable
     @NonNls
     public String getHelpTopic() {

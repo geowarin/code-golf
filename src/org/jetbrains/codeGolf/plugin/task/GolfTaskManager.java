@@ -12,8 +12,6 @@ import java.util.List;
 
 
 public final class GolfTaskManager extends TaskManager {
-    private List<GolfTask> tasks = PREDIFINED_GOLF_TASKS;
-
     private final GolfRestClient golfRestClient;
     private final String serverUrl;
 

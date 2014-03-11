@@ -3,7 +3,7 @@ package org.jetbrains.codeGolf.plugin.controlpanel;
 import com.intellij.icons.AllIcons;
 import com.intellij.openapi.actionSystem.AnAction;
 import com.intellij.openapi.actionSystem.AnActionEvent;
-import org.jetbrains.codeGolf.plugin.ActionsRecorder;
+import org.jetbrains.codeGolf.plugin.recording.ActionsRecorder;
 
 
 @SuppressWarnings("ComponentNotRegistered")
@@ -15,7 +15,8 @@ public final class StopSolvingAction extends AnAction {
         this.recorder = recorder;
     }
 
+    @Override
     public void actionPerformed(AnActionEvent e) {
-        this.recorder.stopRecording();
+        recorder.stopRecording();
     }
 }

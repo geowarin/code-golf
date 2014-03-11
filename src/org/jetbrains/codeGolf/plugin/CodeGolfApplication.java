@@ -14,7 +14,6 @@ import org.picocontainer.MutablePicoContainer;
  * @author Geoffroy Warin (http://geowarin.github.io)
  */
 public class CodeGolfApplication implements ApplicationComponent {
-
     private final ComponentManagerImpl componentManager;
 
     public CodeGolfApplication(@NotNull ComponentManagerImpl componentManager) {

@@ -24,7 +24,7 @@ import com.intellij.ui.awt.RelativePoint;
 import com.intellij.ui.popup.AbstractPopup;
 import com.intellij.ui.popup.NotLookupOrSearchCondition;
 import org.jetbrains.annotations.NotNull;
-import org.jetbrains.codeGolf.plugin.ActionsRecorder;
+import org.jetbrains.codeGolf.plugin.recording.ActionsRecorder;
 
 import javax.swing.*;
 import java.awt.*;
@@ -32,7 +32,7 @@ import java.awt.*;
 
 public final class RecordingControlPanel extends JPanel implements Disposable {
     private Editor myEditor;
-    private final JLabel myText;
+    private final JLabel scoreText;
     public final JBPopup myHint;
     private final int MAX_WIDTH = 500;
     private final int MAX_HEIGHT = 300;
@@ -50,17 +50,17 @@ public final class RecordingControlPanel extends JPanel implements Disposable {
 
         Disposer.register(this.recorder, this);
         setLayout(new BorderLayout());
-        this.myEditor = createViewer(this.targetCode);
-        if (this.myEditor == null) throw new NullPointerException();
+        myEditor = createViewer(this.targetCode);
+        if (myEditor == null) throw new NullPointerException();
 
-        JComponent component = this.myEditor.getComponent();
-        Preconditions.checkNotNull(this.myEditor, "Editor", "getComponent");
+        JComponent component = myEditor.getComponent();
+        Preconditions.checkNotNull(myEditor, "Editor", "getComponent");
         component.setEnabled(false);
 
-        this.myText = new JLabel("Actions: WWW Moving actions: WWW Chars: WWW", SwingConstants.LEFT);
+        scoreText = new JLabel("Actions: WWW Moving actions: WWW Chars: WWW", SwingConstants.LEFT);
         JPanel topPanel = new JPanel(new BorderLayout());
         topPanel.add(createControlComponent(), BorderLayout.EAST);
-        topPanel.add(this.myText, BorderLayout.WEST);
+        topPanel.add(scoreText, BorderLayout.WEST);
 
         JPanel separator = new JPanel();
         separator.setMinimumSize(new Dimension(20, 5));
@@ -71,25 +71,26 @@ public final class RecordingControlPanel extends JPanel implements Disposable {
         setBorder(BorderFactory.createEmptyBorder(0, 3, 3, 3));
 
         ComponentPopupBuilder componentPopupBuilder = JBPopupFactory.getInstance().createComponentPopupBuilder(this, this);
-        this.myHint = createHint(componentPopupBuilder);
+        myHint = createHint(componentPopupBuilder);
         notifyUser(0, 0, 0);
     }
 
+    @Override
     public void dispose() {
         myHint.dispose();
-        if (this.myEditor != null) {
-            EditorFactory.getInstance().releaseEditor(this.myEditor);
-            this.myEditor = null;
+        if (myEditor != null) {
+            EditorFactory.getInstance().releaseEditor(myEditor);
+            myEditor = null;
         }
     }
 
     public final JComponent createControlComponent() {
         DefaultActionGroup group = new DefaultActionGroup(
-                new ShowDiffWithExpectedAction(this.targetCode, this.document),
-                new NavigateToEditorAction(this.document),
+                new ShowDiffWithExpectedAction(targetCode, document),
+                new NavigateToEditorAction(document),
                 Separator.getInstance(),
-                new TryAgainAction(this.recorder),
-                new StopSolvingAction(this.recorder)
+                new TryAgainAction(recorder),
+                new StopSolvingAction(recorder)
         );
         ActionToolbar actionToolbar = ActionManager.getInstance().createActionToolbar("CodeGolfToolbar", group, true);
         return actionToolbar.getComponent();
@@ -101,29 +102,29 @@ public final class RecordingControlPanel extends JPanel implements Disposable {
 
     public final void notifyUser(String message) {
         Preconditions.checkNotNull(message, "notifyUser");
-        this.myText.setText(message);
-        this.myText.revalidate();
-        this.myText.repaint();
+        scoreText.setText(message);
+        scoreText.revalidate();
+        scoreText.repaint();
     }
 
     public final void showHint() {
         WindowManager windowManager = WindowManager.getInstance();
-        IdeFrame ideFrame = windowManager.getIdeFrame(this.project);
+        IdeFrame ideFrame = windowManager.getIdeFrame(project);
         JComponent frame = ideFrame.getComponent();
 
         Rectangle visibleRect = frame.getVisibleRect();
         Dimension contentSize = getPreferredSize();
 
-        Dimension hintSize = ((AbstractPopup) this.myHint).getHeaderPreferredSize();
+        Dimension hintSize = ((AbstractPopup) myHint).getHeaderPreferredSize();
         int popupHeight = contentSize.height + hintSize.height;
         int newPopupHeight = Math.max(Math.min(popupHeight, visibleRect.height / 2), 150);
         if (newPopupHeight != popupHeight) {
             popupHeight = newPopupHeight;
-            this.myHint.setSize(new Dimension(contentSize.width, popupHeight));
+            myHint.setSize(new Dimension(contentSize.width, popupHeight));
         }
 
         Point point = new Point(visibleRect.x + 5, visibleRect.y + visibleRect.height - newPopupHeight - 20);
-        this.myHint.show(new RelativePoint(frame, point));
+        myHint.show(new RelativePoint(frame, point));
     }
 
     public final Editor createViewer(@NotNull String code) {
@@ -147,12 +148,11 @@ public final class RecordingControlPanel extends JPanel implements Disposable {
 
         EditorHighlighterFactory editorHighlighterFactory = EditorHighlighterFactory.getInstance();
 
-        EditorHighlighter editorHighlighter = editorHighlighterFactory.createEditorHighlighter(this.project, StdFileTypes.JAVA);
+        EditorHighlighter editorHighlighter = editorHighlighterFactory.createEditorHighlighter(project, StdFileTypes.JAVA);
         ((EditorEx) editor).setHighlighter(editorHighlighter);
         editor.getSelectionModel().addSelectionListener(new SelectionListener() {
 
             public void selectionChanged(SelectionEvent event) {
-
                 SelectionModel selectionModel = editor.getSelectionModel();
                 selectionModel.removeSelection();
             }
@@ -162,8 +162,8 @@ public final class RecordingControlPanel extends JPanel implements Disposable {
 
     private JBPopup createHint(ComponentPopupBuilder componentPopupBuilder) {
         return componentPopupBuilder
-                .setRequestFocusCondition(this.project, NotLookupOrSearchCondition.INSTANCE)
-                .setProject(this.project)
+                .setRequestFocusCondition(project, NotLookupOrSearchCondition.INSTANCE)
+                .setProject(project)
                 .setResizable(true)
                 .setMovable(true)
                 .setCancelKeyEnabled(false)

@@ -8,23 +8,61 @@ import com.intellij.openapi.util.Computable;
 import com.intellij.openapi.vfs.VirtualFile;
 import org.jetbrains.codeGolf.plugin.controlpanel.RecordingControlPanel;
 import org.jetbrains.codeGolf.plugin.login.Credentials;
+import org.jetbrains.codeGolf.plugin.recording.ActionsRecorder;
+import org.jetbrains.codeGolf.plugin.task.GolfTaskManager;
+import org.jetbrains.codeGolf.plugin.task.TaskManager;
+
+import java.util.List;
 
 /**
-* Date: 10/03/2014
-* Time: 23:42
-*
-* @author Geoffroy Warin (http://geowarin.github.io)
-*/
+ * Date: 10/03/2014
+ * Time: 23:42
+ *
+ * @author Geoffroy Warin (http://geowarin.github.io)
+ */
 class GolfGame {
     private final Project project;
-    private Credentials credentials;
-    private final GolfTask task;
+    private final Credentials credentials;
+    private List<GolfTask> taskList;
+    private List<UserScore> userScores;
 
-    public GolfGame(Project project, Credentials credentials, GolfTask task) {
+    public GolfGame(Project project, Credentials credentials) {
         this.project = project;
         this.credentials = credentials;
-        this.task = task;
     }
+
+    public void loadTasksAndScores() {
+        TaskManager taskManager = new GolfTaskManager();
+        taskList = taskManager.loadTasks();
+        userScores = taskManager.loadScores(credentials.getUserName());
+    }
+
+    public GolfTask showSelectTaskDialog() {
+        StartGolfDialog startGolfDialog = new StartGolfDialog(project, taskList, userScores);
+        startGolfDialog.show();
+        GolfTask selectedTask = startGolfDialog.getSelectedTask();
+        if (selectedTask != null && startGolfDialog.isOK())
+            return selectedTask;
+        return null;
+    }
+
+    public void start(final GolfTask task) {
+        Document document = createFile(task, project);
+        ActionsRecorder recorder = new ActionsRecorder(task, project, document, credentials.getUserName(), credentials.getToken());
+
+        recorder.setRestarter(new ActionsRecorder.Restarter() {
+            @Override
+            public void restart() {
+                start(task);
+            }
+        });
+
+        RecordingControlPanel recordingControlPanel = new RecordingControlPanel(project, document, task.getTargetCode(), recorder);
+//        recorder.setControlPanel(recordingControlPanel);
+
+        recorder.startRecording();
+    }
+
 
     private VirtualFile createFile(final Project project, final String text) {
         return ApplicationManager.getApplication().runWriteAction(new Computable<VirtualFile>() {
@@ -41,22 +79,6 @@ class GolfGame {
         return FileDocumentManager.getInstance().getDocument(file);
     }
 
-    public void start() {
-        Document document = createFile(task, project);
-        ActionsRecorder recorder = new ActionsRecorder(task, project, document, credentials.getUserName(), credentials.getToken());
-
-        recorder.setRestarter(new ActionsRecorder.Restarter() {
-            @Override
-            public void restart() {
-                start();
-            }
-        });
-
-        RecordingControlPanel recordingControlPanel = new RecordingControlPanel(project, document, task.getTargetCode(), recorder);
-        recorder.setControlPanel(recordingControlPanel);
-
-        recorder.startRecording();
-    }
 
     public boolean isRecording() {
         // FIXME

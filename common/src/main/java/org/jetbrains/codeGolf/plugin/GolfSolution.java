@@ -8,6 +8,18 @@ public class GolfSolution {
     private int actionsCount;
     private String usedActions;
 
+    public GolfSolution(String taskId, String userLogin, int movingCount, int typingCount, int actionsCount, String usedActions) {
+        this.taskId = taskId;
+        this.userLogin = userLogin;
+        this.movingCount = movingCount;
+        this.typingCount = typingCount;
+        this.actionsCount = actionsCount;
+        this.usedActions = usedActions;
+    }
+
+    public GolfSolution() {
+    }
+
     public int getActionsCount() {
         return actionsCount;
     }
@@ -54,17 +66,5 @@ public class GolfSolution {
 
     public void setUserLogin(String userLogin) {
         this.userLogin = userLogin;
-    }
-
-    public GolfSolution(String taskId, String userLogin, int movingCount, int typingCount, int actionsCount, String usedActions) {
-        this.taskId = taskId;
-        this.userLogin = userLogin;
-        this.movingCount = movingCount;
-        this.typingCount = typingCount;
-        this.actionsCount = actionsCount;
-        this.usedActions = usedActions;
-    }
-
-    public GolfSolution() {
     }
 }

@@ -36,7 +36,6 @@ public class GolfRestClient {
         return ServiceManager.getService(GolfRestClient.class);
     }
 
-
     private static String getServerUrl() {
         return CodeGolfSettings.getServerUrl();
     }

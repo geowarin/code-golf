@@ -13,37 +13,32 @@ import java.util.List;
 
 
 public final class StartGolfAction extends AnAction {
-
     private GolfGame game;
 
     public StartGolfAction() {
         super("Start Code Golf...");
     }
 
+    @Override
     public void update(AnActionEvent e) {
         Presentation presentation = e.getPresentation();
         presentation.setEnabled(!isRecording());
     }
 
+    @Override
     public void actionPerformed(AnActionEvent anActionEvent) {
-        if (!this.isRecording()) {
+        if (!isRecording()) {
             Project project = anActionEvent.getProject();
             Credentials credentials = LoginService.getInstance().showDialogAndLogin(project);
             // User cancels
             if (credentials == null)
                 return;
 
-            TaskManager taskManager = new GolfTaskManager();
-            List<GolfTask> tasks = taskManager.loadTasks();
-            List<UserScore> userScores = taskManager.loadScores(credentials.getUserName());
-
-            StartGolfDialog startGolfDialog = new StartGolfDialog(project, tasks, userScores);
-            startGolfDialog.show();
-            GolfTask selectedTask = startGolfDialog.getSelectedTask();
-            if (selectedTask != null && startGolfDialog.isOK()) {
-                game = new GolfGame(project, credentials, selectedTask);
-                game.start();
-            }
+            game = new GolfGame(project, credentials);
+            game.loadTasksAndScores();
+            GolfTask selectedTask = game.showSelectTaskDialog();
+            if (selectedTask != null)
+                game.start(selectedTask);
         }
     }
 

@@ -28,7 +28,7 @@ public final class StartGolfDialog extends DialogWrapper {
         super(project);
         this.project = project;
 
-        this.mainPanel = new JPanel(new BorderLayout());
+        mainPanel = new JPanel(new BorderLayout());
         setTitle("Start Code Golf");
         List tasks;
         if (loadedTasks != null) {
@@ -37,7 +37,7 @@ public final class StartGolfDialog extends DialogWrapper {
             String serverUrl = CodeGolfSettings.getServerUrl();
             JLabel errorLabel = new JLabel("Cannot load tasks from " + serverUrl + ", only predefined tasks are available");
             errorLabel.setForeground(JBColor.RED);
-            this.mainPanel.add(BorderLayout.SOUTH, errorLabel);
+            mainPanel.add(BorderLayout.SOUTH, errorLabel);
             tasks = GolfTaskManager.getInstance().getPredefinedTasks();
         }
         Map<String, UserScore> scoresMap = new HashMap<String, UserScore>();
@@ -53,30 +53,33 @@ public final class StartGolfDialog extends DialogWrapper {
         init();
     }
 
+    @Override
     protected JComponent createCenterPanel() {
-        return this.mainPanel;
+        return mainPanel;
     }
 
+    @Override
     @Nullable
     public JComponent getPreferredFocusedComponent() {
-        return this.list;
+        return list;
     }
 
     @Nullable
     public final GolfTask getSelectedTask() {
-        return (GolfTask) this.list.getSelectedValue();
+        return (GolfTask) list.getSelectedValue();
     }
 
     public final Project getProject() {
-        return this.project;
+        return project;
     }
 
     public static final class GolfTaskRenderer extends ColoredListCellRendererWrapper<GolfTask> {
         private final Map<String, UserScore> scoresMap;
 
+        @Override
         protected void doCustomize(JList list, GolfTask value, int index, boolean selected, boolean hasFocus) {
 
-            UserScore score = this.scoresMap.get(value.getTaskId());
+            UserScore score = scoresMap.get(value.getTaskId());
 
             Pair<String, Color> localPair;
             if (score == null) {
