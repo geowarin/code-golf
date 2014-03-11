@@ -51,10 +51,8 @@ public final class RecordingControlPanel extends JPanel implements Disposable {
         Disposer.register(this.recorder, this);
         setLayout(new BorderLayout());
         myEditor = createViewer(this.targetCode);
-        if (myEditor == null) throw new NullPointerException();
 
         JComponent component = myEditor.getComponent();
-        Preconditions.checkNotNull(myEditor, "Editor", "getComponent");
         component.setEnabled(false);
 
         scoreText = new JLabel("Actions: WWW Moving actions: WWW Chars: WWW", SwingConstants.LEFT);
@@ -101,7 +99,6 @@ public final class RecordingControlPanel extends JPanel implements Disposable {
     }
 
     public final void notifyUser(String message) {
-        Preconditions.checkNotNull(message, "notifyUser");
         scoreText.setText(message);
         scoreText.revalidate();
         scoreText.repaint();
