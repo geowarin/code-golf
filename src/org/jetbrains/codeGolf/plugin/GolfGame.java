@@ -57,9 +57,6 @@ class GolfGame {
             }
         });
 
-        RecordingControlPanel recordingControlPanel = new RecordingControlPanel(project, document, task.getTargetCode(), recorder);
-//        recorder.setControlPanel(recordingControlPanel);
-
         recorder.startRecording();
     }
 

@@ -33,7 +33,7 @@ public class Notifier {
                         "The details about the task can be found here.<br/>" +
                         "<a href=\"restart\">Try again</a> if you want to improve your solution.",
                 result.getResult(), result.getBestResult());
-        Notification notification = new Notification("Registered", "Congratulations", message, NotificationType.INFORMATION, createNotificationListener(restarter));
+        Notification notification = new Notification("Registered", "Congratulations", message, NotificationType.INFORMATION, createNotificationListener());
         Notifications.Bus.notify(notification, project);
     }
 
@@ -50,11 +50,11 @@ public class Notifier {
 
     void notifySolutionDiscarded(String reason) {
         Notification notification = new Notification("Code Golf Info", "Solution discarded", reason + "<br/><a href=\"restart\">Try again</a>",
-                NotificationType.WARNING, createNotificationListener(restarter));
+                NotificationType.WARNING, createNotificationListener());
         Notifications.Bus.notify(notification, project);
     }
 
-    private NotificationListener createNotificationListener(final ActionsRecorder.Restarter restarter) {
+    private NotificationListener createNotificationListener() {
         return new MyNotificationListener();
     }
 

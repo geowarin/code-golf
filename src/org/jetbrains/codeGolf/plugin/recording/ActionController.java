@@ -20,12 +20,10 @@ public class ActionController {
 
     public boolean isModifier(int keyCode) {
         List<Integer> modifiers = Arrays.asList(KeyEvent.VK_CONTROL, KeyEvent.VK_ALT, KeyEvent.VK_META, KeyEvent.VK_SHIFT);
-        if (modifiers.contains(keyCode))
-            return true;
-        return false;
+        return modifiers.contains(keyCode);
     }
 
-    boolean isForbiddenAction(ActionsRecorder actionsRecorder, String actionId) {
+    boolean isForbiddenAction(String actionId) {
         return forbiddenActions.contains(actionId);
     }
 

@@ -2,7 +2,6 @@ package org.jetbrains.codeGolf.plugin.recording;
 
 import com.google.common.base.Joiner;
 import com.google.common.base.Objects;
-import com.google.common.collect.Iterables;
 import com.intellij.ide.IdeEventQueue;
 import com.intellij.notification.Notification;
 import com.intellij.notification.NotificationType;
@@ -168,7 +167,7 @@ public final class ActionsRecorder implements Disposable {
                 LOG.info("move " + actionId);
                 score.increaseMovingActions(1);
                 notifyUser();
-            } else if (actionController.isForbiddenAction(ActionsRecorder.this, actionId)) {
+            } else if (actionController.isForbiddenAction(actionId)) {
                 LOG.info("Forbidden " + actionId);
                 discardSolution("Action " + actionId + " is forbidden");
             } else if (actionController.isTypingAction(actionId)) {
@@ -225,7 +224,7 @@ public final class ActionsRecorder implements Disposable {
         }
     }
 
-    private final void trySendSolutionToServer(final GolfSolution solution) {
+    private void trySendSolutionToServer(final GolfSolution solution) {
         new Task.Backgroundable(project, "sending data") {
             public void run(@NotNull ProgressIndicator indicator) {
                 try {

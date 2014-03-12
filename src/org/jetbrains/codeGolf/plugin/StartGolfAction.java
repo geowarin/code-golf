@@ -6,10 +6,6 @@ import com.intellij.openapi.actionSystem.Presentation;
 import com.intellij.openapi.project.Project;
 import org.jetbrains.codeGolf.plugin.login.Credentials;
 import org.jetbrains.codeGolf.plugin.login.LoginService;
-import org.jetbrains.codeGolf.plugin.task.GolfTaskManager;
-import org.jetbrains.codeGolf.plugin.task.TaskManager;
-
-import java.util.List;
 
 
 public final class StartGolfAction extends AnAction {
