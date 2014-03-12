@@ -46,15 +46,15 @@ public final class ActionsRecorder implements Disposable {
     private final ActionController actionController = new ActionController();
     private final RecordingControlPanel controlPanel;
     private final List<String> usedActions = new ArrayList<String>();
-    private boolean disposed = false;
     private final GolfTask golfTask;
     private final Project project;
     private final Document document;
     private final String username;
-    private String password;
+    private final String password;
     private final Restarter restarter;
     private final Notifier notifier;
 
+    private boolean disposed;
     private boolean recording;
     private static final Logger LOG = Logger.getInstance("#org.jetbrains.codeGolf");
     private final Editor editor;
@@ -245,14 +245,12 @@ public final class ActionsRecorder implements Disposable {
     }
 
     public final boolean isTaskSolved() {
-        if (disposed) return false;
-        return new TaskSolutionChecker(golfTask).checkSolution(document.getText());
+        return !disposed && new TaskSolutionChecker(golfTask).checkSolution(document.getText());
     }
 
     @Override
     public void dispose() {
         disposed = true;
-        password = "";
         recording = false;
     }
 
