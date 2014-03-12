@@ -48,14 +48,13 @@ class GolfGame {
 
     public void start(final GolfTask task) {
         Document document = createFile(task, project);
-        ActionsRecorder recorder = new ActionsRecorder(task, project, document, credentials.getUserName(), credentials.getToken());
-
-        recorder.setRestarter(new ActionsRecorder.Restarter() {
+        ActionsRecorder.Restarter restarter = new ActionsRecorder.Restarter() {
             @Override
             public void restart() {
                 start(task);
             }
-        });
+        };
+        ActionsRecorder recorder = new ActionsRecorder(task, project, document, credentials.getUserName(), credentials.getToken(), restarter);
 
         recorder.startRecording();
     }

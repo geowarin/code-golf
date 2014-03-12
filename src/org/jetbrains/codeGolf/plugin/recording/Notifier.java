@@ -19,7 +19,11 @@ public class Notifier {
         this.restarter = restarter;
     }
 
-    public void showCongratulations(GolfResult result) {
+    void notifyMouseUsedInEditor() {
+        Notifications.Bus.notify(new Notification("mouse on editor", "Don't use mouse on editor!", "mouse actions are worth 1000 actions", NotificationType.WARNING));
+    }
+
+    void showCongratulations(GolfResult result) {
         if (result.getResult().equals(result.getBestResult())) {
             notifyBestResult(result);
         } else {
@@ -33,7 +37,7 @@ public class Notifier {
                         "The details about the task can be found here.<br/>" +
                         "<a href=\"restart\">Try again</a> if you want to improve your solution.",
                 result.getResult(), result.getBestResult());
-        Notification notification = new Notification("Registered", "Congratulations", message, NotificationType.INFORMATION, createNotificationListener());
+        Notification notification = new Notification("Registered", "Congratulations", message, NotificationType.INFORMATION, new MyNotificationListener());
         Notifications.Bus.notify(notification, project);
     }
 
@@ -50,12 +54,8 @@ public class Notifier {
 
     void notifySolutionDiscarded(String reason) {
         Notification notification = new Notification("Code Golf Info", "Solution discarded", reason + "<br/><a href=\"restart\">Try again</a>",
-                NotificationType.WARNING, createNotificationListener());
+                NotificationType.WARNING, new MyNotificationListener());
         Notifications.Bus.notify(notification, project);
-    }
-
-    private NotificationListener createNotificationListener() {
-        return new MyNotificationListener();
     }
 
     void notifyUploadError(String errorMessage) {

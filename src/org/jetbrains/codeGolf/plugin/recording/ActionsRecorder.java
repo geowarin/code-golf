@@ -1,7 +1,6 @@
 package org.jetbrains.codeGolf.plugin.recording;
 
 import com.google.common.base.Joiner;
-import com.google.common.base.Objects;
 import com.intellij.ide.IdeEventQueue;
 import com.intellij.notification.Notification;
 import com.intellij.notification.NotificationType;
@@ -26,7 +25,6 @@ import com.intellij.openapi.progress.ProgressIndicator;
 import com.intellij.openapi.progress.Task;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.util.Disposer;
-import com.intellij.openapi.util.text.StringUtil;
 import com.intellij.util.ui.UIUtil;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.codeGolf.plugin.GolfResult;
@@ -54,22 +52,24 @@ public final class ActionsRecorder implements Disposable {
     private final Document document;
     private final String username;
     private String password;
-    private Restarter restarter;
-    private boolean recording;
+    private final Restarter restarter;
+    private final Notifier notifier;
 
+    private boolean recording;
     private static final Logger LOG = Logger.getInstance("#org.jetbrains.codeGolf");
     private final Editor editor;
     private final EditorMouseAdapter editorMouseListener;
-    private Notifier notifier;
 
-    public ActionsRecorder(@NotNull GolfTask golfTask, @NotNull Project project, @NotNull Document document, String username, String password) {
+    public ActionsRecorder(@NotNull GolfTask golfTask, @NotNull Project project, @NotNull Document document, String username, String password, Restarter restarter) {
         this.golfTask = golfTask;
         this.project = project;
         this.document = document;
+        this.restarter = restarter;
         editor = IdeaUtils.getEditor(project, document);
         this.username = username;
         this.password = password;
         controlPanel = new RecordingControlPanel(project, document, golfTask.getTargetCode(), this);
+        notifier = new Notifier(project, restarter);
         editorMouseListener = new PenaliseMouseOnEditorListener();
     }
 
@@ -78,7 +78,6 @@ public final class ActionsRecorder implements Disposable {
         LOG.info("recording started");
         controlPanel.showHint();
 
-        notifier = new Notifier(project, restarter);
         editor.addEditorMouseListener(editorMouseListener);
         document.addDocumentListener(new SolutionFoundDocumentListener(), this);
         ActionManager.getInstance().addAnActionListener(new RecordingActionListener(), this);
@@ -137,10 +136,6 @@ public final class ActionsRecorder implements Disposable {
 
     public final Restarter getRestarter() {
         return restarter;
-    }
-
-    public void setRestarter(Restarter restarter) {
-        this.restarter = restarter;
     }
 
     public interface Restarter {
@@ -251,18 +246,7 @@ public final class ActionsRecorder implements Disposable {
 
     public final boolean isTaskSolved() {
         if (disposed) return false;
-        List expected = computeTrimmedLines(golfTask.getTargetCode());
-        List actual = computeTrimmedLines(String.valueOf(document.getText()));
-        return Objects.equal(expected, actual);
-    }
-
-    private static List<String> computeTrimmedLines(String input) {
-        String[] lines = StringUtil.splitByLines(input);
-        List<String> result = new ArrayList<String>();
-        for (String line : lines) {
-            result.add(line.trim());
-        }
-        return result;
+        return new TaskSolutionChecker(golfTask).checkSolution(document.getText());
     }
 
     @Override
@@ -275,13 +259,10 @@ public final class ActionsRecorder implements Disposable {
     private class PenaliseMouseOnEditorListener extends EditorMouseAdapter {
         @Override
         public void mouseClicked(EditorMouseEvent e) {
-            notifyMouseUsedInEditor();
+            notifier.notifyMouseUsedInEditor();
             score.increaseMovingActions(1000);
             notifyUser();
         }
     }
 
-    private void notifyMouseUsedInEditor() {
-        Notifications.Bus.notify(new Notification("mouse on editor", "Don't use mouse on editor!", "mouse actions are worth 1000 actions", NotificationType.WARNING));
-    }
 }
