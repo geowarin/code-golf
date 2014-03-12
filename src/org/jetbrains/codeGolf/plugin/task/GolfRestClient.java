@@ -101,7 +101,7 @@ public class GolfRestClient {
         try {
             JsonNode node = new ObjectMapper().readTree(output);
             JsonNode noRedirect = node.get("no-redirect");
-            if ((noRedirect != null) && (noRedirect.asBoolean())) {
+	    if (noRedirect != null && noRedirect.asBoolean()) {
                 return serverUrl;
             }
             String server = node.get("server").asText();
