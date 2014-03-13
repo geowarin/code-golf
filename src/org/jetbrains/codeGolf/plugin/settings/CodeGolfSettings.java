@@ -3,10 +3,7 @@ package org.jetbrains.codeGolf.plugin.settings;
 import com.intellij.ide.passwordSafe.PasswordSafe;
 import com.intellij.ide.passwordSafe.PasswordSafeException;
 import com.intellij.ide.util.PropertiesComponent;
-import com.intellij.openapi.actionSystem.AnAction;
-import com.intellij.openapi.actionSystem.AnActionEvent;
 import com.intellij.openapi.project.Project;
-import com.intellij.util.SystemProperties;
 import org.jetbrains.annotations.NotNull;
 
 public class CodeGolfSettings {

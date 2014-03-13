@@ -1,6 +1,5 @@
 package org.jetbrains.codeGolf.plugin.recording;
 
-import com.intellij.openapi.application.Application;
 import com.intellij.openapi.application.ApplicationManager;
 import com.intellij.openapi.progress.ProgressIndicator;
 import com.intellij.openapi.progress.Task;
@@ -11,24 +10,27 @@ import org.jetbrains.codeGolf.plugin.GolfSolution;
 import org.jetbrains.codeGolf.plugin.login.Credentials;
 import org.jetbrains.codeGolf.plugin.task.GolfRestClient;
 
+/**
+ * Date: 12/03/2014
+ * Time: 22:35
+ *
+ * @author Geoffroy Warin (http://geowarin.github.io)
+ */
 class SolutionSender {
-    private final ActionsRecorder recorder;
-    private final Score score;
-    private final Credentials credentials;
     private final Project project;
+    private final Credentials credentials;
+    private final ActionsRecorder recorder;
     private final Notifier notifier;
 
-    SolutionSender(Project project, Score score, Credentials credentials, ActionsRecorder recorder) {
+    SolutionSender(Project project, Credentials credentials, ActionsRecorder recorder) {
         this.project = project;
-        this.score = score;
         this.credentials = credentials;
         this.recorder = recorder;
         notifier = new Notifier(project, recorder.getRestarter());
     }
 
     public void sendSolutionWhenPossible(final GolfSolution solution) {
-        Application application = ApplicationManager.getApplication();
-        application.invokeLater(new Runnable() {
+        ApplicationManager.getApplication().invokeLater(new Runnable() {
             public final void run() {
                 if (recorder.isTaskSolved()) {
                     try {
@@ -61,4 +63,5 @@ class SolutionSender {
             notifier.showCongratulations(golfResult);
         }
     }
+
 }

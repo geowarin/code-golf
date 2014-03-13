@@ -11,55 +11,65 @@ import com.intellij.openapi.actionSystem.DataContext;
 import com.intellij.openapi.actionSystem.ex.AnActionListener;
 import com.intellij.openapi.diagnostic.Logger;
 import com.intellij.util.ui.UIUtil;
+import org.jetbrains.codeGolf.plugin.controlpanel.RecordingControlPanel;
 
 import javax.swing.*;
 import java.awt.event.InputEvent;
 import java.awt.event.KeyEvent;
 import java.awt.event.MouseEvent;
 
+/**
+ * Date: 12/03/2014
+ * Time: 23:15
+ *
+ * @author Geoffroy Warin (http://geowarin.github.io)
+ */
 class RecordingActionListener implements AnActionListener {
-    private final ActionController actionController;
     private final Score score;
-    private final ActionsRecorder recorder;
+    private final ActionController actionController;
+    private final RecordingControlPanel controlPanel;
+    private final ActionsRecorder actionsRecorder;
+
     private static final Logger LOG = Logger.getInstance("#org.jetbrains.codeGolf");
 
-    RecordingActionListener(ActionController actionController, Score score, ActionsRecorder recorder) {
-        this.actionController = actionController;
+
+    RecordingActionListener(Score score, RecordingControlPanel controlPanel, ActionsRecorder actionsRecorder) {
         this.score = score;
-        this.recorder = recorder;
+        this.controlPanel = controlPanel;
+        this.actionsRecorder = actionsRecorder;
+        actionController = new ActionController();
     }
 
     @Override
     public void beforeActionPerformed(AnAction action, DataContext dataContext, AnActionEvent event) {
-        ActionManager actionManager = ActionManager.getInstance();
-        String actionId = actionManager.getId(action);
+        String actionId = ActionManager.getInstance().getId(action);
         if (actionId == null) {
             return;
         }
         if (actionController.isForbiddenAction(actionId)) {
             LOG.info("Forbidden " + actionId);
-            recorder.discardSolution("Action " + actionId + " is forbidden");
+            actionsRecorder.discardSolution("Action " + actionId + " is forbidden");
             return;
         }
-
         InputEvent inputEvent = event.getInputEvent();
         if (inputEvent instanceof MouseEvent) {
             processMouseAction();
             return;
         }
-        KeyEvent keyEvent = (KeyEvent) inputEvent;
 
-//        AnAction editorAction = actionManager.getAction(actionId);
+        KeyEvent keyEvent = (KeyEvent) inputEvent;
         if (actionController.isMovingAction(actionId)) {
+            LOG.debug("move " + actionId);
             score.increaseMovingActions(1);
             score.addKeyStroke("move", KeyStroke.getKeyStrokeForEvent(keyEvent));
-            recorder.notifyUser();
+            controlPanel.notifyUser(score);
             return;
         }
+
         if (actionController.isTypingAction(actionId)) {
-            score.increaseTyping(1);
             score.addKeyStroke("typing", KeyStroke.getKeyStrokeForEvent(keyEvent));
-            recorder.notifyUser();
+            score.increaseTyping(1);
+            controlPanel.notifyUser(score);
             return;
         }
 
@@ -72,46 +82,47 @@ class RecordingActionListener implements AnActionListener {
 
     @Override
     public void beforeEditorTyping(char c, DataContext dataContext) {
-        score.addChar(c);
+        score.addCharacterTyped(c);
         score.increaseTyping(1);
-        recorder.notifyUser();
+        controlPanel.notifyUser(score);
     }
 
     private void processMouseAction() {
         Notifications.Bus.notify(new Notification("mouse action", "Don't use mouse for actions!", "mouse actions are worth 1000 actions", NotificationType.WARNING));
         score.increaseActions(1000);
-        recorder.notifyUser();
+        controlPanel.notifyUser(score);
     }
 
-    private void processKeyPressedEvent(KeyEvent e) {
-        if (actionController.isModifier(e.getKeyCode()))
+    private void processKeyPressedEvent(KeyEvent event) {
+        if (actionController.isModifier(event.getKeyCode()))
             return;
 
         if (!isEventQueueReady())
             return;
 
-        boolean isChar = e.getKeyChar() != KeyEvent.CHAR_UNDEFINED && UIUtil.isReallyTypedEvent(e);
-        boolean hasActionModifiers = e.isAltDown() || e.isControlDown();
+        boolean isChar = event.getKeyChar() != KeyEvent.CHAR_UNDEFINED && UIUtil.isReallyTypedEvent(event);
+        boolean hasActionModifiers = event.isAltDown() || event.isControlDown() || event.isMetaDown();
         boolean plainType = isChar && !hasActionModifiers;
-        boolean isEnter = e.getKeyCode() == KeyEvent.VK_ENTER;
+        boolean isEnter = event.getKeyCode() == KeyEvent.VK_ENTER;
 
         if (plainType && !isEnter) {
-            score.addChar(e.getKeyChar());
+            score.addCharacterTyped(event.getKeyChar());
             score.increaseTyping(1);
-        } else {
-            score.addKeyStroke("action", KeyStroke.getKeyStrokeForEvent(e));
-
-            if (hasActionModifiers && actionController.isMovingKey(e.getKeyCode())) {
-                score.increaseMovingActions(1);
-            } else {
-                score.increaseActions(1);
-            }
+            return;
         }
-        recorder.notifyUser();
+
+
+        if (hasActionModifiers && actionController.isMovingKey(event.getKeyCode())) {
+            score.increaseMovingActions(1);
+            score.addKeyStroke("moving action", KeyStroke.getKeyStrokeForEvent(event));
+        } else {
+            score.increaseActions(1);
+            score.addKeyStroke("action", KeyStroke.getKeyStrokeForEvent(event));
+        }
+        controlPanel.notifyUser(score);
     }
 
     private boolean isEventQueueReady() {
         return IdeEventQueue.getInstance().getKeyEventDispatcher().isReady();
     }
-
 }

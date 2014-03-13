@@ -21,7 +21,7 @@ import org.jetbrains.codeGolf.plugin.login.Credentials;
 
 public final class ActionsRecorder implements Disposable {
     private final Score score = new Score();
-    private final ActionController actionController = new ActionController();
+    private final EditorMouseAdapter editorMouseListener = new PenaliseMouseOnEditorListener();
     private final RecordingControlPanel controlPanel;
     private final GolfTask golfTask;
     private final Project project;
@@ -34,7 +34,6 @@ public final class ActionsRecorder implements Disposable {
     private boolean recording;
     private static final Logger LOG = Logger.getInstance("#org.jetbrains.codeGolf");
     private final Editor editor;
-    private final EditorMouseAdapter editorMouseListener;
 
     public ActionsRecorder(@NotNull GolfTask golfTask, @NotNull Project project, @NotNull Document document, Credentials credentials, Restarter restarter) {
         this.golfTask = golfTask;
@@ -45,7 +44,6 @@ public final class ActionsRecorder implements Disposable {
         editor = IdeaUtils.getEditor(project, document);
         controlPanel = new RecordingControlPanel(project, document, golfTask.getTargetCode(), this);
         notifier = new Notifier(project, restarter);
-        editorMouseListener = new PenaliseMouseOnEditorListener();
     }
 
     public final void startRecording() {
@@ -55,7 +53,7 @@ public final class ActionsRecorder implements Disposable {
 
         editor.addEditorMouseListener(editorMouseListener);
         document.addDocumentListener(new SolutionFoundDocumentListener(), this);
-        ActionManager.getInstance().addAnActionListener(new RecordingActionListener(actionController, score, this), this);
+        ActionManager.getInstance().addAnActionListener(new RecordingActionListener(score, controlPanel, this), this);
     }
 
     public final void stopRecording() {
@@ -65,7 +63,7 @@ public final class ActionsRecorder implements Disposable {
         Disposer.dispose(this);
     }
 
-    public final void discardSolution(String reason) {
+    public void discardSolution(String reason) {
         stopRecording();
         notifier.notifySolutionDiscarded(reason);
     }
@@ -75,11 +73,15 @@ public final class ActionsRecorder implements Disposable {
     }
 
     public interface Restarter {
-        public void restart();
+        void restart();
     }
 
     public boolean isRecording() {
         return recording;
+    }
+
+    public boolean isTaskSolved() {
+        return !disposed && new TaskSolutionChecker(golfTask).checkSolution(document.getText());
     }
 
     private class SolutionFoundDocumentListener extends DocumentAdapter {
@@ -87,17 +89,13 @@ public final class ActionsRecorder implements Disposable {
         public void documentChanged(DocumentEvent event) {
             if (isTaskSolved()) {
                 GolfSolution golfSolution = createGolfSolution(golfTask.getTaskId(), score);
-                new SolutionSender(project, score, credentials, ActionsRecorder.this).sendSolutionWhenPossible(golfSolution);
+                new SolutionSender(project, credentials, ActionsRecorder.this).sendSolutionWhenPossible(golfSolution);
             }
         }
 
         private GolfSolution createGolfSolution(String taskId, Score score) {
             return new GolfSolution(taskId, credentials.getUserName(), score.getMovingActionsCounter(), score.getTypingCounter(), score.getActionsCounter(), Joiner.on('|').join(score.getUsedActions()));
         }
-    }
-
-    public boolean isTaskSolved() {
-        return !disposed && new TaskSolutionChecker(golfTask).checkSolution(document.getText());
     }
 
     @Override
@@ -111,12 +109,8 @@ public final class ActionsRecorder implements Disposable {
         public void mouseClicked(EditorMouseEvent e) {
             notifier.notifyMouseUsedInEditor();
             score.increaseMovingActions(1000);
-            notifyUser();
+            controlPanel.notifyUser(score);
         }
-    }
-
-    public void notifyUser() {
-        controlPanel.notifyUser(score);
     }
 
 }

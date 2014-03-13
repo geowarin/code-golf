@@ -6,7 +6,6 @@ import com.intellij.openapi.fileEditor.FileDocumentManager;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.util.Computable;
 import com.intellij.openapi.vfs.VirtualFile;
-import org.jetbrains.codeGolf.plugin.controlpanel.RecordingControlPanel;
 import org.jetbrains.codeGolf.plugin.login.Credentials;
 import org.jetbrains.codeGolf.plugin.recording.ActionsRecorder;
 import org.jetbrains.codeGolf.plugin.task.GolfTaskManager;

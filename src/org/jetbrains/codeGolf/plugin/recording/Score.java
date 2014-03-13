@@ -8,11 +8,11 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class Score {
+    private static final Logger LOG = Logger.getInstance("#org.jetbrains.codeGolf");
     private int movingActionsCounter;
     private int actionsCounter;
     private int typingCounter;
     private final List<String> usedActions = new ArrayList<String>();
-    private static final Logger LOG = Logger.getInstance("#org.jetbrains.codeGolf");
 
     public int getMovingActionsCounter() {
         return movingActionsCounter;
@@ -38,7 +38,7 @@ public class Score {
         typingCounter += number;
     }
 
-    public void addChar(char keyChar) {
+    public void addCharacterTyped(char keyChar) {
         usedActions.add(String.valueOf(keyChar));
         LOG.info("char : " + keyChar);
     }
@@ -46,7 +46,7 @@ public class Score {
     public void addKeyStroke(String type, KeyStroke keyStrokeForEvent) {
         String keystrokeText = KeymapUtil.getKeystrokeText(keyStrokeForEvent);
         usedActions.add(keystrokeText);
-        LOG.info("action " + type + " : " + keystrokeText + "(" + keyStrokeForEvent + ")");
+        LOG.info(type + " : " + keystrokeText + "(" + keyStrokeForEvent + ")");
     }
 
     public List<String> getUsedActions() {
