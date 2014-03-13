@@ -4,6 +4,8 @@ import com.intellij.openapi.actionSystem.AnAction;
 import com.intellij.openapi.actionSystem.AnActionEvent;
 import com.intellij.openapi.actionSystem.Presentation;
 import com.intellij.openapi.project.Project;
+import org.jetbrains.codeGolf.plugin.event.Events;
+import org.jetbrains.codeGolf.plugin.event.StartGameEvent;
 import org.jetbrains.codeGolf.plugin.login.Credentials;
 import org.jetbrains.codeGolf.plugin.login.LoginService;
 
@@ -29,6 +31,7 @@ public final class StartGolfAction extends AnAction {
             // User cancels
             if (credentials == null)
                 return;
+            Events.post(new StartGameEvent(project, credentials));
 
             game = new GolfGame(project, credentials);
             game.loadTasksAndScores();
