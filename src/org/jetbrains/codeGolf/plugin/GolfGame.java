@@ -54,11 +54,9 @@ class GolfGame {
                 start(task);
             }
         };
-        ActionsRecorder recorder = new ActionsRecorder(task, project, document, credentials.getUserName(), credentials.getToken(), restarter);
-
+        ActionsRecorder recorder = new ActionsRecorder(task, project, document, credentials, restarter);
         recorder.startRecording();
     }
-
 
     private VirtualFile createFile(final Project project, final String text) {
         return ApplicationManager.getApplication().runWriteAction(new Computable<VirtualFile>() {
@@ -74,7 +72,6 @@ class GolfGame {
         IdeaUtils.setFocusOnFile(project, file, task.getInitialOffset());
         return FileDocumentManager.getInstance().getDocument(file);
     }
-
 
     public boolean isRecording() {
         // FIXME

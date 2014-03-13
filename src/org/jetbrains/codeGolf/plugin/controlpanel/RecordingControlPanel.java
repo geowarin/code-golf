@@ -25,6 +25,7 @@ import com.intellij.ui.popup.AbstractPopup;
 import com.intellij.ui.popup.NotLookupOrSearchCondition;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.codeGolf.plugin.recording.ActionsRecorder;
+import org.jetbrains.codeGolf.plugin.recording.Score;
 
 import javax.swing.*;
 import java.awt.*;
@@ -70,7 +71,7 @@ public final class RecordingControlPanel extends JPanel implements Disposable {
 
         ComponentPopupBuilder componentPopupBuilder = JBPopupFactory.getInstance().createComponentPopupBuilder(this, this);
         myHint = createHint(componentPopupBuilder);
-        notifyUser(0, 0, 0);
+        notifyUser(new Score());
     }
 
     @Override
@@ -94,8 +95,10 @@ public final class RecordingControlPanel extends JPanel implements Disposable {
         return actionToolbar.getComponent();
     }
 
-    public final void notifyUser(int actionsCounter, int movingActionsCounter, int typingCounter) {
-        notifyUser("<html>Actions: <b>" + actionsCounter + "</b>.&nbsp; Moving actions: <b>" + movingActionsCounter + "</b>.&nbsp; Chars: <b>" + typingCounter + "</b>.</html>");
+    public final void notifyUser(Score score) {
+        String message = String.format("<html>Actions: <b>%s</b>.&nbsp; Moving actions: <b>%s</b>.&nbsp; Chars: <b>%s</b>.</html>",
+                score.getActionsCounter(), score.getMovingActionsCounter(), score.getTypingCounter());
+        notifyUser(message);
     }
 
     public final void notifyUser(String message) {
