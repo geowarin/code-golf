@@ -40,6 +40,7 @@
 
     <extensions defaultExtensionNs="com.intellij">
         <applicationService serviceImplementation="org.jetbrains.codeGolf.plugin.task.GolfRestClient"/>
+        <applicationService serviceImplementation="org.jetbrains.codeGolf.plugin.event.Events"/>
         <applicationConfigurable instance="org.jetbrains.codeGolf.plugin.settings.CodeGolfConfigurable"/>
     </extensions>
 </idea-plugin>
