@@ -101,7 +101,7 @@ public class GolfRestClient {
         try {
             JsonNode node = new ObjectMapper().readTree(output);
             JsonNode noRedirect = node.get("no-redirect");
-	    if (noRedirect != null && noRedirect.asBoolean()) {
+            if (noRedirect != null && noRedirect.asBoolean()) {
                 return serverUrl;
             }
             String server = node.get("server").asText();
@@ -123,7 +123,7 @@ public class GolfRestClient {
             LOG.debug("Loaded from server:");
             LOG.debug(output);
             List<UserScore> scores = JsonSerializer.deserializeScores(output);
-            LOG.info(String.valueOf(scores.size()) + " scores loaded");
+            LOG.info(scores.size() + " scores loaded");
             return scores;
         } catch (Exception e) {
             throw new RuntimeException(e);
@@ -143,7 +143,7 @@ public class GolfRestClient {
             LOG.debug("Loaded from server:");
             LOG.debug(output);
             List<GolfTask> tasks = JsonSerializer.deserializeTasks(output);
-            LOG.info(String.valueOf(tasks.size()) + " tasks loaded");
+            LOG.info(tasks.size() + " tasks loaded");
             return tasks;
         } catch (Exception e) {
             throw new RuntimeException(e);

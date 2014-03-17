@@ -37,8 +37,4 @@ public final class GolfTaskManager extends TaskManager {
     public final List<GolfTask> getPredefinedTasks() {
         return PREDIFINED_GOLF_TASKS;
     }
-
-//    public static TaskManager getInstance() {
-//        return ServiceManager.getService(GolfTaskManager.class);
-//    }
 }

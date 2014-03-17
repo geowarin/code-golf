@@ -17,6 +17,8 @@ import org.jetbrains.codeGolf.plugin.GolfSolution;
 import org.jetbrains.codeGolf.plugin.GolfTask;
 import org.jetbrains.codeGolf.plugin.IdeaUtils;
 import org.jetbrains.codeGolf.plugin.controlpanel.RecordingControlPanel;
+import org.jetbrains.codeGolf.plugin.event.Events;
+import org.jetbrains.codeGolf.plugin.event.StopGameEvent;
 import org.jetbrains.codeGolf.plugin.login.Credentials;
 
 public final class ActionsRecorder implements Disposable {
@@ -61,6 +63,7 @@ public final class ActionsRecorder implements Disposable {
         recording = false;
         editor.removeEditorMouseListener(editorMouseListener);
         Disposer.dispose(this);
+        Events.post(new StopGameEvent());
     }
 
     public void discardSolution(String reason) {

@@ -7,7 +7,6 @@ import com.intellij.notification.Notifications;
 import com.intellij.openapi.project.Project;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.codeGolf.plugin.GolfResult;
-import org.jetbrains.codeGolf.plugin.task.GolfRestClient;
 
 import javax.swing.event.HyperlinkEvent;
 
@@ -33,12 +32,12 @@ public class Notifier {
     }
 
     private void notifyWinner(GolfResult result) {
-      String url = result.getUrl();
-      String message = String.format(
+        String url = result.getUrl();
+        String message = String.format(
                 "Your result is %d. The best result is %d.<br/>" +
-			"The details about the task can be found <a href=\"%s\">here</a>.<br/>" +
+                        "The details about the task can be found <a href=\"%s\">here</a>.<br/>" +
                         "<a href=\"restart\">Try again</a> if you want to improve your solution.",
-		result.getResult(), result.getBestResult(), url);
+                result.getResult(), result.getBestResult(), url);
         Notification notification = new Notification("Registered", "Congratulations", message, NotificationType.INFORMATION, new MyNotificationListener());
         Notifications.Bus.notify(notification, project);
     }

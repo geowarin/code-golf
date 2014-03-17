@@ -3,15 +3,12 @@ package org.jetbrains.codeGolf.plugin;
 import com.intellij.openapi.actionSystem.AnAction;
 import com.intellij.openapi.actionSystem.AnActionEvent;
 import com.intellij.openapi.actionSystem.Presentation;
-import com.intellij.openapi.project.Project;
 import org.jetbrains.codeGolf.plugin.event.Events;
 import org.jetbrains.codeGolf.plugin.event.StartGameEvent;
-import org.jetbrains.codeGolf.plugin.login.Credentials;
-import org.jetbrains.codeGolf.plugin.login.LoginService;
+import org.jetbrains.codeGolf.plugin.game.Game;
 
 
 public final class StartGolfAction extends AnAction {
-    private GolfGame game;
 
     public StartGolfAction() {
         super("Start Code Golf...");
@@ -20,29 +17,18 @@ public final class StartGolfAction extends AnAction {
     @Override
     public void update(AnActionEvent e) {
         Presentation presentation = e.getPresentation();
-        presentation.setEnabled(!isRecording());
+        presentation.setEnabled(!isGameStarted());
     }
 
     @Override
     public void actionPerformed(AnActionEvent anActionEvent) {
-        if (!isRecording()) {
-            Project project = anActionEvent.getProject();
-            Credentials credentials = LoginService.getInstance().showDialogAndLogin(project);
-            // User cancels
-            if (credentials == null)
-                return;
-            Events.post(new StartGameEvent(project, credentials));
-
-            game = new GolfGame(project, credentials);
-            game.loadTasksAndScores();
-            GolfTask selectedTask = game.showSelectTaskDialog();
-            if (selectedTask != null)
-                game.start(selectedTask);
+        if (!isGameStarted()) {
+            Events.post(new StartGameEvent(anActionEvent.getProject()));
         }
     }
 
-    private boolean isRecording() {
-        return game != null && game.isRecording();
+    private boolean isGameStarted() {
+        return Game.get().isStarted();
     }
 
 }

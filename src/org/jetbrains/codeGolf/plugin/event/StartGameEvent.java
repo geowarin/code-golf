@@ -1,9 +1,15 @@
 package org.jetbrains.codeGolf.plugin.event;
 
 import com.intellij.openapi.project.Project;
-import org.jetbrains.codeGolf.plugin.login.Credentials;
 
 public class StartGameEvent {
-    public StartGameEvent(Project project, Credentials credentials) {
+    private Project project;
+
+    public StartGameEvent(Project project) {
+        this.project = project;
+    }
+
+    public Project getProject() {
+        return project;
     }
 }

@@ -1,7 +1,6 @@
 package org.jetbrains.codeGolf.plugin.event;
 
 import com.google.common.eventbus.EventBus;
-import com.google.common.eventbus.Subscribe;
 import com.intellij.openapi.components.ServiceManager;
 
 public class Events {
@@ -16,6 +15,6 @@ public class Events {
     }
 
     public static void register(Object listener) {
-        get(). eventBus.register(listener);
+        get().eventBus.register(listener);
     }
 }

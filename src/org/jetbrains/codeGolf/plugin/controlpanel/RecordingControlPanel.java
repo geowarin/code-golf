@@ -96,8 +96,10 @@ public final class RecordingControlPanel extends JPanel implements Disposable {
     }
 
     public final void notifyUser(Score score) {
-        String message = String.format("<html>Actions: <b>%s</b>.&nbsp; Moving actions: <b>%s</b>.&nbsp; Chars: <b>%s</b>.</html>",
-                score.getActionsCounter(), score.getMovingActionsCounter(), score.getTypingCounter());
+        String message = String.format(
+                "<html>Actions: <b>%s</b>.&nbsp; Moving actions: <b>%s</b>.&nbsp; Chars: <b>%s</b>.</html>",
+                score.getActionsCounter(), score.getMovingActionsCounter(), score.getTypingCounter()
+        );
         notifyUser(message);
     }
 
